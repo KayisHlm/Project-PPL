@@ -13,3 +13,21 @@ Route::get('/register', function () {
 Route::get('/login', function () {
     return view('Page.Auth.Login');
 })->name('login');
+
+Route::prefix('dashboard-admin')->name('dashboard-admin.')->group(function () {
+    Route::view('/dashboard', 'Page.DashboardAdmin.Dashboard')->name('dashboard');
+    Route::view('/kategori', 'Page.DashboardAdmin.Kategori')->name('kategori');
+    Route::view('/produk', 'Page.DashboardAdmin.Produk')->name('produk');
+    Route::view('/laporan', 'Page.DashboardAdmin.Laporan')->name('laporan');
+    Route::view('/profile', 'Page.Profile.Index')->name('profile');
+});
+
+Route::prefix('dashboard-seller')->name('dashboard-seller.')->group(function () {
+    Route::view('/dashboard', 'Page.DashboardSeller.Dashboard')->name('dashboard');
+    Route::view('/kategori', 'Page.DashboardSeller.Kategori')->name('kategori');
+    Route::view('/produk', 'Page.DashboardSeller.Produk')->name('produk');
+    Route::view('/laporan', 'Page.DashboardSeller.Laporan')->name('laporan');
+    Route::view('/tambah-kategori', 'Page.DashboardSeller.TambahKategori')->name('tambah-kategori');
+    Route::view('/tambah-produk', 'Page.DashboardSeller.TambahProduk')->name('tambah-produk');
+    Route::view('/profile', 'Page.Profile.Index')->name('profile');
+});

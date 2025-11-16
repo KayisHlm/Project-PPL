@@ -74,6 +74,9 @@
                                                 <form id="accountForm" method="post" action="#" class="form-horizontal">
                                                     <div class="row">
                                                         <div class="col-12">
+                                                            <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">
+                                                                Isi data profil toko dan PIC dengan lengkap dan benar.
+                                                            </div>
                                                             <div class="row mb-2">
                                                                 <label class="col-md-3 col-form-label fs-14" for="store_name">Nama Toko</label>
                                                                 <div class="col-md-9">
@@ -113,6 +116,9 @@
                                                 <form id="profileForm" method="post" action="#" class="form-horizontal">
                                                     <div class="row">
                                                         <div class="col-12">
+                                                            <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">
+                                                                Lengkapi alamat PIC sesuai KTP untuk verifikasi lokasi.
+                                                            </div>
                                                             <div class="row mb-2">
                                                                 <label class="col-md-3 col-form-label fs-14" for="pic_street">Alamat (nama jalan) PIC</label>
                                                                 <div class="col-md-9">
@@ -158,6 +164,9 @@
                                                 <form id="otherForm" method="post" action="#" class="form-horizontal">
                                                     <div class="row">
                                                         <div class="col-12">
+                                                            <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">
+                                                                Unggah foto PIC dan KTP. Masing-masing maksimal 1 file.
+                                                            </div>
                                                             <div class="row mb-2">
                                                                 <label class="col-md-3 col-form-label fs-14" for="no_ktp_pic">No KTP PIC</label>
                                                                 <div class="col-md-9">
@@ -201,6 +210,9 @@
                                                 <form id="finishForm" method="post" action="#" class="form-horizontal">
                                                     <div class="row">
                                                         <div class="col-12">
+                                                            <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">
+                                                                Tinjau ulang seluruh data sebelum submit akhir.
+                                                            </div>
                                                             <div class="text-center mb-3">
                                                                 <h4 class="mt-0">Validasi Akhir</h4>
                                                                 <p class="mb-0 w-75 mx-auto">Silakan tinjau kembali semua data yang telah Anda isi pada langkah sebelumnya. Pastikan informasi sudah benar dan lengkap. Centang persetujuan di bawah ini sebelum melakukan submit.</p>

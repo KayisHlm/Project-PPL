@@ -31,17 +31,12 @@
     <div class="auth-bg d-flex min-vh-100 justify-content-center align-items-center">
         <div class="row g-0 justify-content-center w-100 m-xxl-5 px-xxl-4 m-3">
             <div class="col-xl-4 col-lg-5 col-md-6">
-                <div class="card overflow-hidden text-center h-100 p-xxl-4 p-3 mb-0">
-                    <a href="index.html" class="auth-brand mb-4">
-                        <img src="assets/images/logo-dark.png" alt="dark logo" height="26" class="logo-dark">
-                        <img src="assets/images/logo.png" alt="logo light" height="26" class="logo-light">
-                    </a>
-
+                <div class="card overflow-hidden text-center h-100 p-xxl-4 p-3 mb-0">       
                     <h4 class="fw-semibold mb-2 fs-18">Log in to your account</h4>
 
                     <p class="text-muted mb-4">Enter your email address and password to access admin panel.</p>
 
-                    <form action="https://coderthemes.com/highdmin/layouts/index.html" class="text-start mb-3">
+                    <form action="{{ route('dashboard-admin.dashboard') }}" class="text-start mb-3">
                         <div class="mb-3">
                             <label class="form-label" for="example-email">Email</label>
                             <input type="email" id="example-email" name="example-email" class="form-control" placeholder="Enter your email">
