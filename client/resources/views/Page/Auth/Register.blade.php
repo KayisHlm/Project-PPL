@@ -252,20 +252,8 @@
                                                 </div>
                                             </div>
 
-                                            <div class="d-flex wizard justify-content-between align-items-center flex-wrap gap-2 mt-3">
-                                                <div class="d-flex flex-wrap gap-2">
-                                                    <div class="previous">
-                                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm">
-                                                            <i class="bx bx-left-arrow-alt me-1"></i>Previous
-                                                        </a>
-                                                    </div>
-                                                    <div class="next">
-                                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm mt-0">
-                                                            Next<i class="bx bx-right-arrow-alt ms-1"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="login">
+                                            <div class="d-flex wizard justify-content-between align-items-center flex-wrap gap-2 mt-3">                    
+                                                <div class="login ms-auto text-end">
                                                     <a href="{{ url('/login') }}" class="text-muted fs-14">Already have an account? <span class="text-primary">Login !</span></a>
                                                 </div>
                                             </div>

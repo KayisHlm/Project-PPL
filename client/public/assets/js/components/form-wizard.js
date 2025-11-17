@@ -18,6 +18,12 @@
       return idx;
     }
 
+    if(tabs && tabs.length && activeIndex() === 0 && !tabs[0].classList.contains('active')){
+      tabs[0].classList.add('active');
+      const firstPane = document.querySelector(tabs[0].getAttribute('href'));
+      if(firstPane){ firstPane.classList.add('show','active'); }
+    }
+
     function validateActive(){
       if(!header) return true;
       const idx = activeIndex();
@@ -40,7 +46,10 @@
         e.preventDefault();
         const idx = activeIndex();
         const prev = idx > 0 ? tabs[idx-1] : null;
-        if(prev){ prev.click(); }
+        if(prev){
+          var t = new bootstrap.Tab(prev);
+          t.show();
+        }
       });
     }
 
@@ -50,8 +59,21 @@
         if(!validateActive()) return;
         const idx = activeIndex();
         const next = idx < tabs.length-1 ? tabs[idx+1] : null;
-        if(next){ next.click(); }
+        if(next){
+          var t = new bootstrap.Tab(next);
+          t.show();
+        }
       });
     }
+
+    tabs.forEach((a, i)=>{
+      a.addEventListener('show.bs.tab', function(e){
+        const cur = activeIndex();
+        if(i > cur && !validateActive()){
+          e.preventDefault();
+          return false;
+        }
+      });
+    });
   }
 })();
