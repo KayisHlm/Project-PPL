@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 
-const saltRounds = process.env.BCRYPT_SALT_ROUNDS;
+const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS, 10) || 10;
 
 function hashPassword(password) {
     return bcrypt.hash(password, saltRounds);

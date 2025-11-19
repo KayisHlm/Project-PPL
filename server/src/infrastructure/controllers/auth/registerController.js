@@ -1,7 +1,7 @@
 const UserRepository = require("../../repositories/userRepository");
 const Register = require("../../../usecases/auth/register");
 const UserInformation = require("../../../dto/user/userInformation");
-const { BadRequest, AlreadyExist } = require("../../domain/errors");
+const { BadRequest, AlreadyExist } = require("../../../domain/errors");
 
 
 async function RegisterController(req, res) {
@@ -25,6 +25,9 @@ async function RegisterController(req, res) {
     } = req.body;
 
     try {
+        // [DEBUG]
+        console.log("[RegisterController] Incoming body:", req.body);
+        
         // inisialisasi objek usecase
         const register = new Register(new UserRepository());
         // eksekusi
@@ -47,12 +50,14 @@ async function RegisterController(req, res) {
             picKtpPath 
         });
 
-        return res.status(201).toJSON({
+        return res.status(201).json({
             code: 201,
             message: "User successfully registered.",
             user: new UserInformation(newUser).toJSON(),
         });
     } catch (error) {
+        // [DEBUG]
+        console.error("[RegisterController] Error:", error);
         if (
             error instanceof BadRequest ||
             error instanceof AlreadyExist 
@@ -74,3 +79,5 @@ async function RegisterController(req, res) {
     }
 
 }
+
+module.exports = RegisterController;

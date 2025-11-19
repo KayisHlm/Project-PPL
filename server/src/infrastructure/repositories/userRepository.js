@@ -2,7 +2,7 @@ const UserRepositoryInterface = require("../../domain/interface/userRepositoryIn
 const pool = require("../../db");
 const User = require("../../domain/entities/user");
 const Seller = require("../../domain/entities/seller");
-const { hashPassword } = require("../middleware/bcrypt");
+const hashPassword = require("../middleware/bcrypt");
 
 class UserRepository extends UserRepositoryInterface {
     async create(userData) {
@@ -297,3 +297,5 @@ class UserRepository extends UserRepositoryInterface {
         }
     }
 }
+
+module.exports = UserRepository;
