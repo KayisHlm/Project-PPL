@@ -80,34 +80,34 @@ class UserRepository extends UserRepositoryInterface {
                 user: new User(
                     newUser.id,
                     newUser.email,
-                    newUser.role,
                     newUser.password,
+                    newUser.role,
                     newUser.created_at,
                     newUser.updated_at
                 ),
-                seller: new Seller(
-                    newSeller.id,
-                    newSeller.user_id,
-                    newSeller.shop_name,
-                    newSeller.shop_description,
-                    newSeller.pic_name,
-                    newSeller.pic_phone_number,
-                    newSeller.pic_email,
-                    newSeller.pic_address,
-                    newSeller.pic_rt,
-                    newSeller.pic_rw,
-                    newSeller.pic_village,
-                    newSeller.pic_city,
-                    newSeller.pic_province,
-                    newSeller.pic_ktp_number,
-                    newSeller.pic_photo_path,
-                    newSeller.pic_ktp_path,
-                    newSeller.status,
-                    newSeller.rejection_reason,
-                    newSeller.verified_at,
-                    newSeller.created_at,
-                    newSeller.updated_at
-                )
+                seller: new Seller({
+                id: newSeller.id,
+                userId: newSeller.user_id,
+                shopName: newSeller.shop_name,
+                shopDescription: newSeller.shop_description,
+                picName: newSeller.pic_name,
+                picPhoneNumber: newSeller.pic_phone_number,
+                picEmail: newSeller.pic_email,
+                picAddress: newSeller.pic_address,
+                picRt: newSeller.pic_rt,
+                picRw: newSeller.pic_rw,
+                picVillage: newSeller.pic_village,
+                picCity: newSeller.pic_city,
+                picProvince: newSeller.pic_province,
+                picKtpNumber: newSeller.pic_ktp_number,
+                picPhotoPath: newSeller.pic_photo_path,
+                picKtpPath: newSeller.pic_ktp_path,
+                status: newSeller.status,
+                rejectionReason: newSeller.rejection_reason,
+                verifiedAt: newSeller.verified_at,
+                createdAt: newSeller.created_at,
+                updatedAt: newSeller.updated_at
+                })
             };
         } catch (error) {
             await client.query('ROLLBACK');
