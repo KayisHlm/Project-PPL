@@ -39,9 +39,16 @@
                             </div>
 
                             <div class="card-body pt-0 p-3">
-                                <form>
+                                <form id="registrationWizard" method="post" action="{{ route('register.submit') }}">
+                                    @csrf
                                     <div id="validation-wizard">
                                         <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
+                                            <li class="nav-item" data-target-form="#credentialForm">
+                                                <a href="#credential" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-3">
+                                                    <i class="bi bi-key fs-18 align-middle me-1"></i>
+                                                    <span class="d-none d-sm-inline">Credential</span>
+                                                </a>
+                                            </li>
                                             <li class="nav-item" data-target-form="#accountForm">
                                                 <a href="#first" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-3">
                                                     <i class="bi bi-person-circle fs-18 align-middle me-1"></i>
@@ -70,144 +77,189 @@
 
                                         <div class="tab-content">
 
+                                            <div class="tab-pane" id="credential">
+                                                <div id="credentialForm" class="form-horizontal">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">
+                                                                Buat akun dengan email dan password yang aman.
+                                                            </div>
+                                                            <div class="row mb-2">
+                                                                <label class="col-md-3 col-form-label fs-14" for="email">Email</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="email" class="form-control form-control-sm" id="email" name="email" required maxlength="254" placeholder="contoh@email.com">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-2">
+                                                                <label class="col-md-3 col-form-label fs-14" for="password">Password</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="password" class="form-control form-control-sm" id="password" name="password" required minlength="8" maxlength="255" placeholder="Minimal 8 karakter">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-2">
+                                                                <label class="col-md-3 col-form-label fs-14" for="password_confirmation">Konfirmasi Password</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="password" class="form-control form-control-sm" id="password_confirmation" name="password_confirmation" required minlength="8" maxlength="255" placeholder="Ketik ulang password">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-end mt-3">
+                                                        <button type="button" class="btn btn-primary btn-sm" data-wizard-next="[href='#first']">Next <i class="bi bi-arrow-right ms-1"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div class="tab-pane" id="first">
-                                                <form id="accountForm" method="post" action="#" class="form-horizontal">
+                                                <div id="accountForm" class="form-horizontal">
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">
                                                                 Isi data profil toko dan PIC dengan lengkap dan benar.
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="store_name">Nama Toko</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="shopName">Nama Toko</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" class="form-control form-control-sm" id="store_name" name="store_name" required maxlength="100">
+                                                                    <input type="text" class="form-control form-control-sm" id="shopName" name="shopName" required maxlength="100" placeholder="Contoh: Toko Berkah Jaya">
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="short_description">Deskripsi Singkat</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="shopDescription">Deskripsi Singkat</label>
                                                                 <div class="col-md-9">
-                                                                    <textarea class="form-control form-control-sm" id="short_description" name="short_description" rows="3" required maxlength="300"></textarea>
+                                                                    <textarea class="form-control form-control-sm" id="shopDescription" name="shopDescription" rows="3" required maxlength="300" placeholder="Contoh: Toko kelontong lengkap yang menyediakan berbagai kebutuhan sehari-hari dengan harga terjangkau"></textarea>
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="pic_name">Nama PIC</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picName">Nama PIC</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" class="form-control form-control-sm" id="pic_name" name="pic_name" required maxlength="100">
+                                                                    <input type="text" class="form-control form-control-sm" id="picName" name="picName" required maxlength="100" placeholder="Contoh: Ahmad Suryadi">
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="pic_phone">No Handphone PIC</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picPhoneNumber">No Handphone PIC</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="tel" class="form-control form-control-sm" id="pic_phone" name="pic_phone" required inputmode="tel" pattern="^(\+62|0)\d{9,13}$" maxlength="16" placeholder="Contoh: 081234567890 atau +6281234567890">
+                                                                    <input type="tel" class="form-control form-control-sm" id="picPhoneNumber" name="picPhoneNumber" required inputmode="tel" pattern="^(\+62|0)\d{9,13}$" maxlength="16" placeholder="Contoh: 081234567890 atau +6281234567890">
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="pic_email">Email PIC</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picEmail">Email PIC</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="email" class="form-control form-control-sm" id="pic_email" name="pic_email" required maxlength="254">
+                                                                    <input type="email" class="form-control form-control-sm" id="picEmail" name="picEmail" required maxlength="254" placeholder="Contoh: ahmad.suryadi@email.com">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                    <div class="d-flex justify-content-between mt-3">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-wizard-prev="[href='#credential']"><i class="bi bi-arrow-left me-1"></i> Previous</button>
+                                                        <button type="button" class="btn btn-primary btn-sm" data-wizard-next="[href='#second']">Next <i class="bi bi-arrow-right ms-1"></i></button>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="tab-pane fade" id="second">
-                                                <form id="profileForm" method="post" action="#" class="form-horizontal">
+                                                <div id="profileForm" class="form-horizontal">
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">
                                                                 Lengkapi alamat PIC sesuai KTP untuk verifikasi lokasi.
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="pic_street">Alamat (nama jalan) PIC</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picAddress">Alamat (nama jalan) PIC</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" id="pic_street" name="pic_street" class="form-control form-control-sm" required maxlength="200">
+                                                                    <input type="text" id="picAddress" name="picAddress" class="form-control form-control-sm" required maxlength="200" placeholder="Contoh: Jl. Merdeka Raya No. 123">
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="rt">RT</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picRt">RT</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" id="rt" name="rt" class="form-control form-control-sm" required inputmode="numeric" pattern="^\d{1,3}$" maxlength="3">
+                                                                    <input type="text" id="picRt" name="picRt" class="form-control form-control-sm" required inputmode="numeric" pattern="^\d{1,3}$" maxlength="3" placeholder="Contoh: 001">
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="rw">RW</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picRw">RW</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" id="rw" name="rw" class="form-control form-control-sm" required inputmode="numeric" pattern="^\d{1,3}$" maxlength="3">
+                                                                    <input type="text" id="picRw" name="picRw" class="form-control form-control-sm" required inputmode="numeric" pattern="^\d{1,3}$" maxlength="3" placeholder="Contoh: 005">
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="kelurahan">Nama Kelurahan</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picVillage">Nama Kelurahan</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" id="kelurahan" name="kelurahan" class="form-control form-control-sm" required maxlength="100">
+                                                                    <input type="text" id="picVillage" name="picVillage" class="form-control form-control-sm" required maxlength="100" placeholder="Contoh: Kebayoran Baru">
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="kota">Kabupaten/Kota</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picCity">Kabupaten/Kota</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" id="kota" name="kota" class="form-control form-control-sm" required maxlength="100">
+                                                                    <input type="text" id="picCity" name="picCity" class="form-control form-control-sm" required maxlength="100" placeholder="Contoh: Jakarta Selatan">
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="provinsi">Provinsi</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picProvince">Provinsi</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" id="provinsi" name="provinsi" class="form-control form-control-sm" required maxlength="100">
+                                                                    <input type="text" id="picProvince" name="picProvince" class="form-control form-control-sm" required maxlength="100" placeholder="Contoh: DKI Jakarta">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                    <div class="d-flex justify-content-between mt-3">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-wizard-prev="[href='#first']"><i class="bi bi-arrow-left me-1"></i> Previous</button>
+                                                        <button type="button" class="btn btn-primary btn-sm" data-wizard-next="[href='#third']">Next <i class="bi bi-arrow-right ms-1"></i></button>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="tab-pane fade" id="third">
-                                                <form id="otherForm" method="post" action="#" class="form-horizontal">
+                                                <div id="otherForm" class="form-horizontal">
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">
                                                                 Unggah foto PIC dan KTP. Masing-masing maksimal 1 file.
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="no_ktp_pic">No KTP PIC</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picKtpNumber">No KTP PIC</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" class="form-control form-control-sm" id="no_ktp_pic" name="no_ktp_pic" required inputmode="numeric" pattern="^\d{16}$" maxlength="16" placeholder="16 digit NIK">
+                                                                    <input type="text" class="form-control form-control-sm" id="picKtpNumber" name="picKtpNumber" required inputmode="numeric" pattern="^\d{16}$" maxlength="16" placeholder="16 digit NIK">
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="foto_pic">Foto PIC</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picPhotoPath">Foto PIC</label>
                                                                 <div class="col-md-9">
-                                                                    <div class="dropzone p-2" id="dzFotoPic" data-plugin="dropzone" data-url="https://coderthemes.com/" data-previews-container="#file-previews-foto" data-upload-preview-template="#uploadPreviewTemplate" data-accepted-files="image/*" data-max-files="1" data-required-input="#foto_pic_required" style="min-height: 120px;">
+                                                                    <div class="dropzone p-2" id="dzFotoPic" data-plugin="dropzone" data-url="https://coderthemes.com/" data-previews-container="#file-previews-foto" data-upload-preview-template="#uploadPreviewTemplate" data-accepted-files="image/*" data-max-files="1" data-required-input="#picPhotoPath" style="min-height: 120px;">
                                                                         <div class="dz-message needsclick py-2 my-0">
                                                                             <i class="ri-upload-cloud-2-line fs-22 text-muted"></i>
                                                                             <span class="d-block fs-14 mb-0">Drop file foto di sini atau klik untuk upload.</span>
                                                                             <span class="text-muted fs-13">Hanya 1 gambar untuk foto PIC</span>
                                                                         </div>
                                                                     </div>
-                                                                    <input type="text" class="form-control d-none" id="foto_pic_required" name="foto_pic_required" required>
+                                                                    <input type="text" class="form-control d-none" id="picPhotoPath" name="picPhotoPath" required>
                                                                     <div class="dropzone-previews mt-2" id="file-previews-foto"></div>
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="ktp_upload_pic">File Upload KTP PIC</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picKtpPath">File Upload KTP PIC</label>
                                                                 <div class="col-md-9">
-                                                                    <div class="dropzone p-2" id="dzKtpPic" data-plugin="dropzone" data-url="https://coderthemes.com/" data-previews-container="#file-previews-ktp" data-upload-preview-template="#uploadPreviewTemplate" data-accepted-files="image/*,application/pdf" data-max-files="1" data-required-input="#ktp_pic_required" style="min-height: 120px;">
+                                                                    <div class="dropzone p-2" id="dzKtpPic" data-plugin="dropzone" data-url="https://coderthemes.com/" data-previews-container="#file-previews-ktp" data-upload-preview-template="#uploadPreviewTemplate" data-accepted-files="image/*,application/pdf" data-max-files="1" data-required-input="#picKtpPath" style="min-height: 120px;">
                                                                         <div class="dz-message needsclick py-2 my-0">
                                                                             <i class="ri-upload-cloud-2-line fs-22 text-muted"></i>
                                                                             <span class="d-block fs-14 mb-0">Drop file KTP di sini atau klik untuk upload.</span>
                                                                             <span class="text-muted fs-13">Hanya 1 file (gambar atau PDF)</span>
                                                                         </div>
                                                                     </div>
-                                                                    <input type="text" class="form-control d-none" id="ktp_pic_required" name="ktp_pic_required" required>
+                                                                    <input type="text" class="form-control d-none" id="picKtpPath" name="picKtpPath" required>
                                                                     <div class="dropzone-previews mt-2" id="file-previews-ktp"></div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                    <div class="d-flex justify-content-between mt-3">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-wizard-prev="[href='#second']"><i class="bi bi-arrow-left me-1"></i> Previous</button>
+                                                        <button type="button" class="btn btn-primary btn-sm" data-wizard-next="[href='#finish']">Next <i class="bi bi-arrow-right ms-1"></i></button>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="tab-pane fade" id="finish">
-                                                <form id="finishForm" method="post" action="{{ route('register.submit') }}" class="form-horizontal">
+                                                <div id="finishForm" class="form-horizontal">
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">
@@ -223,12 +275,13 @@
                                                                     <label class="form-check-label" for="agree_final">Saya menyetujui bahwa data yang diisi sudah benar</label>
                                                                 </div>
                                                             </div>
-                                                            <div class="text-center">
-                                                                <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <button type="button" class="btn btn-secondary btn-sm" data-wizard-prev="[href='#third']"><i class="bi bi-arrow-left me-1"></i> Previous</button>
+                                                                <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check-circle me-1"></i> Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
 
                                             <div class="d-none" id="uploadPreviewTemplate">
@@ -278,6 +331,35 @@
 
     <!-- Wizard Form Demo js -->
     <script src="{{ asset('assets/js/components/form-wizard.js') }}"></script>
+
+    <script>
+        // Custom navigation functions for wizard
+        function goToTab(tabSelector) {
+            const tabElement = document.querySelector(tabSelector);
+            if (tabElement) {
+                const bsTab = new bootstrap.Tab(tabElement);
+                bsTab.show();
+            }
+        }
+
+        // Add click handlers after DOM loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Override button onclick with proper function
+            document.querySelectorAll('[data-wizard-next]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.getAttribute('data-wizard-next');
+                    goToTab(target);
+                });
+            });
+
+            document.querySelectorAll('[data-wizard-prev]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.getAttribute('data-wizard-prev');
+                    goToTab(target);
+                });
+            });
+        });
+    </script>
 </body>
 
 
