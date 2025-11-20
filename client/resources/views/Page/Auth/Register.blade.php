@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name="author" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
@@ -224,7 +225,7 @@
                                                             <div class="row mb-2">
                                                                 <label class="col-md-3 col-form-label fs-14" for="picPhotoPath">Foto PIC</label>
                                                                 <div class="col-md-9">
-                                                                    <div class="dropzone p-2" id="dzFotoPic" data-plugin="dropzone" data-url="https://coderthemes.com/" data-previews-container="#file-previews-foto" data-upload-preview-template="#uploadPreviewTemplate" data-accepted-files="image/*" data-max-files="1" data-required-input="#picPhotoPath" style="min-height: 120px;">
+                                                                    <div class="dropzone p-2" id="dzFotoPic" data-plugin="dropzone" data-url="{{ route('upload.temp') }}" data-previews-container="#file-previews-foto" data-upload-preview-template="#uploadPreviewTemplate" data-accepted-files="image/*" data-max-files="1" data-required-input="#picPhotoPath" style="min-height: 120px;">
                                                                         <div class="dz-message needsclick py-2 my-0">
                                                                             <i class="ri-upload-cloud-2-line fs-22 text-muted"></i>
                                                                             <span class="d-block fs-14 mb-0">Drop file foto di sini atau klik untuk upload.</span>
@@ -238,7 +239,7 @@
                                                             <div class="row mb-2">
                                                                 <label class="col-md-3 col-form-label fs-14" for="picKtpPath">File Upload KTP PIC</label>
                                                                 <div class="col-md-9">
-                                                                    <div class="dropzone p-2" id="dzKtpPic" data-plugin="dropzone" data-url="https://coderthemes.com/" data-previews-container="#file-previews-ktp" data-upload-preview-template="#uploadPreviewTemplate" data-accepted-files="image/*,application/pdf" data-max-files="1" data-required-input="#picKtpPath" style="min-height: 120px;">
+                                                                    <div class="dropzone p-2" id="dzKtpPic" data-plugin="dropzone" data-url="{{ route('upload.temp') }}" data-previews-container="#file-previews-ktp" data-upload-preview-template="#uploadPreviewTemplate" data-accepted-files="image/*,application/pdf" data-max-files="1" data-required-input="#picKtpPath" style="min-height: 120px;">
                                                                         <div class="dz-message needsclick py-2 my-0">
                                                                             <i class="ri-upload-cloud-2-line fs-22 text-muted"></i>
                                                                             <span class="d-block fs-14 mb-0">Drop file KTP di sini atau klik untuk upload.</span>

@@ -1,10 +1,14 @@
 <?php
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileUploadController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('Page.Store.Landing');
 });
+
+// File upload route (for Dropzone)
+Route::post('/upload/temp', [FileUploadController::class, 'uploadTemp'])->name('upload.temp');
 
 Route::prefix('register')->name('register.')->group(function () {
     Route::get('/', [AuthController::class, 'registerIndex'])->name('registerIndex');
