@@ -1,18 +1,19 @@
 <?php
-
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('Page.Store.Landing');
 });
 
-Route::get('/register', function () {
-    return view('Page.Auth.Register');
-})->name('register');
+Route::prefix('register')->name('register.')->group(function () {
+    Route::get('/', [AuthController::class, 'registerIndex'])->name('registerIndex');
+    Route::post('/submit', [AuthController::class, 'register'])->name('submit');
+});
 
-Route::get('/login', function () {
-    return view('Page.Auth.Login');
-})->name('login');
+Route::prefix('login')->name('login.')->group(function () {
+    Route::get('/', [AuthController::class, 'loginIndex'])->name('loginIndex');
+});
 
 Route::prefix('dashboard-admin')->name('dashboard-admin.')->group(function () {
     Route::view('/dashboard', 'Page.DashboardAdmin.Dashboard')->name('dashboard');

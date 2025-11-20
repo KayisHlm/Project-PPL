@@ -207,7 +207,7 @@
                                             </div>
 
                                             <div class="tab-pane fade" id="finish">
-                                                <form id="finishForm" method="post" action="#" class="form-horizontal">
+                                                <form id="finishForm" method="post" action="{{ route('register.submit') }}" class="form-horizontal">
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="alert alert-info py-2 px-3 mb-2 fs-14" role="alert">

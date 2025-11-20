@@ -24,7 +24,7 @@
                 <span class="fw-bold store-brand">MartPlace</span>
             </a>
             <div class="d-flex align-items-center gap-2">
-                <a href="{{ route('login') }}" class="btn btn-sm btn-light">Login</a>
+                <a href="{{ route('login.loginIndex') }}" class="btn btn-sm btn-light">Login</a>
             </div>
         </div>
     </header>

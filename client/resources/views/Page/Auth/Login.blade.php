@@ -61,7 +61,7 @@
                         </div>
                     </form>
 
-                    <p class="text-muted fs-14 mb-4">Don't have an account? <a href="{{ route('register') }}" class="fw-semibold text-danger ms-1">Sign Up !</a></p>
+                    <p class="text-muted fs-14 mb-4">Don't have an account? <a href="{{ route('register.registerIndex') }}" class="fw-semibold text-danger ms-1">Sign Up !</a></p>
 
                 </div>
             </div>
