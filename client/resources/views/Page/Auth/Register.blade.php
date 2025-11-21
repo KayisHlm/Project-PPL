@@ -183,21 +183,38 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="picVillage">Nama Kelurahan</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picProvince">Provinsi</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" id="picVillage" name="picVillage" class="form-control form-control-sm" required maxlength="100" placeholder="Contoh: Kebayoran Baru">
+                                                                    <select id="picProvince" name="picProvince" class="form-control form-control-sm" required>
+                                                                        <option value="">Pilih Provinsi</option>
+                                                                    </select>
                                                                 </div>
                                                             </div>
+
                                                             <div class="row mb-2">
                                                                 <label class="col-md-3 col-form-label fs-14" for="picCity">Kabupaten/Kota</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" id="picCity" name="picCity" class="form-control form-control-sm" required maxlength="100" placeholder="Contoh: Jakarta Selatan">
+                                                                    <select id="picCity" name="picCity" class="form-control form-control-sm" required>
+                                                                        <option value="">Pilih Kabupaten/Kota</option>
+                                                                    </select>
                                                                 </div>
                                                             </div>
+
                                                             <div class="row mb-2">
-                                                                <label class="col-md-3 col-form-label fs-14" for="picProvince">Provinsi</label>
+                                                                <label class="col-md-3 col-form-label fs-14" for="picDistrict">Kecamatan</label>
                                                                 <div class="col-md-9">
-                                                                    <input type="text" id="picProvince" name="picProvince" class="form-control form-control-sm" required maxlength="100" placeholder="Contoh: DKI Jakarta">
+                                                                    <select id="picDistrict" name="picDistrict" class="form-control form-control-sm" required>
+                                                                        <option value="">Pilih Kecamatan</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row mb-2">
+                                                                <label class="col-md-3 col-form-label fs-14" for="picVillage">Kelurahan</label>
+                                                                <div class="col-md-9">
+                                                                    <select id="picVillage" name="picVillage" class="form-control form-control-sm" required>
+                                                                        <option value="">Pilih Kelurahan</option>
+                                                                    </select>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -360,6 +377,84 @@
                 });
             });
         });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const provinceSelect = document.getElementById('picProvince');
+        const citySelect = document.getElementById('picCity');
+        const districtSelect = document.getElementById('picDistrict');
+        const villageSelect = document.getElementById('picVillage');
+
+        // Load provinsi
+        fetch('/api/provinces')
+            .then(res => res.json())
+            .then(result => {
+                const data = result.data; 
+                data.forEach(item => {
+                    provinceSelect.innerHTML += `<option value="${item.name}" data-code="${item.code}">${item.name}</option>`;
+                });
+            });
+
+        // Saat provinsi berubah → load kabupaten
+        provinceSelect.addEventListener('change', function () {
+            const provCode = this.selectedOptions[0].dataset.code;
+
+            citySelect.innerHTML = `<option value="">Pilih Kabupaten/Kota</option>`;
+            districtSelect.innerHTML = `<option value="">Pilih Kecamatan</option>`;
+            villageSelect.innerHTML = `<option value="">Pilih Kelurahan</option>`;
+
+            if (!provCode) return;
+
+            fetch(`/api/regencies/${provCode}`)
+                .then(res => res.json())
+                .then(result => {
+                    const data = result.data;
+                    data.forEach(item => {
+                        citySelect.innerHTML += `<option value="${item.name}" data-code="${item.code}">${item.name}</option>`;
+                    });
+                });
+        });
+
+        // Saat kabupaten berubah → load kecamatan
+        citySelect.addEventListener('change', function () {
+            const regCode = this.selectedOptions[0].dataset.code;
+
+            districtSelect.innerHTML = `<option value="">Pilih Kecamatan</option>`;
+            villageSelect.innerHTML = `<option value="">Pilih Kelurahan</option>`;
+
+            if (!regCode) return;
+
+            fetch(`/api/districts/${regCode}`)
+                .then(res => res.json())
+                .then(result => {
+                    const data = result.data;
+                    data.forEach(item => {
+                        districtSelect.innerHTML += `<option value="${item.name}" data-code="${item.code}">${item.name}</option>`;
+                    });
+                });
+        });
+
+        // Saat kecamatan berubah → load kelurahan
+        districtSelect.addEventListener('change', function () {
+            const distCode = this.selectedOptions[0].dataset.code;
+
+            villageSelect.innerHTML = `<option value="">Pilih Kelurahan</option>`;
+
+            if (!distCode) return;
+
+            fetch(`/api/villages/${distCode}`)
+                .then(res => res.json())
+                .then(result => {
+                    const data = result.data;
+                    data.forEach(item => {
+                        villageSelect.innerHTML += `<option value="${item.name}" data-code="${item.code}">${item.name}</option>`;
+                    });
+                });
+        });
+
+    });
     </script>
 </body>
 

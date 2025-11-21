@@ -18,9 +18,10 @@ class Register {
             "picAddress",
             "picRt",
             "picRw",
-            "picVillage",
-            "picCity",
             "picProvince",
+            "picCity",
+            "picDistrict",
+            "picVillage",
             "picKtpNumber"
         ];
 

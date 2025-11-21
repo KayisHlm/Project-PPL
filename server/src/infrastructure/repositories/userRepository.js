@@ -17,9 +17,10 @@ class UserRepository extends UserRepositoryInterface {
             picAddress, 
             picRt, 
             picRw, 
-            picVillage, 
-            picCity, 
             picProvince, 
+            picCity, 
+            picDistrict, 
+            picVillage, 
             picKtpNumber, 
             picPhotoPath, 
             picKtpPath 
@@ -45,11 +46,11 @@ class UserRepository extends UserRepositoryInterface {
             const sellerQuery = `
                 INSERT INTO sellers (
                     user_id, shop_name, shop_description, pic_name, pic_phone_number, 
-                    pic_email, pic_address, pic_rt, pic_rw, pic_village, 
-                    pic_city, pic_province, pic_ktp_number, pic_photo_path, 
+                    pic_email, pic_address, pic_rt, pic_rw, pic_province, pic_city, pic_district, pic_village, 
+                    pic_ktp_number, pic_photo_path, 
                     pic_ktp_path, status, created_at, updated_at
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                 RETURNING *
             `;
             const sellerValues = [
@@ -62,9 +63,10 @@ class UserRepository extends UserRepositoryInterface {
                 picAddress,
                 picRt,
                 picRw,
-                picVillage,
-                picCity,
                 picProvince,
+                picCity,
+                picDistrict,
+                picVillage,
                 picKtpNumber,
                 picPhotoPath || null,
                 picKtpPath || null,
@@ -96,9 +98,10 @@ class UserRepository extends UserRepositoryInterface {
                 picAddress: newSeller.pic_address,
                 picRt: newSeller.pic_rt,
                 picRw: newSeller.pic_rw,
-                picVillage: newSeller.pic_village,
-                picCity: newSeller.pic_city,
                 picProvince: newSeller.pic_province,
+                picCity: newSeller.pic_city,
+                picDistrict: newSeller.pic_district,
+                picVillage: newSeller.pic_village,
                 picKtpNumber: newSeller.pic_ktp_number,
                 picPhotoPath: newSeller.pic_photo_path,
                 picKtpPath: newSeller.pic_ktp_path,

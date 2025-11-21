@@ -2,6 +2,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileUploadController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WilayahController;
 
 Route::get('/', function () {
     return view('Page.Store.Landing');
@@ -36,6 +37,15 @@ Route::prefix('dashboard-seller')->name('dashboard-seller.')->group(function () 
     Route::view('/tambah-produk', 'Page.DashboardSeller.TambahProduk')->name('tambah-produk');
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
 });
+
+// API endpoints for wilayah (used by registration dropdowns)
+Route::prefix('api')->group(function () {
+    Route::get('provinces', [WilayahController::class, 'provinces']);
+    Route::get('regencies/{province}', [WilayahController::class, 'regencies']);
+    Route::get('districts/{regency}', [WilayahController::class, 'districts']);
+    Route::get('villages/{district}', [WilayahController::class, 'villages']);
+});
+
 
 Route::prefix('store')->name('store.')->group(function () {
     Route::view('/', 'Page.Store.Landing')->name('landing');

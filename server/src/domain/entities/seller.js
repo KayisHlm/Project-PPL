@@ -10,9 +10,10 @@ class Seller {
         picAddress,
         picRt,
         picRw,
-        picVillage,
-        picCity,
         picProvince,
+        picCity,
+        picDistrict,
+        picVillage,
         picKtpNumber,
         picPhotoPath,
         picKtpPath,
@@ -32,9 +33,10 @@ class Seller {
         this.picAddress = picAddress;
         this.picRt = picRt;
         this.picRw = picRw;
-        this.picVillage = picVillage;
-        this.picCity = picCity;
         this.picProvince = picProvince;
+        this.picCity = picCity;
+        this.picDistrict = picDistrict;
+        this.picVillage = picVillage;
         this.picKtpNumber = picKtpNumber;
         this.picPhotoPath = picPhotoPath;
         this.picKtpPath = picKtpPath;

@@ -20,9 +20,10 @@ INSERT INTO sellers (
     pic_address,
     pic_rt,
     pic_rw,
-    pic_village,
-    pic_city,
     pic_province,
+    pic_city,
+    pic_district,
+    pic_village,
     pic_ktp_number,
     status
 ) VALUES
@@ -36,9 +37,10 @@ INSERT INTO sellers (
         'Jl. Merdeka No. 123',
         '001',
         '005',
-        'Sukamaju',
-        'Jakarta Selatan',
         'DKI Jakarta',
+        'Jakarta Selatan',
+        'Kebayoran Baru',
+        'Melawai',
         '3271012345670001',
         'approved'
     ),
@@ -52,9 +54,10 @@ INSERT INTO sellers (
         'Jl. Sudirman No. 456',
         '002',
         '003',
-        'Menteng',
-        'Jakarta Pusat',
         'DKI Jakarta',
+        'Jakarta Pusat',
+        'Menteng',
+        'Gondangdia',
         '3271012345670002',
         'pending'
     )

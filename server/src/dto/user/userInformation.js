@@ -11,9 +11,10 @@ class UserInformation {
         this.picAddress = seller.picAddress;
         this.picRt = seller.picRt;
         this.picRw = seller.picRw;
-        this.picVillage = seller.picVillage;
-        this.picCity = seller.picCity;
         this.picProvince = seller.picProvince;
+        this.picCity = seller.picCity;
+        this.picDistrict = seller.picDistrict;
+        this.picVillage = seller.picVillage;
         this.picKtpNumber = seller.picKtpNumber;
         this.picPhotoPath = seller.picPhotoPath;
         this.picKtpPath = seller.picKtpPath;
@@ -32,9 +33,10 @@ class UserInformation {
             picAddress: this.picAddress,
             picRt: this.picRt,
             picRw: this.picRw,
-            picVillage: this.picVillage,
-            picCity: this.picCity,
             picProvince: this.picProvince,
+            picCity: this.picCity,
+            picDistrict: this.picDistrict,
+            picVillage: this.picVillage,
             picKtpNumber: this.picKtpNumber,
             picPhotoPath: this.picPhotoPath,
             picKtpPath: this.picKtpPath
