@@ -120,6 +120,46 @@ class UserRepository extends UserRepositoryInterface {
         }
     }
 
+    async findAllPendingSeller() {
+        const client = await pool.connect();
+        
+        try {
+            const query = `SELECT * FROM sellers WHERE status = 'pending' ORDER BY created_at DESC;`;
+            const result = await client.query(query);
+    
+            const rows = result.rows.map(row=> new Seller({
+                id: row.id,
+                userId: row.user_id,
+                shopName: row.shop_name,
+                shopDescription: row.shop_description,
+                picName: row.pic_name,
+                picPhoneNumber: row.pic_phone_number,
+                picEmail: row.pic_email,
+                picAddress: row.pic_address,
+                picRt: row.pic_rt,
+                picRw: row.pic_rw,
+                picProvince: row.pic_province,
+                picCity: row.pic_city,
+                picDistrict: row.pic_district,
+                picVillage: row.pic_village,
+                picKtpNumber: row.pic_ktp_number,
+                picPhotoPath: row.pic_photo_path,
+                picKtpPath: row.pic_ktp_path,
+                status: row.status,
+                rejectionReason: row.rejection_reason,
+                verifiedAt: row.verified_at,
+                createdAt: row.created_at,
+                updatedAt: row.updated_at
+                }));
+
+            return rows;
+        } catch (error) {
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
     async update(userId, updateData) {
         const { 
             email,

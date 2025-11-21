@@ -15,6 +15,10 @@ class UserRepositoryInterface {
     throw new Error("Method findAll() must be implemented.");
   }
 
+  async findAllPendingSeller() {
+    throw new Error("Method findAllPendingSeller() must be implemented.");
+  }
+
   async update(id, updateData) {
     throw new Error("Method update() must be implemented.");
   }

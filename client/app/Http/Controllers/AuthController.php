@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Api\AuthApi;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Login;
@@ -28,11 +27,11 @@ class AuthController extends Controller
         $this->authApi = new AuthApi;
     }
 
-    public function registerIndex (Request $request) {
+    public function registerIndex () {
         return view('Page.Auth.Register');
     }
 
-    public function loginIndex (Request $request) {
+    public function loginIndex () {
         return view('Page.Auth.Login');
     }
 
