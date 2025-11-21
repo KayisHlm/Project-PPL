@@ -2,7 +2,7 @@ const UserRepositoryInterface = require("../../domain/interface/userRepositoryIn
 const pool = require("../../db");
 const User = require("../../domain/entities/user");
 const Seller = require("../../domain/entities/seller");
-const hashPassword = require("../middleware/bcrypt");
+const { hashPassword } = require("../middleware/bcrypt");
 
 class UserRepository extends UserRepositoryInterface {
     async create(userData) {
@@ -157,6 +157,42 @@ class UserRepository extends UserRepositoryInterface {
             throw error;
         } finally {
             client.release();
+        }
+    }
+
+    async findByEmail(email) {
+        const query = `
+            SELECT 
+                u.id,
+                u.email,
+                u.password,
+                u.role,
+                u.created_at,
+                u.updated_at,
+                s.id as seller_id,
+                s.shop_name,
+                s.shop_description,
+                s.pic_name,
+                s.pic_phone_number,
+                s.pic_email
+            FROM users u
+            LEFT JOIN sellers s ON u.id = s.user_id
+            WHERE u.email = $1
+        `;
+        
+        try {
+            const result = await pool.query(query, [email]);
+            
+            // Kalau tidak ada user dengan email ini
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            // Return user pertama 
+            return result.rows[0];
+        } catch (error) {
+            console.error('[UserRepository] Error finding user by email:', error);
+            throw error;
         }
     }
 

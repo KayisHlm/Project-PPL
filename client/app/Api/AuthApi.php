@@ -28,7 +28,7 @@ class AuthApi
     {
         return $this->connectApi('detail/' . $id, 'get');
     }
-
+    
     private function connectApi($endpoint, $method, $body = [])
     {
         $headers = [
