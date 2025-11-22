@@ -1,25 +1,25 @@
-const ApproveSeller = require("../../../usecases/seller/approveSeller");
+const RejectSeller = require("../../../usecases/admin/rejectSeller");
 const SellerRepository = require("../../repositories/sellerRepository");
 const { NotFound } = require("../../../domain/errors");
 
-async function ApproveSellerController(req, res) {
+async function RejectSellerController(req, res) {
     try {
         const { id } = req.params;
-        console.log(`✅ Admin approving seller ID: ${id}`);
+        console.log(`Admin rejecting seller ID: ${id}`);
 
         const sellerRepository = new SellerRepository();
-        const approveSeller = new ApproveSeller(sellerRepository);
+        const rejectSeller = new RejectSeller(sellerRepository);
 
-        const updatedSeller = await approveSeller.execute(parseInt(id));
+        const updatedSeller = await rejectSeller.execute(parseInt(id));
 
         return res.status(200).json({
             code: 200,
-            message: "Seller approved successfully",
+            message: "Seller rejected successfully",
             data: updatedSeller
         });
 
     } catch (error) {
-        console.error("❌ ApproveSeller Controller Error:", error);
+        console.error("RejectSeller Controller Error:", error);
 
         if (error instanceof NotFound) {
             return res.status(404).json({
@@ -30,9 +30,9 @@ async function ApproveSellerController(req, res) {
         
         return res.status(500).json({
             code: 500,
-            message: "Internal server error while approving seller"
+            message: "Internal server error while rejecting seller"
         });
     }
 }
 
-module.exports = ApproveSellerController;
+module.exports = RejectSellerController;

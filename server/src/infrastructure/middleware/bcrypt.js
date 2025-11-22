@@ -10,8 +10,4 @@ async function comparePassword(plainPassword, hashedPassword) {
     return bcrypt.compare(plainPassword, hashedPassword);
 }
 
-function hashPassword(password) {
-    return bcrypt.hash(password, saltRounds);
-}
-
 module.exports = { hashPassword, comparePassword };

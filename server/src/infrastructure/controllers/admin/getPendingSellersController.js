@@ -1,4 +1,4 @@
-const GetPendingSellers = require("../../../usecases/seller/getpendingSeller");
+const GetPendingSellers = require("../../../usecases/admin/getPendingSellers"); // ⬅️ Fix: huruf P besar, tambah 's'
 const SellerRepository = require("../../repositories/sellerRepository");
 
 async function GetPendingSellersController(req, res) {

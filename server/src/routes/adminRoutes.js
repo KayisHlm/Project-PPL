@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { authenticateToken, authorizeRole } = require("../infrastructure/middleware/auth");
-const GetPendingSellersController = require("../infrastructure/controllers/seller/getPendingSellersController");
-const ApproveSellerController = require("../infrastructure/controllers/seller/approveSellerController");
-const RejectSellerController = require("../infrastructure/controllers/seller/rejectSellerController");
+
+// Import controllers dari folder ADMIN (bukan seller)
+const GetPendingSellersController = require("../infrastructure/controllers/admin/getPendingSellersController");
+const ApproveSellerController = require("../infrastructure/controllers/admin/approveSellerController");
+const RejectSellerController = require("../infrastructure/controllers/admin/rejectSellerController");
 
 // Semua route admin harus authenticated dan role = 'admin'
 router.use(authenticateToken);
