@@ -18,6 +18,11 @@ Route::prefix('register')->name('register.')->group(function () {
 
 Route::prefix('login')->name('login.')->group(function () {
     Route::get('/', [AuthController::class, 'loginIndex'])->name('loginIndex');
+    Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
+});
+
+Route::prefix('login')->name('login.')->group(function () {
+    Route::get('/', [AuthController::class, 'loginIndex'])->name('loginIndex');
 });
 
 Route::prefix('dashboard-admin')->name('dashboard-admin.')->group(function () {

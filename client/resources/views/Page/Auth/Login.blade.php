@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Platform E-Commerce" name="description" />
     <meta content="PPL Team" name="author" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
@@ -35,25 +34,47 @@
 
                     <p class="text-muted mb-4">Enter your email address and password to access admin panel.</p>
 
-                    <!-- Alert untuk error -->
-                    <div id="error-alert" class="alert alert-danger d-none" role="alert"></div>
+                    <!-- Alert untuk error dari session -->
+                    @if (session('error'))
+                        <div class="alert alert-danger" role="alert">
+                            <i class="mdi mdi-alert-circle me-1"></i> {{ session('error') }}
+                        </div>
+                    @endif
 
-                    <!-- Alert untuk loading -->
-                    <div id="loading-alert" class="alert alert-info d-none" role="alert">
-                        <i class="mdi mdi-loading mdi-spin me-1"></i> Logging in...
-                    </div>
+                    <!-- Alert untuk success -->
+                    @if (session('success'))
+                        <div class="alert alert-success" role="alert">
+                            <i class="mdi mdi-check-circle me-1"></i> {{ session('success') }}
+                        </div>
+                    @endif
 
-                    <!-- Form Login -->
-                    <form id="login-form" class="text-start mb-3">
+                    <!-- Alert untuk validation errors -->
+                    @if ($errors->any())
+                        <div class="alert alert-danger" role="alert">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form method="post" action="{{ route('login.authenticate') }}" class="text-start mb-3">
+                        @csrf
+                        
                         <div class="mb-3">
                             <label class="form-label" for="email">Email</label>
                             <input 
                                 type="email" 
                                 id="email" 
                                 name="email" 
-                                class="form-control" 
+                                class="form-control @error('email') is-invalid @enderror" 
                                 placeholder="Enter your email"
+                                value="{{ old('email') }}"
                                 required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
@@ -62,14 +83,17 @@
                                 type="password" 
                                 id="password" 
                                 name="password"
-                                class="form-control" 
+                                class="form-control @error('password') is-invalid @enderror" 
                                 placeholder="Enter your password"
                                 required>
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="d-flex justify-content-between mb-3">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="remember-me">
+                                <input type="checkbox" class="form-check-input" id="remember-me" name="remember">
                                 <label class="form-check-label" for="remember-me">Remember me</label>
                             </div>
 
@@ -77,7 +101,7 @@
                         </div>
 
                         <div class="d-grid">
-                            <button class="btn btn-primary fw-semibold" type="submit" id="login-btn">
+                            <button class="btn btn-primary fw-semibold" type="submit">
                                 Login
                             </button>
                         </div>
@@ -98,145 +122,6 @@
 
     <!-- App js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
-
-    <!-- Login Handler Script -->
-    <script>
-        // API Base URL
-        const API_URL = 'http://localhost:3001/api/auth';
-
-        // Get form elements
-        const loginForm = document.getElementById('login-form');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('login-btn');
-        const errorAlert = document.getElementById('error-alert');
-        const loadingAlert = document.getElementById('loading-alert');
-
-        // Handle form submit
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Get input values
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-
-            // Reset alerts
-            hideError();
-            showLoading();
-
-            // Disable button
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<i class="mdi mdi-loading mdi-spin me-1"></i> Logging in...';
-
-            // Send login request
-            fetch(API_URL + '/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                })
-            })
-            .then(function(response) {
-                return response.json().then(function(data) {
-                    return {
-                        status: response.status,
-                        ok: response.ok,
-                        data: data
-                    };
-                });
-            })
-            .then(function(result) {
-                hideLoading();
-
-                console.log('=== LOGIN RESPONSE ===');
-                console.log('Status:', result.status);
-                console.log('Data:', result.data);
-
-                if (result.ok && result.data.code === 200) {
-                    // Login berhasil!
-                    console.log('Login successful!');
-                    console.log('Token:', result.data.token);
-                    console.log('User:', result.data.user);
-
-                    // Simpan token ke localStorage
-                    try {
-                        localStorage.setItem('auth_token', result.data.token);
-                        localStorage.setItem('user_data', JSON.stringify(result.data.user));
-                        console.log('Token saved to localStorage');
-                    } catch (error) {
-                        console.error('Error saving to localStorage:', error);
-                    }
-
-                    // Show success message
-                    showSuccess('Login successful! Redirecting...');
-
-                    /* Redirect ke dashboard
-                    setTimeout(function() {
-                        window.location.href = '{{ route("dashboard-admin.dashboard") }}';
-                    }, 1500); */
-
-                } else {
-                    // Login gagal - tampilkan error
-                    console.log('Login failed:', result.data);
-                    
-                    var errorMessage = result.data.message || 'Login failed. Please try again.';
-                    
-                    // Custom error message berdasarkan code
-                    if (result.data.code === 404) {
-                        errorMessage = 'Email not found. Please check your email or sign up.';
-                    } else if (result.data.code === 401) {
-                        errorMessage = 'Incorrect password. Please try again.';
-                    } else if (result.data.code === 400) {
-                        errorMessage = 'Please fill in all fields correctly.';
-                    }
-
-                    showError(errorMessage);
-                    resetButton();
-                }
-            })
-            .catch(function(error) {
-                console.error('Connection error:', error);
-                hideLoading();
-                showError('Connection error. Please check if the server is running.');
-                resetButton();
-            });
-        });
-
-        // Helper functions
-        function showError(message) {
-            errorAlert.textContent = message;
-            errorAlert.classList.remove('d-none');
-            errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function hideError() {
-            errorAlert.classList.add('d-none');
-        }
-
-        function showLoading() {
-            loadingAlert.classList.remove('d-none');
-        }
-
-        function hideLoading() {
-            loadingAlert.classList.add('d-none');
-        }
-
-        function showSuccess(message) {
-            hideError();
-            var successAlert = document.createElement('div');
-            successAlert.className = 'alert alert-success';
-            successAlert.innerHTML = '<i class="mdi mdi-check-circle me-1"></i> ' + message;
-            errorAlert.parentNode.insertBefore(successAlert, errorAlert);
-        }
-
-        function resetButton() {
-            loginBtn.disabled = false;
-            loginBtn.textContent = 'Login';
-        }
-    </script>
 
 </body>
 

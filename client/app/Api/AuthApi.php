@@ -14,6 +14,11 @@ class AuthApi
         return $this->connectApi('create', 'post', $body);
     }
 
+    public function login($body)
+    {
+        return $this->connectApi('login', 'post', $body);
+    }
+
     public function edit($user_id, $token)
     {
         return $this->connectApi('detail/' . $user_id . '/' . $token, 'get');
@@ -28,7 +33,7 @@ class AuthApi
     {
         return $this->connectApi('detail/' . $id, 'get');
     }
-    
+
     private function connectApi($endpoint, $method, $body = [])
     {
         $headers = [
@@ -37,7 +42,7 @@ class AuthApi
         ];
 
         // Untuk endpoint register (create), jangan pakai auth()->user()
-        if ($endpoint !== 'create') {
+        if (!in_array($endpoint, ['create', 'login'])) {
             $u = auth()->user();
             if ($u) {
                 $userid64 = base64_encode($u->id_encrypt);

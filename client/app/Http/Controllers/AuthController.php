@@ -35,6 +35,119 @@ class AuthController extends Controller
         return view('Page.Auth.Login');
     }
 
+    public function authenticate(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'email' => 'required|email|max:254',
+            'password' => 'required|string|min:8|max:255',
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 8 karakter.',
+        ]);
+
+        try {
+            Log::info('[AuthController] Login attempt for: ' . $request->email);
+            
+            // Prepare data untuk API
+            $loginData = [
+                'email' => $request->input('email'),
+                'password' => $request->input('password'),
+            ];
+
+            // Call API login via AuthApi
+            $apiResponse = $this->authApi->login($loginData);
+
+            // Check API response
+            if ($apiResponse === null) {
+                Log::error('[AuthController] API returned null');
+                return redirect()->back()
+                    ->withInput($request->only('email'))
+                    ->with('error', 'Server error. Please try again later.');
+            }
+
+            if ($apiResponse === "timeout") {
+                Log::error('[AuthController] API timeout');
+                return redirect()->back()
+                    ->withInput($request->only('email'))
+                    ->with('error', 'Connection timeout. Please check your internet connection.');
+            }
+
+            // Parse API response
+            $statusCode = $apiResponse->status();
+            $responseData = $apiResponse->json();
+
+            Log::info('[AuthController] API Response:', [
+                'status' => $statusCode,
+                'data' => $responseData
+            ]);
+
+            // Handle response berdasarkan status
+            if ($statusCode === 200 && isset($responseData['token'])) {
+                Log::info('[AuthController] Login successful for: ' . $request->email);
+            
+                session([
+                    'auth_token' => $responseData['token'],
+                    'user_data' => $responseData['user']
+                ]);
+
+                return redirect()->route('dashboard-admin.dashboard')
+                    ->with('success', 'Login successful! Welcome back.');
+                
+            } elseif ($statusCode === 404) {
+                // Email tidak ditemukan
+                Log::warning('[AuthController] Email not found: ' . $request->email);
+                
+                return redirect()->back()
+                    ->withInput($request->only('email'))
+                    ->with('error', 'Email not found. Please check your email or sign up.');
+                
+            } elseif ($statusCode === 401) {
+                // Password salah
+                Log::warning('[AuthController] Incorrect password for: ' . $request->email);
+                
+                return redirect()->back()
+                    ->withInput($request->only('email'))
+                    ->with('error', 'Incorrect password. Please try again.');
+                
+            } elseif ($statusCode === 400) {
+                // Bad request
+                Log::warning('[AuthController] Bad request: ' . json_encode($responseData));
+                
+                return redirect()->back()
+                    ->withInput($request->only('email'))
+                    ->with('error', $responseData['message'] ?? 'Invalid input. Please check your data.');
+                
+            } else {
+                // Unexpected error
+                Log::error('[AuthController] Unexpected API response:', [
+                    'status' => $statusCode,
+                    'data' => $responseData
+                ]);
+                
+                return redirect()->back()
+                    ->withInput($request->only('email'))
+                    ->with('error', $responseData['message'] ?? 'Login failed. Please try again.');
+            }
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+            
+        } catch (\Exception $e) {
+            Log::error('[AuthController] Exception:', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            return redirect()->back()
+                ->withInput($request->only('email'))
+                ->with('error', 'An error occurred. Please try again.');
+        }
+    }
+
     public function register (Request $request) {
         // dd($request);
         $request->validate([
