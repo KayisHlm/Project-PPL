@@ -1,4 +1,4 @@
-const ApproveSeller = require("../../../usecases/admin/approveSeller");
+const ApproveSeller = require("../../../usecases/seller/approveSeller");
 const SellerRepository = require("../../repositories/sellerRepository");
 const { NotFound } = require("../../../domain/errors");
 

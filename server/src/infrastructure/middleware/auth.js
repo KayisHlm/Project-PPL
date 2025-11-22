@@ -42,8 +42,8 @@ async function authenticateToken(req, res, next) {
     }
 }
 
-async function authorizeRole(...allowedRoles) {
-    return(req, res, next) => {
+function authorizeRole(...allowedRoles) {
+    return async (req, res, next) => {
         try {
             //pastikan user sudah terautentikasi
             if(!req.user) {

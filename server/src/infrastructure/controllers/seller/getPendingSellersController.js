@@ -1,4 +1,4 @@
-const GetPendingSellers = require("../../../usecases/admin/getPendingSellers");
+const GetPendingSellers = require("../../../usecases/seller/getpendingSeller");
 const SellerRepository = require("../../repositories/sellerRepository");
 
 async function GetPendingSellersController(req, res) {
