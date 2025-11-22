@@ -3,8 +3,11 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
+const authRoutes = require("./src/routes/authRoutes");
+const adminRoutes = require("./src/routes/adminRoutes");
+
 const app = express();
-const port = process.env.PORT || 3001; // 
+const port = process.env.PORT || 3001;
 
 const origins = [
   "http://localhost:3000",
@@ -27,6 +30,7 @@ const authRoutes = require("./src/routes/authRoutes");
 
 // buat endpoint
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 
 // check health
 app.get("/api/health", (req, res) => {
@@ -34,6 +38,24 @@ app.get("/api/health", (req, res) => {
     message: "Server is running successfully",
     timestamp: new Date().toISOString(),
   });
+});
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({
+        code: 404,
+        message: "Route not found"
+    });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+    console.error("Unhandled Error:", err);
+    res.status(500).json({
+        code: 500,
+        message: "Internal server error",
+        error: process.env.NODE_ENV === "development" ? err.message : undefined
+    });
 });
 
 app.listen(port, () => {

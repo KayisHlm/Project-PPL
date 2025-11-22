@@ -25,7 +25,7 @@ Route::prefix('login')->name('login.')->group(function () {
     Route::get('/', [AuthController::class, 'loginIndex'])->name('loginIndex');
 });
 
-Route::prefix('dashboard-admin')->name('dashboard-admin.')->group(function () {
+Route::prefix('admin')->name('dashboard-admin.')->group(function () {
     Route::view('/dashboard', 'Page.DashboardAdmin.Dashboard')->name('dashboard');
     Route::view('/kategori', 'Page.DashboardAdmin.Kategori')->name('kategori');
     Route::view('/produk', 'Page.DashboardAdmin.Produk')->name('produk');
@@ -33,7 +33,7 @@ Route::prefix('dashboard-admin')->name('dashboard-admin.')->group(function () {
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
 });
 
-Route::prefix('dashboard-seller')->name('dashboard-seller.')->group(function () {
+Route::prefix('seller')->name('dashboard-seller.')->group(function () {
     Route::view('/dashboard', 'Page.DashboardSeller.Dashboard')->name('dashboard');
     Route::view('/kategori', 'Page.DashboardSeller.Kategori')->name('kategori');
     Route::view('/produk', 'Page.DashboardSeller.Produk')->name('produk');

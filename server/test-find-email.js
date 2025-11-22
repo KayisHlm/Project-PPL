@@ -5,7 +5,7 @@ async function testFindByEmail() {
     const userRepo = new UserRepository();
     
     // Ganti dengan email yang sudah ada di database kamu
-    const testEmail = "azka@test.com";
+    const testEmail = "admin@platform.com";
     
     console.log("===========================================");
     console.log("    TEST FIND USER BY EMAIL");
