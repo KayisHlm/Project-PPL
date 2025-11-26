@@ -22,31 +22,19 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php $i = 1; @endphp
+                                @foreach(($categories ?? []) as $c)
                                 <tr>
-                                    <td>1</td>
-                                    <td>Elektronik</td>
-                                    <td class="text-end">12</td>
+                                    <td>{{ $i++ }}</td>
+                                    <td>{{ $c['category'] }}</td>
+                                    <td class="text-end">{{ $c['count'] }}</td>
                                 </tr>
+                                @endforeach
+                                @if(empty($categories))
                                 <tr>
-                                    <td>2</td>
-                                    <td>Aksesoris</td>
-                                    <td class="text-end">8</td>
+                                    <td colspan="3" class="text-center text-muted">Belum ada data kategori.</td>
                                 </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Fashion</td>
-                                    <td class="text-end">5</td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Rumah Tangga</td>
-                                    <td class="text-end">7</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Olahraga</td>
-                                    <td class="text-end">4</td>
-                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>

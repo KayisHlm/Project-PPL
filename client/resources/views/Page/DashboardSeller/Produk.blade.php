@@ -32,39 +32,24 @@
                     </div>
 
                     <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-3" id="seller-product-grid">
-                        <div class="col" data-name="Earphone X" data-category="Elektronik" data-price="250000" data-rating="4.5">
+                        @foreach(($products ?? []) as $p)
+                        <div class="col" data-name="{{ $p['name'] }}" data-category="{{ $p['category'] }}" data-price="{{ $p['price'] }}" data-rating="4.0">
                             <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
-                                <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ 4.5</span>
-                                <img src="assets/images/products/product-1.jpg" class="card-img-top" alt="Produk" style="transition:transform .2s" onmouseenter="this.style.transform='scale(1.03)'" onmouseleave="this.style.transform='none'">
+                                <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ 4.0</span>
+                                <img src="{{ isset($p['cover_image']) && $p['cover_image'] ? asset($p['cover_image']) : asset('assets/images/products/product-1.jpg') }}" class="card-img-top" alt="Produk" onerror="this.onerror=null;this.src='{{ asset('assets/images/products/product-1.jpg') }}';">
                                 <div class="card-body">
-                                    <h6 class="mb-1">Earphone X</h6>
-                                    <p class="mb-1 text-muted">Elektronik</p>
-                                    <p class="mb-0 fw-bold">Rp 250.000</p>
+                                    <h6 class="mb-1">{{ $p['name'] }}</h6>
+                                    <p class="mb-1 text-muted">{{ $p['category'] }}</p>
+                                    <p class="mb-0 fw-bold">Rp {{ number_format($p['price'],0,',','.') }}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col" data-name="Sneakers Z" data-category="Fashion" data-price="550000" data-rating="4.2">
-                            <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
-                                <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ 4.2</span>
-                                <img src="assets/images/products/product-2.jpg" class="card-img-top" alt="Produk" style="transition:transform .2s" onmouseenter="this.style.transform='scale(1.03)'" onmouseleave="this.style.transform='none'">
-                                <div class="card-body">
-                                    <h6 class="mb-1">Sneakers Z</h6>
-                                    <p class="mb-1 text-muted">Fashion</p>
-                                    <p class="mb-0 fw-bold">Rp 550.000</p>
-                                </div>
-                            </div>
+                        @endforeach
+                        @if(empty($products))
+                        <div class="col">
+                            <div class="alert alert-info">Belum ada produk. Tambahkan produk baru.</div>
                         </div>
-                        <div class="col" data-name="Coklat Premium" data-category="Makanan & Minuman" data-price="85000" data-rating="4.8">
-                            <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
-                                <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ 4.8</span>
-                                <img src="assets/images/products/product-3.jpg" class="card-img-top" alt="Produk" style="transition:transform .2s" onmouseenter="this.style.transform='scale(1.03)'" onmouseleave="this.style.transform='none'">
-                                <div class="card-body">
-                                    <h6 class="mb-1">Coklat Premium</h6>
-                                    <p class="mb-1 text-muted">Makanan & Minuman</p>
-                                    <p class="mb-0 fw-bold">Rp 85.000</p>
-                                </div>
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

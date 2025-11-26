@@ -3,6 +3,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileUploadController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WilayahController;
+use App\Http\Controllers\SellerProductController;
 
 Route::get('/', function () {
     return view('Page.Store.Landing');
@@ -35,11 +36,12 @@ Route::prefix('admin')->name('dashboard-admin.')->group(function () {
 
 Route::prefix('seller')->name('dashboard-seller.')->group(function () {
     Route::view('/dashboard', 'Page.DashboardSeller.Dashboard')->name('dashboard');
-    Route::view('/kategori', 'Page.DashboardSeller.Kategori')->name('kategori');
-    Route::view('/produk', 'Page.DashboardSeller.Produk')->name('produk');
+    Route::get('/kategori', [SellerProductController::class, 'categories'])->name('kategori');
+    Route::get('/produk', [SellerProductController::class, 'index'])->name('produk');
     Route::view('/laporan', 'Page.DashboardSeller.Laporan')->name('laporan');
     Route::view('/tambah-kategori', 'Page.DashboardSeller.TambahKategori')->name('tambah-kategori');
     Route::view('/tambah-produk', 'Page.DashboardSeller.TambahProduk')->name('tambah-produk');
+    Route::post('/produk/create', [SellerProductController::class, 'store'])->name('produk.create');
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
 });
 

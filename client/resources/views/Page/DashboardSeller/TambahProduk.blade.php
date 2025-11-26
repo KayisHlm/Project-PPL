@@ -14,7 +14,7 @@
                         </div>
                         <div class="card-body">
                             <div id="seller-product-alert" class="alert alert-success d-none" role="alert"></div>
-                            <form id="seller-product-form" action="#" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                            <form id="seller-product-form" action="{{ route('dashboard-seller.produk.create') }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                                 @csrf
                                 <div class="mb-3">
                                     <label class="form-label">Foto Produk</label>
@@ -29,11 +29,11 @@
                                 <div class="row g-3">
                                     <div class="col-md-8">
                                         <label class="form-label" for="seller-product-name">Nama Produk</label>
-                                        <input type="text" class="form-control form-control-lg" id="seller-product-name" placeholder="cth. Earphone X" required>
+                                        <input type="text" name="name" class="form-control form-control-lg" id="seller-product-name" placeholder="cth. Earphone X" required>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label" for="seller-product-condition">Kondisi</label>
-                                        <select class="form-select" id="seller-product-condition" required>
+                                        <select class="form-select" name="condition" id="seller-product-condition" required>
                                             <option value="">Pilih</option>
                                             <option>Baru</option>
                                             <option>Bekas</option>
@@ -43,23 +43,23 @@
                                         <label class="form-label" for="seller-product-price">Harga</label>
                                         <div class="input-group">
                                             <span class="input-group-text">Rp</span>
-                                            <input type="number" class="form-control" id="seller-product-price" min="0" step="100" placeholder="250000" required>
+                                            <input type="number" name="price" class="form-control" id="seller-product-price" min="0" step="100" placeholder="250000" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label" for="seller-product-weight">Berat</label>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" id="seller-product-weight" min="1" step="1" placeholder="500" required>
+                                            <input type="number" name="weight" class="form-control" id="seller-product-weight" min="1" step="1" placeholder="500" required>
                                             <span class="input-group-text">gram</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label" for="seller-product-min">Minimal Beli</label>
-                                        <input type="number" class="form-control" id="seller-product-min" min="1" step="1" value="1" required>
+                                        <input type="number" name="minOrder" class="form-control" id="seller-product-min" min="1" step="1" value="1" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="seller-product-category">Kategori</label>
-                                        <select class="form-select" id="seller-product-category" required>
+                                        <select class="form-select" name="category" id="seller-product-category" required>
                                             <option value="">Pilih kategori</option>
                                             <option>Elektronik</option>
                                             <option>Fashion</option>
@@ -71,7 +71,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="seller-product-warranty">Tipe Garansi</label>
-                                        <select class="form-select" id="seller-product-warranty" required>
+                                        <select class="form-select" name="warranty" id="seller-product-warranty" required>
                                             <option value="">Pilih garansi</option>
                                             <option>Tidak ada</option>
                                             <option>Toko</option>
@@ -80,15 +80,15 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="seller-product-year">Tahun Rilis</label>
-                                        <input type="number" class="form-control" id="seller-product-year" min="2000" step="1" required>
+                                        <input type="number" name="year" class="form-control" id="seller-product-year" min="2000" step="1" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="seller-product-claim">Cara Klaim Garansi</label>
-                                        <textarea class="form-control" id="seller-product-claim" rows="3" placeholder="cth. Hubungi layanan pelanggan dengan bukti pembelian" required></textarea>
+                                        <textarea class="form-control" name="claim" id="seller-product-claim" rows="3" placeholder="cth. Hubungi layanan pelanggan dengan bukti pembelian" required></textarea>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label" for="seller-product-description">Deskripsi</label>
-                                        <textarea class="form-control" id="seller-product-description" rows="5" placeholder="Jelaskan detail produk, spesifikasi, fitur" required></textarea>
+                                        <textarea class="form-control" name="description" id="seller-product-description" rows="5" placeholder="Jelaskan detail produk, spesifikasi, fitur" required></textarea>
                                     </div>
                                 </div>
 
@@ -286,17 +286,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   if(form){
     form.addEventListener('submit', function(e){
-      e.preventDefault();
-      alertBox.textContent = 'Produk berhasil ditambahkan';
-      alertBox.classList.remove('d-none');
-      setTimeout(function(){ alertBox.classList.add('d-none'); }, 2500);
-      form.reset();
-      selectedFiles = [];
-      imagesInput.value = '';
-      imagesList.innerHTML = '';
-      previewImages.innerHTML = '';
-      yearInput.value = new Date().getFullYear();
-      updatePreview();
+      // biarkan submit normal ke server
     });
   }
 

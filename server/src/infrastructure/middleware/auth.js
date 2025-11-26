@@ -29,6 +29,7 @@ async function authenticateToken(req, res, next) {
             userId: decoded.userId,
             email: decoded.email,
             role: decoded.role,
+            sellerId: decoded.sellerId,
         };
         
         console.log("Authenticated User:", req.user);

@@ -92,14 +92,14 @@
 
                     @if (1 == 1)      
                     <li class="side-nav-item">
-                        <a href="{{ route('role' == 'penjual' ? 'dashboard-admin.tambah-kategori' : 'dashboard-seller.tambah-kategori') }}" class="side-nav-link">
+                        <a href="{{ route('role' == 'seller' ? 'dashboard-admin.tambah-kategori' : 'dashboard-seller.tambah-kategori') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-add-circle-line"></i></span>
                             <span class="menu-text"> Tambah Kategori </span>
                         </a>
                     </li>
 
                     <li class="side-nav-item">
-                        <a href="{{ route('role' == 'penjual' ? 'dashboard-admin.tambah-produk' : 'dashboard-seller.tambah-produk') }}" class="side-nav-link">
+                        <a href="{{ route('role' == 'seller' ? 'dashboard-admin.tambah-produk' : 'dashboard-seller.tambah-produk') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-add-box-line"></i></span>
                             <span class="menu-text"> Tambah Produk </span>
                         </a>
