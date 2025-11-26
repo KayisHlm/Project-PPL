@@ -13,26 +13,26 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div id="seller-category-alert" class="alert alert-success d-none" role="alert"></div>
-                            <form id="seller-category-form" action="#" method="post" class="needs-validation" novalidate>
+                            <div id="admin-category-alert" class="alert alert-success d-none" role="alert"></div>
+                            <form id="admin-category-form" action="{{ route('dashboard-admin.kategori.create') }}" method="post" class="needs-validation" novalidate>
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="seller-category-name" class="form-label">Nama Kategori</label>
+                                    <label for="admin-category-name" class="form-label">Nama Kategori</label>
                                     <div class="input-group input-group-lg">
                                         <span class="input-group-text"><i class="ri-price-tag-3-line"></i></span>
-                                        <input type="text" class="form-control" id="seller-category-name" placeholder="cth. Aksesoris" required>
+                                        <input type="text" name="name" class="form-control" id="admin-category-name" placeholder="cth. Aksesoris" required>
                                     </div>
                                     <div class="form-text">Gunakan nama yang singkat dan jelas.</div>
                                     <div class="progress mt-2" style="height:6px">
-                                        <div class="progress-bar" id="seller-category-strength" role="progressbar" style="width:0%"></div>
+                                        <div class="progress-bar" id="admin-category-strength" role="progressbar" style="width:0%"></div>
                                     </div>
                                     <div class="mt-2 d-flex align-items-center gap-2">
-                                        <span class="badge bg-primary-subtle text-primary d-none" id="seller-category-preview"></span>
+                                        <span class="badge bg-primary-subtle text-primary d-none" id="admin-category-preview"></span>
                                     </div>
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary" id="seller-category-submit" disabled>
+                                    <button type="submit" class="btn btn-primary" id="admin-category-submit" disabled>
                                         <i class="ri-check-line me-1"></i> Simpan
                                     </button>
                                     <button type="reset" class="btn btn-light">
@@ -51,7 +51,7 @@
                             <h5 class="header-title mb-0">Kategori Saya</h5>
                         </div>
                         <div class="card-body">
-                            <div id="seller-category-list" class="d-flex flex-wrap gap-2">
+                            <div id="admin-category-list" class="d-flex flex-wrap gap-2">
                                 <span class="badge bg-light text-body">Elektronik</span>
                                 <span class="badge bg-light text-body">Fashion</span>
                                 <span class="badge bg-light text-body">Aksesoris</span>
@@ -67,13 +67,13 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  var form = document.getElementById('seller-category-form');
-  var nameInput = document.getElementById('seller-category-name');
-  var preview = document.getElementById('seller-category-preview');
-  var strength = document.getElementById('seller-category-strength');
-  var submitBtn = document.getElementById('seller-category-submit');
-  var alertBox = document.getElementById('seller-category-alert');
-  var list = document.getElementById('seller-category-list');
+  var form = document.getElementById('admin-category-form');
+  var nameInput = document.getElementById('admin-category-name');
+  var preview = document.getElementById('admin-category-preview');
+  var strength = document.getElementById('admin-category-strength');
+  var submitBtn = document.getElementById('admin-category-submit');
+  var alertBox = document.getElementById('admin-category-alert');
+  var list = document.getElementById('admin-category-list');
   function updateUI(){
     var v = (nameInput.value || '').trim();
     var len = v.length;
@@ -91,18 +91,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   if(form){
     form.addEventListener('submit', function(e){
-      e.preventDefault();
-      var v = (nameInput.value || '').trim();
-      if(v.length < 2) return;
-      alertBox.textContent = 'Kategori "' + v + '" berhasil ditambahkan';
-      alertBox.classList.remove('d-none');
-      var badge = document.createElement('span');
-      badge.className = 'badge bg-light text-body';
-      badge.textContent = v;
-      if(list) list.appendChild(badge);
-      form.reset();
-      updateUI();
-      setTimeout(function(){ alertBox.classList.add('d-none'); }, 2500);
+      
     });
   }
 });

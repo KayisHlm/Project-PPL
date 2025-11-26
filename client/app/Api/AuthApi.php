@@ -19,6 +19,11 @@ class AuthApi
         return $this->connectApi('login', 'post', $body);
     }
 
+    public function logout()
+    {
+        return $this->connectApi('logout', 'post');
+    }
+
     public function edit($user_id, $token)
     {
         return $this->connectApi('detail/' . $user_id . '/' . $token, 'get');

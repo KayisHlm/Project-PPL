@@ -1,0 +1,2 @@
+ALTER TABLE categories
+  ALTER COLUMN seller_id DROP NOT NULL;

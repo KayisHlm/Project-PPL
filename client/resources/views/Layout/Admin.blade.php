@@ -69,37 +69,41 @@
                 <ul class="side-nav">
                     <li class="side-nav-title">Dashboard</li>
 
+                    @php $role = (session('user_data')['role'] ?? null); @endphp
                     <li class="side-nav-item">
-                        <a href="{{ route('admin' == 'admin' ? 'dashboard-seller.dashboard' : 'dashboard-seller.dashboard') }}" class="side-nav-link">
+                        <a href="{{ route($role === 'seller' ? 'dashboard-seller.dashboard' : 'dashboard-admin.dashboard') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-dashboard-3-line"></i></span>
                             <span class="menu-text"> Dashboard </span>
                         </a>
                     </li>
-
+                    @if ($role === 'platform_admin')
                     <li class="side-nav-item">
-                        <a href="{{ route('admin' == 'admin' ? 'dashboard-seller.kategori' : 'dashboard-seller.kategori') }}" class="side-nav-link">
+                        <a href="{{ route('dashboard-admin.kategori') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-price-tag-3-line"></i></span>
                             <span class="menu-text"> Kategori </span>
                         </a>
                     </li>
+                    @endif
 
                     <li class="side-nav-item">
-                        <a href="{{ route('admin' == 'admin' ? 'dashboard-seller.produk' : 'dashboard-seller.produk') }}" class="side-nav-link">
+                        <a href="{{ route($role === 'seller' ? 'dashboard-seller.produk' : 'dashboard-admin.produk') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-shopping-bag-3-line"></i></span>
                             <span class="menu-text"> Katalog Produk </span>
                         </a>
                     </li>
 
-                    @if (1 == 1)      
+                    @if ($role === 'platform_admin')
                     <li class="side-nav-item">
-                        <a href="{{ route('role' == 'seller' ? 'dashboard-admin.tambah-kategori' : 'dashboard-seller.tambah-kategori') }}" class="side-nav-link">
+                        <a href="{{ route('dashboard-admin.tambah-kategori') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-add-circle-line"></i></span>
                             <span class="menu-text"> Tambah Kategori </span>
                         </a>
                     </li>
+                    @endif
 
+                    @if ($role === 'seller')
                     <li class="side-nav-item">
-                        <a href="{{ route('role' == 'seller' ? 'dashboard-admin.tambah-produk' : 'dashboard-seller.tambah-produk') }}" class="side-nav-link">
+                        <a href="{{ route('dashboard-seller.tambah-produk') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-add-box-line"></i></span>
                             <span class="menu-text"> Tambah Produk </span>
                         </a>
@@ -107,17 +111,20 @@
                     @endif
 
                     <li class="side-nav-item">
-                        <a href="{{ route('admin' == 'admin' ? 'dashboard-seller.laporan' : 'dashboard-seller.laporan') }}" class="side-nav-link">
+                        <a href="{{ route($role === 'seller' ? 'dashboard-seller.laporan' : 'dashboard-admin.laporan') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-file-chart-line"></i></span>
                             <span class="menu-text"> Laporan </span>
                         </a>
                     </li>
 
-                    <li class="side-nav-item">
-                        <a href="#" class="side-nav-link">
+                    <li class="side-nav-item mt-2 border-top pt-2">
+                        <a href="#" class="side-nav-link" onclick="document.getElementById('logout-form').submit(); return false;">
                             <span class="menu-icon"><i class="ri-logout-box-line"></i></span>
                             <span class="menu-text"> Logout </span>
                         </a>
+                        <form id="logout-form" action="{{ route('login.logout') }}" method="post" class="d-none">
+                            @csrf
+                        </form>
                     </li>
                 </ul>
 
@@ -135,7 +142,8 @@
                     <!-- Topbar Page Title -->
                     <div class="topbar-item d-none d-md-flex">                        
                         <div>
-                            <h4 class="page-title fs-18 fw-bold mb-0">Dashboard {{ 'Admin' ? 'Admin' : 'Penjual' }}</h4>                     
+                            @php $role = (session('user_data')['role'] ?? null); @endphp
+                            <h4 class="page-title fs-18 fw-bold mb-0">Dashboard {{ $role === 'seller' ? 'Penjual' : 'Admin' }}</h4>                     
                         </div>          
                     </div>
                 </div>

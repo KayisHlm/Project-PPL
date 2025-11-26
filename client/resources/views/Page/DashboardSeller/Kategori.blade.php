@@ -26,7 +26,7 @@
                                 @foreach(($categories ?? []) as $c)
                                 <tr>
                                     <td>{{ $i++ }}</td>
-                                    <td>{{ $c['category'] }}</td>
+                                    <td>{{ $c['name'] ?? ($c['category'] ?? '') }}</td>
                                     <td class="text-end">{{ $c['count'] }}</td>
                                 </tr>
                                 @endforeach

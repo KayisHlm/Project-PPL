@@ -27,11 +27,13 @@ app.use(cookieParser());
 // import Routes
 const authRoutes = require("./src/routes/authRoutes");
 const productRoutes = require("./src/routes/productRoutes");
+const categoryRoutes = require("./src/routes/categoryRoutes");
 
 // buat endpoint
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // check health
 app.get("/api/health", (req, res) => {
