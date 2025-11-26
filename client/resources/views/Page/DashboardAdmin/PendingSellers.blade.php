@@ -10,7 +10,7 @@
                 <div class="page-title-box">
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard-admin.dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Pending Sellers</li>
                         </ol>
                     </div>
@@ -108,27 +108,27 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-sm me-2">
                                                     <span class="avatar-title bg-primary-subtle text-primary rounded-circle fs-16">
-                                                        {{ strtoupper(substr($seller['shopName'], 0, 2)) }}
+                                                        {{ strtoupper(substr($seller['shop_name'], 0, 2)) }}
                                                     </span>
                                                 </div>
                                                 <div>
-                                                    <h5 class="mb-0 fs-14 fw-semibold">{{ $seller['shopName'] }}</h5>
-                                                    @if($seller['shopDescription'])
-                                                    <p class="mb-0 text-muted fs-12">{{ Str::limit($seller['shopDescription'], 40) }}</p>
+                                                    <h5 class="mb-0 fs-14 fw-semibold">{{ $seller['shop_name'] }}</h5>
+                                                    @if(isset($seller['shop_description']) && $seller['shop_description'])
+                                                    <p class="mb-0 text-muted fs-12">{{ Str::limit($seller['shop_description'], 40) }}</p>
                                                     @endif
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{ $seller['picName'] }}</td>
+                                        <td>{{ $seller['pic_name'] }}</td>
                                         <td>
                                             <small class="d-block">{{ $seller['email'] }}</small>
-                                            <small class="text-muted">{{ $seller['picEmail'] }}</small>
+                                            <small class="text-muted">{{ $seller['pic_email'] }}</small>
                                         </td>
-                                        <td>{{ $seller['picPhone'] }}</td>
-                                        <td><code class="fs-12">{{ $seller['picKtp'] }}</code></td>
+                                        <td>{{ $seller['pic_phone_number'] }}</td>
+                                        <td><code class="fs-12">{{ $seller['pic_ktp_number'] }}</code></td>
                                         <td>
-                                            <small class="d-block">{{ \Carbon\Carbon::parse($seller['createdAt'])->format('d M Y') }}</small>
-                                            <small class="text-muted">{{ \Carbon\Carbon::parse($seller['createdAt'])->format('H:i') }}</small>
+                                            <small class="d-block">{{ \Carbon\Carbon::parse($seller['created_at'])->format('d M Y') }}</small>
+                                            <small class="text-muted">{{ \Carbon\Carbon::parse($seller['created_at'])->format('H:i') }}</small>
                                         </td>
                                         <td>
                                             <span class="badge bg-warning-subtle text-warning">
@@ -147,14 +147,14 @@
                                                 
                                                 <button type="button" 
                                                         class="btn btn-sm btn-soft-success" 
-                                                        onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shopName']) }}')"
+                                                        onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shop_name']) }}')"
                                                         title="Approve">
                                                     <i class="ri-check-line"></i>
                                                 </button>
                                                 
                                                 <button type="button" 
                                                         class="btn btn-sm btn-soft-danger" 
-                                                        onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shopName']) }}')"
+                                                        onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shop_name']) }}')"
                                                         title="Reject">
                                                     <i class="ri-close-line"></i>
                                                 </button>
@@ -183,7 +183,7 @@
                                                 <div class="modal-header bg-light">
                                                     <h5 class="modal-title">
                                                         <i class="ri-store-2-line me-2"></i>
-                                                        Seller Details - {{ $seller['shopName'] }}
+                                                        Seller Details - {{ $seller['shop_name'] }}
                                                     </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
@@ -198,11 +198,11 @@
                                                                     <table class="table table-sm table-borderless mb-0">
                                                                         <tr>
                                                                             <td class="fw-semibold" width="40%">Shop Name:</td>
-                                                                            <td>{{ $seller['shopName'] }}</td>
+                                                                            <td>{{ $seller['shop_name'] }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td class="fw-semibold">Description:</td>
-                                                                            <td>{{ $seller['shopDescription'] ?? '-' }}</td>
+                                                                            <td>{{ $seller['shop_description'] ?? '-' }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td class="fw-semibold">Status:</td>
@@ -224,19 +224,19 @@
                                                                     <table class="table table-sm table-borderless mb-0">
                                                                         <tr>
                                                                             <td class="fw-semibold" width="40%">Name:</td>
-                                                                            <td>{{ $seller['picName'] }}</td>
+                                                                            <td>{{ $seller['pic_name'] }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td class="fw-semibold">Phone:</td>
-                                                                            <td>{{ $seller['picPhone'] }}</td>
+                                                                            <td>{{ $seller['pic_phone_number'] }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td class="fw-semibold">Email:</td>
-                                                                            <td>{{ $seller['picEmail'] }}</td>
+                                                                            <td>{{ $seller['pic_email'] }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td class="fw-semibold">KTP:</td>
-                                                                            <td><code>{{ $seller['picKtp'] }}</code></td>
+                                                                            <td><code>{{ $seller['pic_ktp_number'] }}</code></td>
                                                                         </tr>
                                                                     </table>
                                                                 </div>
@@ -254,15 +254,31 @@
                                                                     <table class="table table-sm table-borderless mb-0">
                                                                         <tr>
                                                                             <td class="fw-semibold" width="20%">Full Address:</td>
-                                                                            <td>{{ $seller['address'] }}</td>
+                                                                            <td>{{ $seller['pic_address'] }}</td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td class="fw-semibold">Postal Code:</td>
-                                                                            <td>{{ $seller['postalCode'] ?? '-' }}</td>
+                                                                            <td class="fw-semibold">RT / RW:</td>
+                                                                            <td>{{ $seller['pic_rt'] }} / {{ $seller['pic_rw'] }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td class="fw-semibold">Village:</td>
+                                                                            <td>{{ $seller['pic_village'] }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td class="fw-semibold">District:</td>
+                                                                            <td>{{ $seller['pic_district'] }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td class="fw-semibold">City:</td>
+                                                                            <td>{{ $seller['pic_city'] }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td class="fw-semibold">Province:</td>
+                                                                            <td>{{ $seller['pic_province'] }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td class="fw-semibold">Registered:</td>
-                                                                            <td>{{ \Carbon\Carbon::parse($seller['createdAt'])->format('d F Y, H:i') }}</td>
+                                                                            <td>{{ \Carbon\Carbon::parse($seller['created_at'])->format('d F Y, H:i') }}</td>
                                                                         </tr>
                                                                     </table>
                                                                 </div>
@@ -274,10 +290,10 @@
                                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">
                                                         <i class="ri-close-line me-1"></i>Close
                                                     </button>
-                                                    <button type="button" class="btn btn-success" onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shopName']) }}')">
+                                                    <button type="button" class="btn btn-success" onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shop_name']) }}')">
                                                         <i class="ri-check-line me-1"></i> Approve
                                                     </button>
-                                                    <button type="button" class="btn btn-danger" onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shopName']) }}')">
+                                                    <button type="button" class="btn btn-danger" onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shop_name']) }}')">
                                                         <i class="ri-close-line me-1"></i> Reject
                                                     </button>
                                                 </div>
@@ -297,7 +313,7 @@
                             </div>
                             <h5 class="text-muted">No Pending Sellers</h5>
                             <p class="text-muted">All sellers have been verified or no registration yet.</p>
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">
+                            <a href="{{ route('dashboard-admin.dashboard') }}" class="btn btn-primary">
                                 <i class="ri-arrow-left-line me-1"></i> Back to Dashboard
                             </a>
                         </div>

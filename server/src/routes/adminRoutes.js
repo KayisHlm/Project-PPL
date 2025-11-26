@@ -7,9 +7,9 @@ const GetPendingSellersController = require("../infrastructure/controllers/admin
 const ApproveSellerController = require("../infrastructure/controllers/admin/approveSellerController");
 const RejectSellerController = require("../infrastructure/controllers/admin/rejectSellerController");
 
-// Semua route admin harus authenticated dan role = 'admin'
+// Semua route admin harus authenticated dan role = 'platform_admin'
 router.use(authenticateToken);
-router.use(authorizeRole('admin'));
+router.use(authorizeRole('platform_admin'));
 
 // GET /api/admin/pending-sellers
 router.get("/pending-sellers", GetPendingSellersController);

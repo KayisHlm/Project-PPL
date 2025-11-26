@@ -10,17 +10,8 @@ class AdminController extends Controller
     protected $adminApi;
 
     public function __construct()
-    {
+    {   
         $this->adminApi = new AdminApi();
-        
-        // Middleware untuk cek apakah user adalah admin
-        $this->middleware(function ($request, $next) {
-            if (!session()->has('access_token') || session('user_role') !== 'admin') {
-                return redirect()->route('login.loginIndex')
-                    ->withErrors(['access' => 'Unauthorized access. Admin only.']);
-            }
-            return $next($request);
-        });
     }
 
     /**
