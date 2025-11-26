@@ -87,15 +87,17 @@ class AuthController extends Controller
             // Handle response berdasarkan status
             if ($statusCode === 200 && isset($responseData['token'])) {
                 Log::info('[AuthController] Login successful for: ' . $request->email);
-            
                 session([
                     'auth_token' => $responseData['token'],
                     'user_data' => $responseData['user']
                 ]);
-
+                $role = $responseData['user']['role'] ?? null;
+                if ($role === 'seller') {
+                    return redirect()->route('dashboard-seller.dashboard')
+                        ->with('success', 'Login successful! Welcome back.');
+                }
                 return redirect()->route('dashboard-admin.dashboard')
                     ->with('success', 'Login successful! Welcome back.');
-                
             } elseif ($statusCode === 404) {
                 // Email tidak ditemukan
                 Log::warning('[AuthController] Email not found: ' . $request->email);
@@ -259,7 +261,26 @@ class AuthController extends Controller
 
             if ($apiResponse->successful()) {
                 DB::commit();
-                return redirect()->route('login.loginIndex');
+                $loginData = [
+                    'email' => $request->input('email'),
+                    'password' => $request->input('password'),
+                ];
+                $loginResponse = $this->authApi->login($loginData);
+                if ($loginResponse && $loginResponse->status() === 200) {
+                    $loginJson = $loginResponse->json();
+                    if (isset($loginJson['token'])) {
+                        session([
+                            'auth_token' => $loginJson['token'],
+                            'user_data' => $loginJson['user'] ?? null
+                        ]);
+                        $role = $loginJson['user']['role'] ?? null;
+                        if ($role == '') {
+                            return redirect()->route('dashboard-seller.dashboard')->with('success', 'Registrasi berhasil. Anda telah login sebagai penjual.');
+                        }
+                        return redirect()->route('dashboard-admin.dashboard')->with('success', 'Registrasi berhasil. Anda telah login.');
+                    }
+                }
+                return redirect()->route('login.loginIndex')->with('success', 'Registrasi berhasil. Silakan login.');
             }
         } catch (\Throwable $e) {
             DB::rollBack();

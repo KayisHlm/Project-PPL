@@ -5,7 +5,8 @@
 INSERT INTO users (email, password, role) VALUES
     ('admin@platform.com', '$2b$10$YourHashedPasswordHere1', 'platform_admin'),
     ('seller1@shop.com', '$2b$10$YourHashedPasswordHere2', 'seller'),
-    ('seller2@shop.com', '$2b$10$YourHashedPasswordHere3', 'seller')
+    ('seller2@shop.com', '$2b$10$YourHashedPasswordHere3', 'seller'),
+    ('platform.admin@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'platform_admin')
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert sample sellers
