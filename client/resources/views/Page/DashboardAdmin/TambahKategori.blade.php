@@ -52,9 +52,12 @@
                         </div>
                         <div class="card-body">
                             <div id="admin-category-list" class="d-flex flex-wrap gap-2">
-                                <span class="badge bg-light text-body">Elektronik</span>
-                                <span class="badge bg-light text-body">Fashion</span>
-                                <span class="badge bg-light text-body">Aksesoris</span>
+                                @foreach(($categories ?? []) as $c)
+                                    <span class="badge bg-light text-body">{{ $c['name'] ?? '' }}</span>
+                                @endforeach
+                                @if(empty($categories))
+                                    <span class="badge bg-light text-body">Belum ada kategori</span>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -39,4 +39,19 @@ class AdminCategoryController extends Controller
         $msg = $resp->json()['message'] ?? 'Gagal menambahkan kategori.';
         return back()->withInput()->with('error', $msg);
     }
+
+    public function createView(Request $request)
+    {
+        $token = session('auth_token');
+        if (!$token) {
+            return redirect()->route('login.loginIndex')->with('error', 'Silakan login terlebih dahulu.');
+        }
+        $api = new \App\Api\CategoryApi();
+        $resp = $api->list($token);
+        $categories = [];
+        if ($resp->status() === 200) {
+            $categories = $resp->json()['data'] ?? [];
+        }
+        return view('Page.DashboardAdmin.TambahKategori', compact('categories'));
+    }
 }

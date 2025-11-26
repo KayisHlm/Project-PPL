@@ -34,4 +34,14 @@ async function listWithCount(req, res) {
   }
 }
 
-module.exports = { create, list, listWithCount };
+async function publicList(req, res) {
+  try {
+    const repo = new CategoryRepository();
+    const rows = await repo.listAll();
+    return res.status(200).json({ code: 200, data: rows });
+  } catch (error) {
+    return res.status(500).json({ code: 500, message: "Internal Server Error", error: error.message });
+  }
+}
+
+module.exports = { create, list, listWithCount, publicList };

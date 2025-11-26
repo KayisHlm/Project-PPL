@@ -56,4 +56,10 @@ class AdminApi
         return Http::withHeaders($this->getAuthHeaders())
             ->post($this->baseUrl . "/admin/sellers/{$sellerId}/reject");
     }
+
+    public function getProducts()
+    {
+        return Http::withHeaders($this->getAuthHeaders())
+            ->get($this->baseUrl . '/admin/products');
+    }
 }

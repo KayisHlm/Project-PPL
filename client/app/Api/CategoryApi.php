@@ -24,6 +24,13 @@ class CategoryApi
         ])->timeout(8)->get($this->apiUrl . '/with-count');
     }
 
+    public function publicList(?string $token = null)
+    {
+        $headers = [ 'Accept' => 'application/json' ];
+        if ($token) { $headers['Authorization'] = 'Bearer ' . $token; }
+        return Http::withHeaders($headers)->timeout(8)->get($this->apiUrl . '/public');
+    }
+
     public function create(array $body, string $token)
     {
         return Http::withHeaders([

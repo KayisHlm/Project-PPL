@@ -108,4 +108,14 @@ class AdminController extends Controller
             return back()->withErrors(['reject' => 'Connection error: ' . $e->getMessage()]);
         }
     }
+
+    public function products()
+    {
+        $response = $this->adminApi->getProducts();
+        $products = [];
+        if ($response->successful()) {
+            $products = $response->json()['data'] ?? [];
+        }
+        return view('Page.DashboardAdmin.Produk', compact('products'));
+    }
 }
