@@ -8,14 +8,14 @@ async function GetPendingSellersController(req, res) {
         const sellerRepository = new SellerRepository();
         const getPendingSellers = new GetPendingSellers(sellerRepository);
 
-        const pendingSellers = await getPendingSellers.execute();
+        const result = await getPendingSellers.execute();
 
         return res.status(200).json({
             code: 200,
             message: "Pending sellers retrieved successfully",
             data: {
-                total: pendingSellers.length,
-                sellers: pendingSellers
+                total: result.total,
+                sellers: result.sellers
             }
         });
 

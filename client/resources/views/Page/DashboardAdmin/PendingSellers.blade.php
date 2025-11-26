@@ -3,326 +3,350 @@
 @section('content')
 <div class="page-content">
     <div class="page-container">
-
-        <!-- Page Title -->
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard-admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Pending Sellers</li>
-                        </ol>
+        
+        {{-- TOTAL PENDING --}}
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">TOTAL PENDING VERIFICATION</h6>
+                        <h2 class="mb-0">{{ $total ?? 0 }}</h2>
+                        <small class="text-warning">
+                            <i class="bi bi-clock"></i> Awaiting admin approval
+                        </small>
                     </div>
-                    <h4 class="page-title">Pending Sellers Verification</h4>
-                </div>
-            </div>
-        </div>
-
-        <!-- Statistics Card -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center gap-2 justify-content-between">
-                            <div>
-                                <h5 class="text-muted fs-13 fw-bold text-uppercase">Total Pending Verification</h5>
-                                <h3 class="my-2 py-1 fw-bold">{{ $total ?? 0 }}</h3>
-                                <p class="mb-0 text-muted">
-                                    <span class="text-warning me-1"><i class="ri-time-line"></i></span>
-                                    <span class="text-nowrap">Awaiting admin approval</span>
-                                </p>
-                            </div>
-                            <div class="avatar-xl flex-shrink-0">
-                                <span class="avatar-title bg-warning-subtle text-warning rounded-circle fs-42">
-                                    <iconify-icon icon="solar:users-group-two-rounded-bold-duotone"></iconify-icon>
-                                </span>
-                            </div>
-                        </div>
+                    <div class="bg-warning bg-opacity-10 rounded-circle p-4">
+                        <i class="bi bi-people fs-1 text-warning"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Messages -->
-        @if(session('success'))
-        <div class="row">
-            <div class="col-12">
+        {{-- PENDING SELLERS LIST --}}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Pending Sellers List</h5>
+                <button class="btn btn-sm btn-outline-primary" onclick="location.reload()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+            <div class="card-body">
+                
+                @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="ri-checkbox-circle-line me-2"></i>
                     {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-            </div>
-        </div>
-        @endif
+                @endif
 
-        @if($errors->any())
-        <div class="row">
-            <div class="col-12">
+                @if($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="ri-error-warning-line me-2"></i>
                     @foreach($errors->all() as $error)
-                        <div>{{ $error }}</div>
+                        {{ $error }}<br>
                     @endforeach
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-            </div>
-        </div>
-        @endif
+                @endif
 
-        <!-- Table -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="header-title">Pending Sellers List</h4>
-                            <button type="button" class="btn btn-sm btn-light" onclick="location.reload()">
-                                <i class="ri-refresh-line me-1"></i> Refresh
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        @if(isset($sellers) && count($sellers) > 0)
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped table-centered mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Shop Name</th>
-                                        <th>PIC Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>KTP</th>
-                                        <th>Register Date</th>
-                                        <th>Status</th>
-                                        <th class="text-center">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($sellers as $index => $seller)
-                                    <tr>
-                                        <td class="fw-semibold">{{ $index + 1 }}</td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-sm me-2">
-                                                    <span class="avatar-title bg-primary-subtle text-primary rounded-circle fs-16">
-                                                        {{ strtoupper(substr($seller['shop_name'], 0, 2)) }}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <h5 class="mb-0 fs-14 fw-semibold">{{ $seller['shop_name'] }}</h5>
-                                                    @if(isset($seller['shop_description']) && $seller['shop_description'])
-                                                    <p class="mb-0 text-muted fs-12">{{ Str::limit($seller['shop_description'], 40) }}</p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>{{ $seller['pic_name'] }}</td>
-                                        <td>
-                                            <small class="d-block">{{ $seller['email'] }}</small>
-                                            <small class="text-muted">{{ $seller['pic_email'] }}</small>
-                                        </td>
-                                        <td>{{ $seller['pic_phone_number'] }}</td>
-                                        <td><code class="fs-12">{{ $seller['pic_ktp_number'] }}</code></td>
-                                        <td>
-                                            <small class="d-block">{{ \Carbon\Carbon::parse($seller['created_at'])->format('d M Y') }}</small>
-                                            <small class="text-muted">{{ \Carbon\Carbon::parse($seller['created_at'])->format('H:i') }}</small>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-warning-subtle text-warning">
-                                                <i class="ri-time-line me-1"></i>{{ ucfirst($seller['status']) }}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Shop Name</th>
+                                <th>PIC Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>KTP</th>
+                                <th>Register Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($sellers ?? [] as $seller)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
+                                            <span class="text-primary fw-bold">
+                                                {{ strtoupper(substr($seller['shopName'] ?? 'N', 0, 1)) }}
                                             </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group" role="group">
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-soft-primary" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#detailModal{{ $seller['id'] }}"
-                                                        title="View Details">
-                                                    <i class="ri-eye-line"></i>
-                                                </button>
-                                                
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-soft-success" 
-                                                        onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shop_name']) }}')"
-                                                        title="Approve">
-                                                    <i class="ri-check-line"></i>
-                                                </button>
-                                                
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-soft-danger" 
-                                                        onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shop_name']) }}')"
-                                                        title="Reject">
-                                                    <i class="ri-close-line"></i>
-                                                </button>
-                                            </div>
-
-                                            <form id="approve-form-{{ $seller['id'] }}" 
-                                                  action="{{ route('admin.sellers.approve', $seller['id']) }}" 
-                                                  method="POST" 
-                                                  style="display: none;">
-                                                @csrf
-                                            </form>
-
-                                            <form id="reject-form-{{ $seller['id'] }}" 
-                                                  action="{{ route('admin.sellers.reject', $seller['id']) }}" 
-                                                  method="POST" 
-                                                  style="display: none;">
-                                                @csrf
-                                            </form>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Detail Modal -->
-                                    <div class="modal fade" id="detailModal{{ $seller['id'] }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-light">
-                                                    <h5 class="modal-title">
-                                                        <i class="ri-store-2-line me-2"></i>
-                                                        Seller Details - {{ $seller['shop_name'] }}
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row g-3">
-                                                        <div class="col-md-6">
-                                                            <div class="card border">
-                                                                <div class="card-body">
-                                                                    <h6 class="text-muted text-uppercase mb-3">
-                                                                        <i class="ri-store-line me-1"></i>Shop Information
-                                                                    </h6>
-                                                                    <table class="table table-sm table-borderless mb-0">
-                                                                        <tr>
-                                                                            <td class="fw-semibold" width="40%">Shop Name:</td>
-                                                                            <td>{{ $seller['shop_name'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">Description:</td>
-                                                                            <td>{{ $seller['shop_description'] ?? '-' }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">Status:</td>
-                                                                            <td>
-                                                                                <span class="badge bg-warning">{{ ucfirst($seller['status']) }}</span>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div class="col-md-6">
-                                                            <div class="card border">
-                                                                <div class="card-body">
-                                                                    <h6 class="text-muted text-uppercase mb-3">
-                                                                        <i class="ri-user-line me-1"></i>PIC Information
-                                                                    </h6>
-                                                                    <table class="table table-sm table-borderless mb-0">
-                                                                        <tr>
-                                                                            <td class="fw-semibold" width="40%">Name:</td>
-                                                                            <td>{{ $seller['pic_name'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">Phone:</td>
-                                                                            <td>{{ $seller['pic_phone_number'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">Email:</td>
-                                                                            <td>{{ $seller['pic_email'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">KTP:</td>
-                                                                            <td><code>{{ $seller['pic_ktp_number'] }}</code></td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="row g-3 mt-1">
-                                                        <div class="col-12">
-                                                            <div class="card border">
-                                                                <div class="card-body">
-                                                                    <h6 class="text-muted text-uppercase mb-3">
-                                                                        <i class="ri-map-pin-line me-1"></i>Address Information
-                                                                    </h6>
-                                                                    <table class="table table-sm table-borderless mb-0">
-                                                                        <tr>
-                                                                            <td class="fw-semibold" width="20%">Full Address:</td>
-                                                                            <td>{{ $seller['pic_address'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">RT / RW:</td>
-                                                                            <td>{{ $seller['pic_rt'] }} / {{ $seller['pic_rw'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">Village:</td>
-                                                                            <td>{{ $seller['pic_village'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">District:</td>
-                                                                            <td>{{ $seller['pic_district'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">City:</td>
-                                                                            <td>{{ $seller['pic_city'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">Province:</td>
-                                                                            <td>{{ $seller['pic_province'] }}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td class="fw-semibold">Registered:</td>
-                                                                            <td>{{ \Carbon\Carbon::parse($seller['created_at'])->format('d F Y, H:i') }}</td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                                                        <i class="ri-close-line me-1"></i>Close
-                                                    </button>
-                                                    <button type="button" class="btn btn-success" onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shop_name']) }}')">
-                                                        <i class="ri-check-line me-1"></i> Approve
-                                                    </button>
-                                                    <button type="button" class="btn btn-danger" onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shop_name']) }}')">
-                                                        <i class="ri-close-line me-1"></i> Reject
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        </div>
+                                        <div>
+                                            <strong>{{ $seller['shopName'] ?? 'N/A' }}</strong>
+                                            @if(isset($seller['shopDescription']) && $seller['shopDescription'])
+                                                <br><small class="text-muted">{{ Str::limit($seller['shopDescription'], 30) }}</small>
+                                            @endif
                                         </div>
                                     </div>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        @else
-                        <div class="text-center py-5">
-                            <div class="avatar-xl mx-auto mb-3">
-                                <span class="avatar-title bg-light text-muted rounded-circle fs-42">
-                                    <iconify-icon icon="solar:inbox-line-bold-duotone"></iconify-icon>
-                                </span>
+                                </td>
+                                <td>{{ $seller['picName'] ?? 'N/A' }}</td>
+                                <td>
+                                    <span class="badge bg-info">{{ $seller['userEmail'] ?? 'N/A' }}</span>
+                                    @if(isset($seller['picEmail']) && $seller['picEmail'] && $seller['picEmail'] !== $seller['userEmail'])
+                                        <br><small class="text-muted">{{ $seller['picEmail'] }}</small>
+                                    @endif
+                                </td>
+                                <td>{{ $seller['picPhone'] ?? 'N/A' }}</td>
+                                <td>
+                                    @if(isset($seller['picKtp']) && $seller['picKtp'])
+                                        <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#detailModal{{ $seller['id'] }}">
+                                            {{ $seller['picKtp'] }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">N/A</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(isset($seller['createdAt']))
+                                        {{ \Carbon\Carbon::parse($seller['createdAt'])->format('d M Y') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-clock"></i> Pending
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" 
+                                                class="btn btn-sm btn-info" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#detailModal{{ $seller['id'] }}"
+                                                title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-success" 
+                                                onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')"
+                                                title="Approve">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-danger" 
+                                                onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')"
+                                                title="Reject">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </div>
+
+                                    {{-- Hidden forms --}}
+                                    <form id="approve-form-{{ $seller['id'] }}" 
+                                        action="{{ route('dashboard-admin.sellers.approve', $seller['id']) }}" 
+                                        method="POST" 
+                                        style="display: none;">
+                                        @csrf
+                                    </form>
+
+                                    <form id="reject-form-{{ $seller['id'] }}" 
+                                        action="{{ route('dashboard-admin.sellers.reject', $seller['id']) }}" 
+                                        method="POST" 
+                                        style="display: none;">
+                                        @csrf
+                                    </form>
+                                </td>
+                            </tr>
+
+                            {{-- Detail Modal --}}
+                            <div class="modal fade" id="detailModal{{ $seller['id'] }}" tabindex="-1">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary text-white">
+                                            <h5 class="modal-title">
+                                                <i class="bi bi-shop"></i> Detail Verifikasi Seller
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            
+                                            {{-- SHOP INFO --}}
+                                            <div class="card mb-3">
+                                                <div class="card-header bg-light">
+                                                    <h6 class="mb-0"><i class="bi bi-shop"></i> Informasi Toko</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Nama Toko:</strong>
+                                                            <p class="mb-0">{{ $seller['shopName'] ?? 'N/A' }}</p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Deskripsi:</strong>
+                                                            <p class="mb-0">{{ $seller['shopDescription'] ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Status:</strong>
+                                                            <p class="mb-0">
+                                                                <span class="badge bg-warning">{{ $seller['status'] ?? 'N/A' }}</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Tanggal Daftar:</strong>
+                                                            <p class="mb-0">
+                                                                @if(isset($seller['createdAt']))
+                                                                    {{ \Carbon\Carbon::parse($seller['createdAt'])->format('d M Y, H:i') }} WIB
+                                                                @else
+                                                                    -
+                                                                @endif
+                                                            </p>
+                                                        </div>
+                                                        @if(isset($seller['verifiedAt']) && $seller['verifiedAt'])
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Tanggal Verifikasi:</strong>
+                                                            <p class="mb-0">
+                                                                {{ \Carbon\Carbon::parse($seller['verifiedAt'])->format('d M Y, H:i') }} WIB
+                                                            </p>
+                                                        </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- PIC INFO --}}
+                                            <div class="card mb-3">
+                                                <div class="card-header bg-light">
+                                                    <h6 class="mb-0"><i class="bi bi-person"></i> Informasi Penanggung Jawab (PIC)</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Nama Lengkap:</strong>
+                                                            <p class="mb-0">{{ $seller['picName'] ?? 'N/A' }}</p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>No. KTP:</strong>
+                                                            <p class="mb-0">{{ $seller['picKtp'] ?? 'N/A' }}</p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Email Akun:</strong>
+                                                            <p class="mb-0">
+                                                                <span class="badge bg-info">{{ $seller['userEmail'] ?? 'N/A' }}</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Email PIC:</strong>
+                                                            <p class="mb-0">{{ $seller['picEmail'] ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>No. Telepon:</strong>
+                                                            <p class="mb-0">{{ $seller['picPhone'] ?? 'N/A' }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- ADDRESS INFO --}}
+                                            <div class="card mb-3">
+                                                <div class="card-header bg-light">
+                                                    <h6 class="mb-0"><i class="bi bi-geo-alt"></i> Alamat Lengkap</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12 mb-3">
+                                                            <strong>Alamat:</strong>
+                                                            <p class="mb-0">{{ $seller['picAddress'] ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="col-md-3 mb-2">
+                                                            <strong>RT:</strong>
+                                                            <p class="mb-0">{{ $seller['picRt'] ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="col-md-3 mb-2">
+                                                            <strong>RW:</strong>
+                                                            <p class="mb-0">{{ $seller['picRw'] ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <strong>Provinsi:</strong>
+                                                            <p class="mb-0">{{ $seller['picProvince'] ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <strong>Kota/Kabupaten:</strong>
+                                                            <p class="mb-0">{{ $seller['picCity'] ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <strong>Kecamatan:</strong>
+                                                            <p class="mb-0">{{ $seller['picDistrict'] ?? '-' }}</p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <strong>Kelurahan/Desa:</strong>
+                                                            <p class="mb-0">{{ $seller['picVillage'] ?? '-' }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- DOCUMENTS --}}
+                                            @if(isset($seller['picPhotoPath']) || isset($seller['picKtpPath']))
+                                            <div class="card">
+                                                <div class="card-header bg-light">
+                                                    <h6 class="mb-0"><i class="bi bi-file-earmark-image"></i> Dokumen Pendukung</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        @if(isset($seller['picPhotoPath']) && $seller['picPhotoPath'])
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Foto PIC:</strong>
+                                                            <div class="mt-2">
+                                                                <img src="{{ env('BACKEND_URL', 'http://localhost:3001') }}/{{ $seller['picPhotoPath'] }}" 
+                                                                     class="img-fluid rounded border" 
+                                                                     alt="PIC Photo"
+                                                                     style="max-height: 400px; object-fit: contain; width: 100%;">
+                                                            </div>
+                                                        </div>
+                                                        @endif
+
+                                                        @if(isset($seller['picKtpPath']) && $seller['picKtpPath'])
+                                                        <div class="col-md-6 mb-3">
+                                                            <strong>Foto KTP:</strong>
+                                                            <div class="mt-2">
+                                                                <img src="{{ env('BACKEND_URL', 'http://localhost:3001') }}/{{ $seller['picKtpPath'] }}" 
+                                                                     class="img-fluid rounded border" 
+                                                                     alt="KTP Photo"
+                                                                     style="max-height: 400px; object-fit: contain; width: 100%;">
+                                                            </div>
+                                                        </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endif
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                <i class="bi bi-x-circle"></i> Tutup
+                                            </button>
+                                            <button type="button" 
+                                                    class="btn btn-danger" 
+                                                    onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')">
+                                                <i class="bi bi-x-lg"></i> Tolak
+                                            </button>
+                                            <button type="button" 
+                                                    class="btn btn-success" 
+                                                    onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')">
+                                                <i class="bi bi-check-lg"></i> Setujui
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <h5 class="text-muted">No Pending Sellers</h5>
-                            <p class="text-muted">All sellers have been verified or no registration yet.</p>
-                            <a href="{{ route('dashboard-admin.dashboard') }}" class="btn btn-primary">
-                                <i class="ri-arrow-left-line me-1"></i> Back to Dashboard
-                            </a>
-                        </div>
-                        @endif
-                    </div>
+
+                            @empty
+                            <tr>
+                                <td colspan="9" class="text-center py-4">
+                                    <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+                                    <p class="text-muted">Tidak ada seller yang pending</p>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 @endsection
@@ -330,16 +354,21 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+console.log('Sellers data:', @json($sellers ?? []));
+
 function confirmApprove(sellerId, shopName) {
+    console.log('Approve clicked for seller ID:', sellerId);
+    console.log('Form action:', document.getElementById('approve-form-' + sellerId).action);
+    
     Swal.fire({
         title: 'Approve Seller?',
-        html: `Are you sure you want to approve <strong>${shopName}</strong>?<br><small class="text-muted">This seller will be able to start selling products.</small>`,
+        text: `Apakah Anda yakin ingin menyetujui "${shopName}"?`,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#0acf97',
+        confirmButtonColor: '#28a745',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: '<i class="ri-check-line me-1"></i> Yes, Approve',
-        cancelButtonText: '<i class="ri-close-line me-1"></i> Cancel'
+        confirmButtonText: 'Ya, Setujui!',
+        cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('approve-form-' + sellerId).submit();
@@ -348,15 +377,18 @@ function confirmApprove(sellerId, shopName) {
 }
 
 function confirmReject(sellerId, shopName) {
+    console.log('Reject clicked for seller ID:', sellerId);
+    console.log('Form action:', document.getElementById('reject-form-' + sellerId).action);
+    
     Swal.fire({
         title: 'Reject Seller?',
-        html: `Are you sure you want to reject <strong>${shopName}</strong>?<br><small class="text-muted">This action cannot be undone.</small>`,
+        text: `Apakah Anda yakin ingin menolak "${shopName}"?`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#fa5c7c',
+        confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: '<i class="ri-close-line me-1"></i> Yes, Reject',
-        cancelButtonText: '<i class="ri-close-line me-1"></i> Cancel'
+        confirmButtonText: 'Ya, Tolak!',
+        cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('reject-form-' + sellerId).submit();
@@ -364,15 +396,15 @@ function confirmReject(sellerId, shopName) {
     });
 }
 
-// Auto-dismiss alerts after 5 seconds
+// Auto-dismiss alerts
 document.addEventListener('DOMContentLoaded', function() {
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            const bsAlert = new bootstrap.Alert(alert);
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            var bsAlert = new bootstrap.Alert(alert);
             bsAlert.close();
-        }, 5000);
-    });
+        });
+    }, 5000);
 });
 </script>
 @endpush

@@ -31,29 +31,35 @@ class AdminApi
      * Get all pending sellers
      * GET /api/admin/pending-sellers
      */
-    public function getPendingSellers()
+    public function getPendingSellers($token)
     {
-        return Http::withHeaders($this->getAuthHeaders())
-            ->get($this->baseUrl . '/admin/pending-sellers');
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->get($this->baseUrl . '/admin/pending-sellers');
     }
 
     /**
      * Approve seller by ID
      * POST /api/admin/sellers/{id}/approve
      */
-    public function approveSeller($sellerId)
+    public function approveSeller($token, $sellerId)
     {
-        return Http::withHeaders($this->getAuthHeaders())
-            ->post($this->baseUrl . "/admin/sellers/{$sellerId}/approve");
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->post($this->baseUrl . "/admin/sellers/{$sellerId}/approve");
     }
 
     /**
      * Reject seller by ID
      * POST /api/admin/sellers/{id}/reject
      */
-    public function rejectSeller($sellerId)
+    public function rejectSeller($token, $sellerId)
     {
-        return Http::withHeaders($this->getAuthHeaders())
-            ->post($this->baseUrl . "/admin/sellers/{$sellerId}/reject");
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->post($this->baseUrl . "/admin/sellers/{$sellerId}/reject");
     }
 }

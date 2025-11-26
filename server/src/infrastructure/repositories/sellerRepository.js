@@ -1,45 +1,102 @@
 const pool = require("../../db");
-const Seller = require("../../domain/entities/seller");
-const User = require("../../domain/entities/user");
 
 class SellerRepository {
     /**
-     * Ambil semua seller dengan status 'pending' (belum terverifikasi)
+     * Ambil semua seller dengan status 'pending'
      */
-    async findAllPendingSeller() {
+    async findPendingSellers() {
         const client = await pool.connect();
         
         try {
-            const query = `SELECT * FROM sellers WHERE status = 'pending' ORDER BY created_at DESC;`;
-            const result = await client.query(query);
-    
-            const rows = result.rows.map(row=> new Seller({
-                id: row.id,
-                userId: row.user_id,
-                shopName: row.shop_name,
-                shopDescription: row.shop_description,
-                picName: row.pic_name,
-                picPhoneNumber: row.pic_phone_number,
-                picEmail: row.pic_email,
-                picAddress: row.pic_address,
-                picRt: row.pic_rt,
-                picRw: row.pic_rw,
-                picProvince: row.pic_province,
-                picCity: row.pic_city,
-                picDistrict: row.pic_district,
-                picVillage: row.pic_village,
-                picKtpNumber: row.pic_ktp_number,
-                picPhotoPath: row.pic_photo_path,
-                picKtpPath: row.pic_ktp_path,
-                status: row.status,
-                rejectionReason: row.rejection_reason,
-                verifiedAt: row.verified_at,
-                createdAt: row.created_at,
-                updatedAt: row.updated_at
-                }));
+            console.log("SellerRepository.findPendingSellers() called");
+            
+            const query = `
+                SELECT 
+                    s.id,
+                    s.user_id,
+                    s.shop_name,
+                    s.shop_description,
+                    s.pic_name,
+                    s.pic_phone_number,
+                    s.pic_email,
+                    s.pic_ktp_number,
+                    s.pic_address,
+                    s.pic_rt,
+                    s.pic_rw,
+                    s.pic_province,
+                    s.pic_city,
+                    s.pic_district,
+                    s.pic_village,
+                    s.pic_photo_path,
+                    s.pic_ktp_path,
+                    s.status,
+                    s.verified_at,
+                    s.created_at,
+                    s.updated_at,
+                    u.email as user_email
+                FROM sellers s
+                INNER JOIN users u ON s.user_id = u.id
+                WHERE s.status = 'pending'
+                ORDER BY s.created_at DESC
+            `;
 
-            return rows;
+            const result = await client.query(query);
+            console.log(`Found ${result.rows.length} pending sellers`);
+            
+            return result.rows;
+
         } catch (error) {
+            console.error("SellerRepository - findPendingSellers Error:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    /**
+     * Ambil seller by ID
+     */
+    async findById(sellerId) {
+        const client = await pool.connect();
+        
+        try {
+            console.log(`SellerRepository.findById(${sellerId}) called`);
+            
+            const query = `
+                SELECT 
+                    s.id,
+                    s.user_id,
+                    s.shop_name,
+                    s.shop_description,
+                    s.pic_name,
+                    s.pic_phone_number,
+                    s.pic_email,
+                    s.pic_ktp_number,
+                    s.pic_address,
+                    s.pic_rt,
+                    s.pic_rw,
+                    s.pic_province,
+                    s.pic_city,
+                    s.pic_district,
+                    s.pic_village,
+                    s.pic_photo_path,
+                    s.pic_ktp_path,
+                    s.status,
+                    s.verified_at,
+                    s.created_at,
+                    s.updated_at,
+                    u.email as user_email,
+                    u.role
+                FROM sellers s
+                INNER JOIN users u ON s.user_id = u.id
+                WHERE s.id = $1
+            `;
+
+            const result = await client.query(query, [sellerId]);
+            return result.rows[0] || null;
+
+        } catch (error) {
+            console.error("SellerRepository - findById Error:", error);
             throw error;
         } finally {
             client.release();
@@ -50,115 +107,86 @@ class SellerRepository {
      * Ambil semua seller (untuk statistik admin)
      */
     async findAllSellers() {
+        const client = await pool.connect();
+        
         try {
             const query = `
                 SELECT 
-                    s.id as seller_id,
+                    s.id,
                     s.user_id,
                     s.shop_name,
                     s.shop_description,
                     s.pic_name,
-                    s.pic_phone,
+                    s.pic_phone_number,
                     s.pic_email,
-                    s.pic_ktp,
-                    s.address,
-                    s.province_id,
-                    s.city_id,
-                    s.district_id,
-                    s.village_id,
-                    s.postal_code,
+                    s.pic_ktp_number,
+                    s.pic_address,
+                    s.pic_rt,
+                    s.pic_rw,
+                    s.pic_province,
+                    s.pic_city,
+                    s.pic_district,
+                    s.pic_village,
+                    s.pic_photo_path,
+                    s.pic_ktp_path,
                     s.status,
                     s.verified_at,
                     s.created_at,
                     s.updated_at,
-                    u.email,
+                    u.email as user_email,
                     u.role
                 FROM sellers s
                 INNER JOIN users u ON s.user_id = u.id
                 ORDER BY s.created_at DESC
             `;
 
-            const result = await pool.query(query);
-            return result.rows.map(row => this.mapRowToSeller(row));
+            const result = await client.query(query);
+            return result.rows;
 
         } catch (error) {
             console.error("FindAllSellers Error:", error);
             throw error;
+        } finally {
+            client.release();
         }
     }
 
     /**
-     * Ambil seller berdasarkan ID
+     * UPDATE STATUS - Untuk Approve/Reject Seller
      */
-    async findById(id) {
+    async updateStatus(sellerId, status, verifiedAt = null) {
+        const client = await pool.connect();
+        
         try {
+            console.log(`SellerRepository.updateStatus(${sellerId}, ${status}) called`);
+            
             const query = `
-                SELECT 
-                    s.id as seller_id,
-                    s.user_id,
-                    s.shop_name,
-                    s.shop_description,
-                    s.pic_name,
-                    s.pic_phone,
-                    s.pic_email,
-                    s.pic_ktp,
-                    s.address,
-                    s.province_id,
-                    s.city_id,
-                    s.district_id,
-                    s.village_id,
-                    s.postal_code,
-                    s.status,
-                    s.verified_at,
-                    s.created_at,
-                    s.updated_at,
-                    u.email,
-                    u.role
-                FROM sellers s
-                INNER JOIN users u ON s.user_id = u.id
-                WHERE s.id = $1
-            `;
-
-            const result = await pool.query(query, [id]);
-
-            if (result.rows.length === 0) {
-                return null;
-            }
-
-            return this.mapRowToSeller(result.rows[0]);
-
-        } catch (error) {
-            console.error("FindById Error:", error);
-            throw error;
-        }
-    }
-
-    /**
-     * Update status seller (approve/reject)
-     */
-    async updateStatus(id, status, verifiedAt = null) {
-        try {
-            const query = `
-                UPDATE sellers
-                SET 
-                    status = $1,
+                UPDATE sellers 
+                SET status = $1, 
                     verified_at = $2,
-                    updated_at = CURRENT_TIMESTAMP
+                    updated_at = NOW()
                 WHERE id = $3
                 RETURNING *
             `;
 
-            const result = await pool.query(query, [status, verifiedAt, id]);
+            const result = await client.query(query, [
+                status, 
+                status === 'approved' ? (verifiedAt || new Date()) : null,
+                sellerId
+            ]);
 
             if (result.rows.length === 0) {
-                return null;
+                throw new Error(`Seller with ID ${sellerId} not found`);
             }
 
-            return new Seller(result.rows[0]);
+            console.log(`Seller ${sellerId} status updated to ${status}`);
+            return result.rows[0];
 
         } catch (error) {
-            console.error("UpdateStatus Error:", error);
+            console.error("SellerRepository - updateStatus Error:", error);
             throw error;
+        } finally {
+            client.release();
         }
     }
 }
