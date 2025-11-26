@@ -75,7 +75,8 @@ async function RegisterController(req, res) {
             .status(500)
             .json({
                 code: 500,
-                message: "Internal Server Error."
+                message: "Internal Server Error.",
+                error: error.message
             });
         }
     }
