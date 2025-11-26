@@ -44,6 +44,14 @@ class ProductRepository {
     const result = await pool.query(query, [sellerId]);
     return result.rows;
   }
+
+  async listAll() {
+    const query = `
+      SELECT * FROM products ORDER BY created_at DESC
+    `;
+    const result = await pool.query(query);
+    return result.rows;
+  }
 }
 
 module.exports = ProductRepository;

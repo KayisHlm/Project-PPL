@@ -61,12 +61,9 @@
                                         <label class="form-label" for="seller-product-category">Kategori</label>
                                         <select class="form-select" name="category" id="seller-product-category" required>
                                             <option value="">Pilih kategori</option>
-                                            <option>Elektronik</option>
-                                            <option>Fashion</option>
-                                            <option>Makanan & Minuman</option>
-                                            <option>Aksesoris</option>
-                                            <option>Rumah Tangga</option>
-                                            <option>Olahraga</option>
+                                            @foreach(($categories ?? []) as $c)
+                                                <option value="{{ $c['name'] }}">{{ $c['name'] }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6">
@@ -303,6 +300,10 @@ document.addEventListener('DOMContentLoaded', function(){
       }
       if(act === 'pin' && idx >= 0){
         selectedFiles[idx].pinned = !selectedFiles[idx].pinned;
+        // re-sync file order so pinned item becomes first
+        // ensure the first file submitted becomes cover image on server
+        selectedFiles.sort(function(a,b){ return (b.pinned?1:0) - (a.pinned?0:0); });
+        syncInputFromSelected();
         renderSelected();
         updatePreview();
       }

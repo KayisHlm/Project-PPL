@@ -22,10 +22,10 @@
                                 </select>
                                 <select class="form-select form-select-sm w-auto" id="seller-product-filter-category" style="min-width:200px">
                                     <option value="">Semua Kategori</option>
-                                    <option>Elektronik</option>
-                                    <option>Fashion</option>
-                                    <option>Makanan & Minuman</option>
-                                    <option>Aksesoris</option>
+                                    @php $cats = collect($products ?? [])->pluck('category')->unique()->values(); @endphp
+                                    @foreach($cats as $cat)
+                                        <option>{{ $cat }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

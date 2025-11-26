@@ -6,6 +6,7 @@ const { authenticateToken, authorizeRole } = require("../infrastructure/middlewa
 const GetPendingSellersController = require("../infrastructure/controllers/admin/getPendingSellersController");
 const ApproveSellerController = require("../infrastructure/controllers/admin/approveSellerController");
 const RejectSellerController = require("../infrastructure/controllers/admin/rejectSellerController");
+const ListProductsController = require("../infrastructure/controllers/admin/listProductsController");
 
 // Semua route admin harus authenticated dan role = 'platform_admin'
 router.use(authenticateToken);
@@ -19,5 +20,8 @@ router.post("/sellers/:id/approve", ApproveSellerController);
 
 // POST /api/admin/sellers/:id/reject
 router.post("/sellers/:id/reject", RejectSellerController);
+
+// GET /api/admin/products
+router.get("/products", ListProductsController);
 
 module.exports = router;

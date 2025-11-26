@@ -5,6 +5,8 @@ use App\Http\Controllers\FileUploadController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\SellerProductController;
+use App\Http\Controllers\SellerCategoryController;
+use App\Http\Controllers\AdminCategoryController;
 
 Route::get('/', function () {
     return view('Page.Store.Landing');
@@ -21,12 +23,15 @@ Route::prefix('register')->name('register.')->group(function () {
 Route::prefix('login')->name('login.')->group(function () {
     Route::get('/', [AuthController::class, 'loginIndex'])->name('loginIndex');
     Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::middleware('admin')->prefix('admin')->name('dashboard-admin.')->group(function () {
     Route::view('/dashboard', 'Page.DashboardAdmin.Dashboard')->name('dashboard');
-    Route::view('/kategori', 'Page.DashboardAdmin.Kategori')->name('kategori');
-    Route::view('/produk', 'Page.DashboardAdmin.Produk')->name('produk');
+    Route::get('/kategori', [AdminCategoryController::class, 'index'])->name('kategori');
+    Route::post('/kategori/create', [AdminCategoryController::class, 'store'])->name('kategori.create');
+    Route::get('/tambah-kategori', [AdminCategoryController::class, 'createView'])->name('tambah-kategori');
+    Route::get('/produk', [AdminController::class, 'products'])->name('produk');
     Route::view('/laporan', 'Page.DashboardAdmin.Laporan')->name('laporan');
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
     Route::get('/pending-sellers', [AdminController::class, 'pendingSellers'])->name('pending-sellers');
@@ -39,8 +44,7 @@ Route::prefix('seller')->name('dashboard-seller.')->group(function () {
     Route::get('/kategori', [SellerProductController::class, 'categories'])->name('kategori');
     Route::get('/produk', [SellerProductController::class, 'index'])->name('produk');
     Route::view('/laporan', 'Page.DashboardSeller.Laporan')->name('laporan');
-    Route::view('/tambah-kategori', 'Page.DashboardSeller.TambahKategori')->name('tambah-kategori');
-    Route::view('/tambah-produk', 'Page.DashboardSeller.TambahProduk')->name('tambah-produk');
+    Route::get('/tambah-produk', [SellerProductController::class, 'createView'])->name('tambah-produk');
     Route::post('/produk/create', [SellerProductController::class, 'store'])->name('produk.create');
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
 });

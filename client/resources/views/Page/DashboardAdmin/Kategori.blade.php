@@ -22,31 +22,14 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php($i = 1)
+                                @foreach(($categories ?? []) as $c)
                                 <tr>
-                                    <td>1</td>
-                                    <td>Elektronik</td>
-                                    <td class="text-end">120</td>
+                                    <td>{{ $i++ }}</td>
+                                    <td>{{ $c['name'] ?? '' }}</td>
+                                    <td class="text-end">{{ $c['count'] ?? 0 }}</td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Fashion</td>
-                                    <td class="text-end">95</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Makanan & Minuman</td>
-                                    <td class="text-end">80</td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Olahraga</td>
-                                    <td class="text-end">64</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Kecantikan</td>
-                                    <td class="text-end">72</td>
-                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

@@ -290,4 +290,16 @@ class AuthController extends Controller
             return back()->withInput()->with('error', 'Terjadi kesalahan sistem!');
         }
     }
+
+    public function logout(Request $request)
+    {
+        try {
+            $this->authApi->logout();
+        } catch (\Throwable $e) {
+        }
+        $request->session()->forget(['auth_token','user_data']);
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login.loginIndex')->with('success', 'Anda telah logout.');
+    }
 }

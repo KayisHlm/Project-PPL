@@ -7,7 +7,8 @@ INSERT INTO users (email, password, role) VALUES
     ('seller1@shop.com', '$2b$10$YourHashedPasswordHere2', 'seller'),
     ('seller2@shop.com', '$2b$10$YourHashedPasswordHere3', 'seller'),
     ('platform.admin@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'platform_admin'),
-    ('seller_api@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller')
+    ('seller_api@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller'),
+    ('seller_new@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller')
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert sample sellers
@@ -64,3 +65,38 @@ INSERT INTO sellers (
         'pending'
     )
 ON CONFLICT (user_id) DO NOTHING;
+
+-- Create seller profile for seller_new@example.com
+INSERT INTO sellers (
+    user_id,
+    shop_name,
+    shop_description,
+    pic_name,
+    pic_phone_number,
+    pic_email,
+    pic_address,
+    pic_rt,
+    pic_rw,
+    pic_province,
+    pic_city,
+    pic_district,
+    pic_village,
+    pic_ktp_number,
+    status
+) VALUES (
+    (SELECT id FROM users WHERE email = 'seller_new@example.com'),
+    'Toko Baru',
+    'Toko baru untuk pengujian API',
+    'Andi',
+    '081234567891',
+    'andi@example.com',
+    'Jl. Katalis No. 10',
+    '003',
+    '004',
+    'Jawa Barat',
+    'Bandung',
+    'Coblong',
+    'Dago',
+    '3271012345670003',
+    'approved'
+) ON CONFLICT (user_id) DO NOTHING;

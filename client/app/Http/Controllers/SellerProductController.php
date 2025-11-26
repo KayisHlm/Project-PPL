@@ -25,6 +25,21 @@ class SellerProductController extends Controller
         return view('Page.DashboardSeller.Produk', compact('products'));
     }
 
+    public function createView(Request $request)
+    {
+        $token = session('auth_token');
+        if (!$token) {
+            return redirect()->route('login.loginIndex')->with('error', 'Silakan login terlebih dahulu.');
+        }
+        $catApi = new \App\Api\CategoryApi();
+        $resp = $catApi->publicList($token);
+        $categories = [];
+        if ($resp->status() === 200) {
+            $categories = $resp->json()['data'] ?? [];
+        }
+        return view('Page.DashboardSeller.TambahProduk', compact('categories'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
