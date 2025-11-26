@@ -14,10 +14,10 @@ class ApproveSeller {
                 throw new NotFound("Seller not found");
             }
 
-            // Update status menjadi 'active'
+            // Update status menjadi 'approved'
             const updatedSeller = await this.sellerRepository.updateStatus(
                 sellerId, 
-                'active', 
+                'approved', 
                 new Date()
             );
 

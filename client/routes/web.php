@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FileUploadController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WilayahController;
@@ -22,16 +23,15 @@ Route::prefix('login')->name('login.')->group(function () {
     Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
 });
 
-Route::prefix('login')->name('login.')->group(function () {
-    Route::get('/', [AuthController::class, 'loginIndex'])->name('loginIndex');
-});
-
-Route::prefix('admin')->name('dashboard-admin.')->group(function () {
+Route::middleware('admin')->prefix('admin')->name('dashboard-admin.')->group(function () {
     Route::view('/dashboard', 'Page.DashboardAdmin.Dashboard')->name('dashboard');
     Route::view('/kategori', 'Page.DashboardAdmin.Kategori')->name('kategori');
     Route::view('/produk', 'Page.DashboardAdmin.Produk')->name('produk');
     Route::view('/laporan', 'Page.DashboardAdmin.Laporan')->name('laporan');
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
+    Route::get('/pending-sellers', [AdminController::class, 'pendingSellers'])->name('pending-sellers');
+    Route::post('/sellers/{id}/approve', [AdminController::class, 'approveSeller'])->name('sellers.approve');
+    Route::post('/sellers/{id}/reject', [AdminController::class, 'rejectSeller'])->name('sellers.reject');
 });
 
 Route::prefix('seller')->name('dashboard-seller.')->group(function () {

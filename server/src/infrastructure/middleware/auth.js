@@ -79,7 +79,7 @@ function authorizeRole(...allowedRoles) {
 
 //admin
 function requireAdmin(req, res, next){
-    authorizeRole("Platform Admin")(req, res, next);
+    authorizeRole("platform_admin")(req, res, next);
 }
 
 //seller
