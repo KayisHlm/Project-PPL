@@ -92,9 +92,7 @@
                                 <td>{{ $seller['picPhone'] ?? 'N/A' }}</td>
                                 <td>
                                     @if(isset($seller['picKtp']) && $seller['picKtp'])
-                                        <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#detailModal{{ $seller['id'] }}">
-                                            {{ $seller['picKtp'] }}
-                                        </a>
+                                        {{ $seller['picKtp'] }}
                                     @else
                                         <span class="text-muted">N/A</span>
                                     @endif
@@ -112,27 +110,13 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="btn-group" role="group">
-                                        <button type="button" 
-                                                class="btn btn-sm btn-info" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#detailModal{{ $seller['id'] }}"
-                                                title="View Details">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                        <button type="button" 
-                                                class="btn btn-sm btn-success" 
-                                                onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')"
-                                                title="Approve">
-                                            <i class="bi bi-check-lg"></i>
-                                        </button>
-                                        <button type="button" 
-                                                class="btn btn-sm btn-danger" 
-                                                onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')"
-                                                title="Reject">
-                                            <i class="bi bi-x-lg"></i>
-                                        </button>
-                                    </div>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-light" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#detailModal{{ $seller['id'] }}"
+                                            title="Lihat Detail">
+                                        <i class="bi bi-eye"></i> Detail
+                                    </button>
 
                                     {{-- Hidden forms --}}
                                     <form id="approve-form-{{ $seller['id'] }}" 
@@ -316,7 +300,7 @@
 
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
                                                 <i class="bi bi-x-circle"></i> Tutup
                                             </button>
                                             <button type="button" 
