@@ -83,6 +83,12 @@
                             <span class="menu-text"> Kategori </span>
                         </a>
                     </li>
+                    <li class="side-nav-item">
+                        <a href="{{ route('dashboard-admin.pending-sellers') }}" class="side-nav-link">
+                            <span class="menu-icon"><i class="ri-user-search-line"></i></span>
+                            <span class="menu-text"> Pending Sellers </span>
+                        </a>
+                    </li>
                     @endif
 
                     <li class="side-nav-item">

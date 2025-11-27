@@ -2,14 +2,20 @@ const pool = require("../../db");
 
 class CategoryRepository {
   async createGlobal(name) {
-    const result = await pool.query(
+    const check = await pool.query(
+      `SELECT id FROM categories WHERE seller_id IS NULL AND name = $1 LIMIT 1`,
+      [name]
+    );
+    if (check.rows.length > 0) {
+      return null;
+    }
+    const insert = await pool.query(
       `INSERT INTO categories (seller_id, name, created_at, updated_at)
-       VALUES (NULL,$1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-       ON CONFLICT (seller_id, name) DO NOTHING
+       VALUES (NULL, $1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
        RETURNING *`,
       [name]
     );
-    return result.rows[0] || null;
+    return insert.rows[0] || null;
   }
 
   async listAll() {

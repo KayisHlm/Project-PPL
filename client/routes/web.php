@@ -12,6 +12,11 @@ Route::get('/', function () {
     return view('Page.Store.Landing');
 });
 
+// Error pages
+Route::get('/unauthorized', function () {
+    return view('Page.Errors.Unauthorized');
+})->name('error.unauthorized');
+
 // File upload route (for Dropzone)
 Route::post('/upload/temp', [FileUploadController::class, 'uploadTemp'])->name('upload.temp');
 
@@ -39,7 +44,7 @@ Route::middleware('admin')->prefix('admin')->name('dashboard-admin.')->group(fun
     Route::post('/sellers/{sellerId}/reject', [AdminController::class, 'rejectSeller'])->name('sellers.reject');
 });
 
-Route::prefix('seller')->name('dashboard-seller.')->group(function () {
+Route::middleware('seller')->prefix('seller')->name('dashboard-seller.')->group(function () {
     Route::view('/dashboard', 'Page.DashboardSeller.Dashboard')->name('dashboard');
     Route::get('/kategori', [SellerProductController::class, 'categories'])->name('kategori');
     Route::get('/produk', [SellerProductController::class, 'index'])->name('produk');
