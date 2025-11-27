@@ -261,26 +261,9 @@ class AuthController extends Controller
 
             if ($apiResponse->successful()) {
                 DB::commit();
-                $loginData = [
-                    'email' => $request->input('email'),
-                    'password' => $request->input('password'),
-                ];
-                $loginResponse = $this->authApi->login($loginData);
-                if ($loginResponse && $loginResponse->status() === 200) {
-                    $loginJson = $loginResponse->json();
-                    if (isset($loginJson['token'])) {
-                        session([
-                            'auth_token' => $loginJson['token'],
-                            'user_data' => $loginJson['user'] ?? null
-                        ]);
-                        $role = $loginJson['user']['role'] ?? null;
-                        if ($role == '') {
-                            return redirect()->route('dashboard-seller.dashboard')->with('success', 'Registrasi berhasil. Anda telah login sebagai penjual.');
-                        }
-                        return redirect()->route('dashboard-admin.dashboard')->with('success', 'Registrasi berhasil. Anda telah login.');
-                    }
-                }
-                return redirect()->route('login.loginIndex')->with('success', 'Registrasi berhasil. Silakan login.');
+                
+                return redirect()->route('login.loginIndex')
+                    ->with('success', 'Registrasi berhasil! Silakan login dengan akun Anda.');
             }
         } catch (\Throwable $e) {
             DB::rollBack();

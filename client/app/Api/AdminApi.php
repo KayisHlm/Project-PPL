@@ -3,6 +3,7 @@
 namespace App\Api;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AdminApi
 {
@@ -37,6 +38,20 @@ class AdminApi
             'Authorization' => 'Bearer ' . $token,
             'Accept' => 'application/json',
         ])->get($this->baseUrl . '/admin/pending-sellers');
+    }
+
+    /**
+     * Get all approved sellers ✨ NEW METHOD
+     * GET /admin/approved-sellers
+     */
+    public function getApprovedSellers($token)
+    {
+        Log::info('AdminApi.getApprovedSellers called');
+        
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->get("{$this->baseUrl}/admin/approved-sellers");
     }
 
     /**

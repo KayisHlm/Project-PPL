@@ -39,6 +39,7 @@ Route::middleware('admin')->prefix('admin')->name('dashboard-admin.')->group(fun
     Route::get('/produk', [AdminController::class, 'products'])->name('produk');
     Route::view('/laporan', 'Page.DashboardAdmin.Laporan')->name('laporan');
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
+    Route::get('/sellers', [AdminController::class, 'approvedSellers'])->name('sellers');
     Route::get('/pending-sellers', [AdminController::class, 'pendingSellers'])->name('pending-sellers');
     Route::post('/sellers/{sellerId}/approve', [AdminController::class, 'approveSeller'])->name('sellers.approve');
     Route::post('/sellers/{sellerId}/reject', [AdminController::class, 'rejectSeller'])->name('sellers.reject');

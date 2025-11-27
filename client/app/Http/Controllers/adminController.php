@@ -56,58 +56,30 @@ class AdminController extends Controller
 
             $response = $this->adminApi->getPendingSellers($token);
 
-            Log::info('API Response received', [
-                'has_response' => !is_null($response),
-                'is_successful' => $response ? $response->successful() : false
-            ]);
-
             if ($response && $response->successful()) {
                 $responseData = $response->json();
                 
-                // ✅ FIX: Handle both response formats
+                Log::info('Raw API Response:', $responseData);
+                
+                // Get data from response
                 $data = $responseData['data'] ?? $responseData;
-                $sellers = $data['sellers'] ?? [];
+                $rawSellers = $data['sellers'] ?? [];
                 $total = $data['total'] ?? 0;
 
-                // ✅ TRANSFORM: Pastikan setiap seller punya 'id'
-                $sellers = collect($sellers)->map(function($seller) {
-                    return [
-                        'id' => $seller['id'] ?? null,  // ✅ PENTING!
-                        'userId' => $seller['userId'] ?? null,
-                        'userEmail' => $seller['userEmail'] ?? 'N/A',
-                        'shopName' => $seller['shopName'] ?? 'N/A',
-                        'shopDescription' => $seller['shopDescription'] ?? '',
-                        'picName' => $seller['picName'] ?? 'N/A',
-                        'picPhone' => $seller['picPhone'] ?? 'N/A',
-                        'picEmail' => $seller['picEmail'] ?? '',
-                        'picKtp' => $seller['picKtp'] ?? 'N/A',
-                        'picAddress' => $seller['picAddress'] ?? '',
-                        'picRt' => $seller['picRt'] ?? '',
-                        'picRw' => $seller['picRw'] ?? '',
-                        'picProvince' => $seller['picProvince'] ?? '',
-                        'picCity' => $seller['picCity'] ?? '',
-                        'picDistrict' => $seller['picDistrict'] ?? '',
-                        'picVillage' => $seller['picVillage'] ?? '',
-                        'picPhotoPath' => $seller['picPhotoPath'] ?? '',
-                        'picKtpPath' => $seller['picKtpPath'] ?? '',
-                        'status' => $seller['status'] ?? 'pending',
-                        'verifiedAt' => $seller['verifiedAt'] ?? null,
-                        'createdAt' => $seller['createdAt'] ?? null,
-                        'updatedAt' => $seller['updatedAt'] ?? null,
-                    ];
-                })->toArray();
+                // Pending sellers API returns camelCase, no transformation needed
+                $sellers = $rawSellers;
 
-                Log::info('Sellers data transformed', [
+                Log::info('Sellers data loaded', [
                     'total' => $total,
                     'count' => count($sellers),
-                    'first_seller_has_id' => isset($sellers[0]['id'])
+                    'first_seller_id' => $sellers[0]['id'] ?? null
                 ]);
 
                 return view('Page.DashboardAdmin.PendingSellers', compact('sellers', 'total'));
             } else {
                 $errorMessage = $response ? ($response->json()['message'] ?? 'Failed to fetch pending sellers') : 'No response from API';
                 
-                Log::error('Failed to fetch sellers', [
+                Log::error('Failed to fetch pending sellers', [
                     'error' => $errorMessage,
                     'status' => $response ? $response->status() : 'null'
                 ]);
@@ -122,8 +94,7 @@ class AdminController extends Controller
             Log::error('Pending Sellers Exception', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
+                'line' => $e->getLine()
             ]);
 
             return view('Page.DashboardAdmin.PendingSellers')
@@ -133,83 +104,212 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     * ✨ NEW METHOD: Get approved sellers
+     */
+    public function approvedSellers()
+    {
+        try {
+            $token = session('auth_token');
+            
+            if (!$token) {
+                Log::warning('No auth token found');
+                return redirect()->route('login.loginIndex')
+                    ->with('error', 'Silakan login terlebih dahulu');
+            }
+
+            Log::info('Fetching approved sellers with token');
+
+            $response = $this->adminApi->getApprovedSellers($token);
+
+            if ($response && $response->successful()) {
+                $responseData = $response->json();
+                
+                Log::info('Raw API Response:', $responseData);
+                
+                // Get data from response
+                $data = $responseData['data'] ?? $responseData;
+                $rawSellers = $data['sellers'] ?? [];
+                $total = $data['total'] ?? 0;
+
+                // Transform sellers data
+                $sellers = $this->transformSellersData($rawSellers);
+
+                Log::info('Approved sellers data transformed', [
+                    'total' => $total,
+                    'count' => count($sellers),
+                    'first_seller_id' => $sellers[0]['id'] ?? null
+                ]);
+
+                return view('Page.DashboardAdmin.Seller', compact('sellers', 'total'));
+            } else {
+                $errorMessage = $response ? ($response->json()['message'] ?? 'Failed to fetch approved sellers') : 'No response from API';
+                
+                Log::error('Failed to fetch approved sellers', [
+                    'error' => $errorMessage,
+                    'status' => $response ? $response->status() : 'null'
+                ]);
+
+                return view('Page.DashboardAdmin.Seller')
+                    ->withErrors(['fetch' => $errorMessage])
+                    ->with('sellers', [])
+                    ->with('total', 0);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Approved Sellers Exception', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return view('Page.DashboardAdmin.Seller')
+                ->withErrors(['fetch' => 'Connection error: ' . $e->getMessage()])
+                ->with('sellers', [])
+                ->with('total', 0);
+        }
+    }
+
+    /**
+     * 🔧 HELPER: Transform sellers data from snake_case to camelCase
+     */
+    private function transformSellersData($rawSellers)
+    {
+        return collect($rawSellers)->map(function($seller) {
+            return [
+                'id' => $seller['id'] ?? null,
+                'userId' => $seller['user_id'] ?? null,
+                'userEmail' => $seller['user_email'] ?? 'N/A',
+                'shopName' => $seller['shop_name'] ?? 'N/A',
+                'shopDescription' => $seller['shop_description'] ?? '',
+                'picName' => $seller['pic_name'] ?? 'N/A',
+                'picPhone' => $seller['pic_phone_number'] ?? 'N/A',
+                'picEmail' => $seller['pic_email'] ?? '',
+                'picKtp' => $seller['pic_ktp_number'] ?? 'N/A',
+                'picAddress' => $seller['pic_address'] ?? '',
+                'picRt' => $seller['pic_rt'] ?? '',
+                'picRw' => $seller['pic_rw'] ?? '',
+                'picProvince' => $seller['pic_province'] ?? '',
+                'picCity' => $seller['pic_city'] ?? '',
+                'picDistrict' => $seller['pic_district'] ?? '',
+                'picVillage' => $seller['pic_village'] ?? '',
+                'picPhotoPath' => $seller['pic_photo_path'] ?? '',
+                'picKtpPath' => $seller['pic_ktp_path'] ?? '',
+                'status' => $seller['status'] ?? 'pending',
+                'verifiedAt' => $seller['verified_at'] ?? null,
+                'createdAt' => $seller['created_at'] ?? null,
+                'updatedAt' => $seller['updated_at'] ?? null,
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Approve seller
+     */
     public function approveSeller($sellerId)
-        {
-            try {
-                $token = session('auth_token');
-                
-                if (!$token) {
-                    return redirect()->route('login.loginIndex');
-                }
-
-                // ✅ FIX: Validasi sellerId
-                if (!$sellerId || !is_numeric($sellerId)) {
-                    Log::error('Invalid seller ID', ['id' => $sellerId]);
-                    return back()->withErrors(['approve' => 'Invalid seller ID']);
-                }
-
-                Log::info('Approving seller', ['id' => $sellerId]);
-
-                $response = $this->adminApi->approveSeller($token, $sellerId);
-
-                if ($response && $response->successful()) {
-                    Log::info('Seller approved', ['id' => $sellerId]);
-                    return redirect()->route('dashboard-admin.pending-sellers')
-                        ->with('success', 'Penjual berhasil disetujui!');
-                } else {
-                    $errorMessage = $response ? ($response->json()['message'] ?? 'Failed to approve seller') : 'No response';
-                    Log::error('Approve failed', ['error' => $errorMessage]);
-                    return back()->withErrors(['approve' => $errorMessage]);
-                }
-
-            } catch (\Exception $e) {
-                Log::error('Approve Exception: ' . $e->getMessage());
-                return back()->withErrors(['approve' => 'Connection error: ' . $e->getMessage()]);
+    {
+        try {
+            $token = session('auth_token');
+            
+            if (!$token) {
+                return redirect()->route('login.loginIndex');
             }
-        }
 
-        public function rejectSeller($sellerId)
-        {
-            try {
-                $token = session('auth_token');
-                
-                if (!$token) {
-                    return redirect()->route('login.loginIndex');
-                }
-
-                // ✅ FIX: Validasi sellerId
-                if (!$sellerId || !is_numeric($sellerId)) {
-                    Log::error('Invalid seller ID', ['id' => $sellerId]);
-                    return back()->withErrors(['reject' => 'Invalid seller ID']);
-                }
-
-                Log::info('Rejecting seller', ['id' => $sellerId]);
-
-                $response = $this->adminApi->rejectSeller($token, $sellerId);
-
-                if ($response && $response->successful()) {
-                    Log::info('Seller rejected', ['id' => $sellerId]);
-                    return redirect()->route('dashboard-admin.pending-sellers')
-                        ->with('success', 'Penjual berhasil ditolak!');
-                } else {
-                    $errorMessage = $response ? ($response->json()['message'] ?? 'Failed to reject seller') : 'No response';
-                    Log::error('Reject failed', ['error' => $errorMessage]);
-                    return back()->withErrors(['reject' => $errorMessage]);
-                }
-
-            } catch (\Exception $e) {
-                Log::error('Reject Exception: ' . $e->getMessage());
-                return back()->withErrors(['reject' => 'Connection error: ' . $e->getMessage()]);
+            if (!$sellerId || !is_numeric($sellerId)) {
+                Log::error('Invalid seller ID', ['id' => $sellerId]);
+                return back()->withErrors(['approve' => 'Invalid seller ID']);
             }
-        }
 
+            Log::info('Approving seller', ['id' => $sellerId]);
+
+            $response = $this->adminApi->approveSeller($token, $sellerId);
+
+            if ($response && $response->successful()) {
+                Log::info('Seller approved successfully', ['id' => $sellerId]);
+                return redirect()->route('dashboard-admin.pending-sellers')
+                    ->with('success', 'Penjual berhasil disetujui!');
+            } else {
+                $errorMessage = $response ? ($response->json()['message'] ?? 'Failed to approve seller') : 'No response';
+                Log::error('Approve failed', ['error' => $errorMessage, 'sellerId' => $sellerId]);
+                return back()->withErrors(['approve' => $errorMessage]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Approve Exception', [
+                'message' => $e->getMessage(),
+                'sellerId' => $sellerId
+            ]);
+            return back()->withErrors(['approve' => 'Connection error: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Reject seller
+     */
+    public function rejectSeller($sellerId)
+    {
+        try {
+            $token = session('auth_token');
+            
+            if (!$token) {
+                return redirect()->route('login.loginIndex');
+            }
+
+            if (!$sellerId || !is_numeric($sellerId)) {
+                Log::error('Invalid seller ID', ['id' => $sellerId]);
+                return back()->withErrors(['reject' => 'Invalid seller ID']);
+            }
+
+            Log::info('Rejecting seller', ['id' => $sellerId]);
+
+            $response = $this->adminApi->rejectSeller($token, $sellerId);
+
+            if ($response && $response->successful()) {
+                Log::info('Seller rejected successfully', ['id' => $sellerId]);
+                return redirect()->route('dashboard-admin.pending-sellers')
+                    ->with('success', 'Penjual berhasil ditolak!');
+            } else {
+                $errorMessage = $response ? ($response->json()['message'] ?? 'Failed to reject seller') : 'No response';
+                Log::error('Reject failed', ['error' => $errorMessage, 'sellerId' => $sellerId]);
+                return back()->withErrors(['reject' => $errorMessage]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Reject Exception', [
+                'message' => $e->getMessage(),
+                'sellerId' => $sellerId
+            ]);
+            return back()->withErrors(['reject' => 'Connection error: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Get all products
+     */
     public function products()
     {
-        $response = $this->adminApi->getProducts();
-        $products = [];
-        if ($response->successful()) {
-            $products = $response->json()['data'] ?? [];
+        try {
+            $token = session('auth_token');
+            
+            if (!$token) {
+                return redirect()->route('login.loginIndex');
+            }
+
+            $response = $this->adminApi->getProducts();
+            
+            $products = [];
+            if ($response && $response->successful()) {
+                $data = $response->json();
+                $products = $data['data'] ?? [];
+            }
+            
+            return view('Page.DashboardAdmin.Produk', compact('products'));
+            
+        } catch (\Exception $e) {
+            Log::error('Products Exception: ' . $e->getMessage());
+            return view('Page.DashboardAdmin.Produk')
+                ->withErrors(['fetch' => 'Failed to load products'])
+                ->with('products', []);
         }
-        return view('Page.DashboardAdmin.Produk', compact('products'));
     }
 }

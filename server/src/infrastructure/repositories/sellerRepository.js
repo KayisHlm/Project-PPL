@@ -54,6 +54,58 @@ class SellerRepository {
     }
 
     /**
+     * Ambil semua seller dengan status 'approved' ✨ NEW METHOD
+     */
+    async findApprovedSellers() {
+        const client = await pool.connect();
+        
+        try {
+            console.log("SellerRepository.findApprovedSellers() called");
+            
+            const query = `
+                SELECT 
+                    s.id,
+                    s.user_id,
+                    s.shop_name,
+                    s.shop_description,
+                    s.pic_name,
+                    s.pic_phone_number,
+                    s.pic_email,
+                    s.pic_ktp_number,
+                    s.pic_address,
+                    s.pic_rt,
+                    s.pic_rw,
+                    s.pic_province,
+                    s.pic_city,
+                    s.pic_district,
+                    s.pic_village,
+                    s.pic_photo_path,
+                    s.pic_ktp_path,
+                    s.status,
+                    s.verified_at,
+                    s.created_at,
+                    s.updated_at,
+                    u.email as user_email
+                FROM sellers s
+                INNER JOIN users u ON s.user_id = u.id
+                WHERE s.status = 'approved'
+                ORDER BY s.verified_at DESC, s.created_at DESC
+            `;
+
+            const result = await client.query(query);
+            console.log(`Found ${result.rows.length} approved sellers`);
+            
+            return result.rows;
+
+        } catch (error) {
+            console.error("SellerRepository - findApprovedSellers Error:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    /**
      * Ambil seller by ID
      */
     async findById(sellerId) {

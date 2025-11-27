@@ -4,6 +4,7 @@ const { authenticateToken, authorizeRole } = require("../infrastructure/middlewa
 
 // Import controllers dari folder ADMIN (bukan seller)
 const GetPendingSellersController = require("../infrastructure/controllers/admin/getPendingSellersController");
+const GetApprovedSellersController = require("../infrastructure/controllers/admin/getApprovedSellerController");
 const ApproveSellerController = require("../infrastructure/controllers/admin/approveSellerController");
 const RejectSellerController = require("../infrastructure/controllers/admin/rejectSellerController");
 const ListProductsController = require("../infrastructure/controllers/admin/listProductsController");
@@ -14,6 +15,9 @@ router.use(authorizeRole('platform_admin'));
 
 // GET /api/admin/pending-sellers
 router.get("/pending-sellers", GetPendingSellersController);
+
+// GET /api/admin/approved-sellers
+router.get("/approved-sellers", GetApprovedSellersController);
 
 // POST /api/admin/sellers/:id/approve
 router.post("/sellers/:id/approve", ApproveSellerController);

@@ -22,6 +22,8 @@
     <!-- Icons css -->
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
     <!-- Theme Config Js -->
     <script src="{{ asset('assets/js/config.js') }}"></script>
     <style>
@@ -87,6 +89,13 @@
                         <a href="{{ route('dashboard-admin.pending-sellers') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-user-search-line"></i></span>
                             <span class="menu-text"> Pending Sellers </span>
+                        </a>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a href="{{ route('dashboard-admin.sellers') }}" class="side-nav-link">
+                            <span class="menu-icon"><i class="ri-store-2-line"></i></span>
+                            <span class="menu-text"> Approved Sellers </span>
                         </a>
                     </li>
                     @endif
