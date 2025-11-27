@@ -1,6 +1,6 @@
 create table reviews (
-    id_review BIGSERIAL PRIMARY KEY,
-    product_id BIGINT NOT NULL REFERENCES products(id_products) ON DELETE CASCADE,
+    id BIGSERIAL PRIMARY KEY,
+    product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     email VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     no_telp VARCHAR(20),

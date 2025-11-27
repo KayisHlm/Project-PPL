@@ -27,10 +27,9 @@ async function runMigration() {
       "001_create_users_table.sql",
       "002_create_sellers_table.sql",
       "003_create_products_table.sql",
-      "004_alter_products_add_cover_image.sql",
-      "005_create_categories_table.sql",
-      "006_create_image_products_table.sql",
-      "007_create_review_table.sql",
+      "004_create_categories_table.sql",
+      "005_create_image_products_table.sql",
+      "006_create_review_table.sql",
     ];
 
     // Run each migration file
@@ -108,7 +107,7 @@ async function runMigration() {
   } catch (error) {
     console.error("❌ Migration failed:", error.message);
     console.error(
-      '💡 Make sure PostgreSQL is running and database "grade" exists'
+      '💡 Make sure PostgreSQL is running and database "katalog" exists'
     );
     process.exit(1);
   } finally {
