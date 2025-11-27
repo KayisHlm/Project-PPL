@@ -29,7 +29,7 @@ async function runMigration() {
       "003_create_products_table.sql",
       "004_create_categories_table.sql",
       "005_create_image_products_table.sql",
-      "006_create_review_table.sql",
+      "006_create_reviews_table.sql",
     ];
 
     // Run each migration file
@@ -121,11 +121,12 @@ async function runSeederOnly() {
 
     // Define seeder files in order
     const seederFiles = [
-      "seed_users_sellers.sql",
-      "seed_categori.sql",
-      "seed_product.sql",
-      "seed_image.sql",
-      "seed_review.sql",
+      "seed_users.sql",
+      "seed_sellers.sql",
+      "seed_categories.sql",
+      "seed_products.sql",
+      "seed_image_products.sql",
+      "seed_reviews.sql",
     ];
 
     // Run each seeder file

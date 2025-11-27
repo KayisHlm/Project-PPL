@@ -6,21 +6,48 @@ class CreateProduct {
   }
 
   async execute(sellerId, body) {
-    const required = ["name","condition","price","weight","minOrder","category","warranty","year","claim","description"];
+    // Validate required fields based on actual database schema
+    const required = ["name", "price", "weight", "stock"];
     for (const f of required) {
-      if (!body[f] && body[f] !== 0) throw new BadRequest(`Field '${f}' is required`);
+      if (!body[f] && body[f] !== 0) {
+        throw new BadRequest(`Field '${f}' is required`);
+      }
     }
-    if (!["Baru","Bekas"].includes(body.condition)) throw new BadRequest("condition must be 'Baru' or 'Bekas'");
-    const price = parseInt(body.price,10);
-    const weight = parseInt(body.weight,10);
-    const minOrder = parseInt(body.minOrder,10);
-    const year = parseInt(body.year,10);
-    if (!(price > 0)) throw new BadRequest("price must be > 0");
-    if (!(weight >= 1)) throw new BadRequest("weight must be >= 1");
-    if (!(minOrder >= 1)) throw new BadRequest("minOrder must be >= 1");
-    if (!(year >= 2000)) throw new BadRequest("year must be >= 2000");
 
-    const created = await this.productRepository.create(sellerId, body);
+    // Validate data types and ranges
+    const price = parseFloat(body.price);
+    const weight = parseInt(body.weight, 10);
+    const stock = parseInt(body.stock, 10);
+
+    if (isNaN(price) || price <= 0) {
+      throw new BadRequest("price must be a positive number");
+    }
+    if (isNaN(weight) || weight < 1) {
+      throw new BadRequest("weight must be >= 1");
+    }
+    if (isNaN(stock) || stock < 0) {
+      throw new BadRequest("stock must be >= 0");
+    }
+
+    // Optional fields validation
+    if (body.category && typeof body.category !== 'string') {
+      throw new BadRequest("category must be a string");
+    }
+    if (body.description && typeof body.description !== 'string') {
+      throw new BadRequest("description must be a string");
+    }
+
+    // Prepare data for repository
+    const productData = {
+      name: body.name,
+      price,
+      weight,
+      stock,
+      category: body.category || null,
+      description: body.description || null
+    };
+
+    const created = await this.productRepository.create(sellerId, productData);
     return created;
   }
 }

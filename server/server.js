@@ -28,12 +28,16 @@ app.use(cookieParser());
 const authRoutes = require("./src/routes/authRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const categoryRoutes = require("./src/routes/categoryRoutes");
+const imageRoutes = require("./src/routes/imageRoutes");
+const reviewRoutes = require("./src/routes/reviewRoutes");
 
 // buat endpoint
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/images", imageRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // check health
 app.get("/api/health", (req, res) => {

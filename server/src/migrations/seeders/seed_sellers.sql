@@ -1,16 +1,3 @@
--- Seeder: Sample data for users and sellers tables
--- This will add sample users and sellers for testing
-
--- Insert sample users
-INSERT INTO users (email, password, role) VALUES
-    ('admin@platform.com', '$2b$10$YourHashedPasswordHere1', 'platform_admin'),
-    ('seller1@shop.com', '$2b$10$YourHashedPasswordHere2', 'seller'),
-    ('seller2@shop.com', '$2b$10$YourHashedPasswordHere3', 'seller'),
-    ('platform.admin@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'platform_admin'),
-    ('seller_api@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller'),
-    ('seller_new@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller')
-ON CONFLICT (email) DO NOTHING;
-
 -- Insert sample sellers
 -- Note: Make sure the user_id matches the actual user IDs created above
 INSERT INTO sellers (
@@ -66,7 +53,7 @@ INSERT INTO sellers (
     )
 ON CONFLICT (user_id) DO NOTHING;
 
--- Create seller profile for seller_new@example.com
+-- Insert another sample seller
 INSERT INTO sellers (
     user_id,
     shop_name,
@@ -85,8 +72,43 @@ INSERT INTO sellers (
     status
 ) VALUES (
     (SELECT id FROM users WHERE email = 'seller_new@example.com'),
-    'Toko Baru',
-    'Toko baru untuk pengujian API',
+    'Toko Furniture Minimalis',
+    'Toko furniture dengan desain minimalis modern',
+    'Putra',
+    '081234567891',
+    'putra@example.com',
+    'Jl. Mulawarman No. 20',
+    '003',
+    '004',
+    'Jawa Barat',
+    'Bandung',
+    'Jatinangor',
+    'Dago',
+    '3271012345670003',
+    'approved'
+);
+
+-- Create seller profile for seller_new@example.com
+INSERT INTO sellers (
+    user_id,
+    shop_name,
+    shop_description,
+    pic_name,
+    pic_phone_number,
+    pic_email,
+    pic_address,
+    pic_rt,
+    pic_rw,
+    pic_province,
+    pic_city,
+    pic_district,
+    pic_village,
+    pic_ktp_number,
+    status
+) VALUES (
+    (SELECT id FROM users WHERE email = 'seller_api@example.com'),
+    'Toko Gaming Pro',
+    'Toko khusus perlengkapan gaming',
     'Andi',
     '081234567891',
     'andi@example.com',
@@ -97,6 +119,6 @@ INSERT INTO sellers (
     'Bandung',
     'Coblong',
     'Dago',
-    '3271012345670003',
+    '3217198401210004',
     'approved'
-) ON CONFLICT (user_id) DO NOTHING;
+);

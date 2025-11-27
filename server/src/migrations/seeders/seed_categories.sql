@@ -8,4 +8,9 @@ insert into categories (name) values
 ('Computers'),
 ('Accessories'),
 ('Photography'),
-('Wearables');
+('Wearables'),
+('Furniture'),
+('Clothing'),
+('Books'),
+('Toys'),
+('Sports Equipment');
