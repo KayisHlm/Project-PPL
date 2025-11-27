@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class Admin
+class Seller
 {
    /**
      * Handle an incoming request.
@@ -19,12 +19,12 @@ class Admin
                 ->withErrors(['access' => 'Please login first']);
         }
         
-        // Cek apakah user adalah admin (role: platform_admin)
+        // Cek apakah user adalah seller (role: seller)
         $userData = session('user_data');
-        if (!$userData || ($userData['role'] ?? '') !== 'platform_admin') {
+        if (!$userData || ($userData['role'] ?? '') !== 'seller') {
             // Redirect ke halaman 401 Unauthorized
             return redirect()->route('error.unauthorized')
-                ->with('error_details', 'Akses ditolak. Halaman ini hanya untuk Admin.');
+                ->with('error_details', 'Akses ditolak. Halaman ini hanya untuk Seller.');
         }
         
         return $next($request);
