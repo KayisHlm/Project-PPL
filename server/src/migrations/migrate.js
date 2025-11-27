@@ -26,6 +26,11 @@ async function runMigration() {
     const migrationFiles = [
       "001_create_users_table.sql",
       "002_create_sellers_table.sql",
+      "003_create_products_table.sql",
+      "004_alter_products_add_cover_image.sql",
+      "005_create_categories_table.sql",
+      "006_create_image_products_table.sql",
+      "007_create_review_table.sql",
     ];
 
     // Run each migration file
@@ -79,6 +84,14 @@ async function runMigration() {
       );
     }
 
+    // Check products table
+    const productCount = await pool.query("SELECT COUNT(*) as total FROM products");
+    console.log(`📦 Total products in database: ${productCount.rows[0].total}`);
+
+    // Check categories table
+    const categoryCount = await pool.query("SELECT COUNT(*) as total FROM categories");
+    console.log(`🗂️  Total categories in database: ${categoryCount.rows[0].total}`);
+
     // Check sellers table
     const sellerCount = await pool.query("SELECT COUNT(*) as total FROM sellers");
     console.log(`🏪 Total sellers in database: ${sellerCount.rows[0].total}`);
@@ -97,14 +110,28 @@ async function runSeederOnly() {
   try {
     console.log("🌱 Starting database seeder...");
 
-    // Read the seeder file
-    const seederPath = path.join(__dirname, "seeders", "seed_users_sellers.sql");
-    const seederSQL = fs.readFileSync(seederPath, "utf8");
+    // Define seeder files in order
+    const seederFiles = [
+      "seed_users_sellers.sql",
+      "seed_categori.sql",
+      "seed_product.sql",
+      "seed_image.sql",
+      "seed_review.sql",
+    ];
 
-    // Execute the seeder
-    await pool.query(seederSQL);
+    // Run each seeder file
+    for (const fileName of seederFiles) {
+      console.log(`🌱 Running seeder: ${fileName}`);
+      const seederPath = path.join(__dirname, "seeders", fileName);
+      const seederSQL = fs.readFileSync(seederPath, "utf8");
 
-    console.log("✅ Seeder completed successfully!");
+      // Execute the seeder
+      await pool.query(seederSQL);
+      console.log(`✅ ${fileName} completed successfully`);
+    }
+
+    console.log("✅ All seeders completed successfully!");
+    console.log("📊 Verifying seeders...");
 
     // Show updated counts
     const userCount = await pool.query("SELECT COUNT(*) as total FROM users");
@@ -137,6 +164,22 @@ async function runSeederOnly() {
     sellerStatus.rows.forEach((row) => {
       console.log(`   - ${row.status}: ${row.count} sellers`);
     });
+
+    // Show categories count
+    const categoryCount = await pool.query("SELECT COUNT(*) as total FROM categories");
+    console.log(`🗂️  Total categories in database: ${categoryCount.rows[0].total}`);
+
+    // Show products count
+    const productCount = await pool.query("SELECT COUNT(*) as total FROM products");
+    console.log(`📦 Total products in database: ${productCount.rows[0].total}`);
+
+    // Show images count
+    const imageCount = await pool.query("SELECT COUNT(*) as total FROM image_products");
+    console.log(`🖼️  Total product images in database: ${imageCount.rows[0].total}`);
+
+    // Show reviews count
+    const reviewCount = await pool.query("SELECT COUNT(*) as total FROM reviews");
+    console.log(`⭐ Total reviews in database: ${reviewCount.rows[0].total}`);
   } catch (error) {
     console.error("❌ Seeder failed:", error.message);
     process.exit(1);

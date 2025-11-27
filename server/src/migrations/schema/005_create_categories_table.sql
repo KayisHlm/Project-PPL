@@ -1,10 +1,8 @@
 CREATE TABLE IF NOT EXISTS categories (
   id BIGSERIAL PRIMARY KEY,
-  seller_id BIGINT NOT NULL REFERENCES sellers(id) ON DELETE CASCADE,
   name VARCHAR(100) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (seller_id, name)
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_categories_seller_id ON categories(seller_id);
+CREATE INDEX IF NOT EXISTS idx_categories_name ON categories(name);
