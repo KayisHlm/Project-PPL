@@ -29,9 +29,8 @@ async function runMigration() {
       "003_create_products_table.sql",
       "004_alter_products_add_cover_image.sql",
       "005_create_categories_table.sql",
-      "006_alter_categories_nullable_seller.sql",
-      "007_create_image_products_table.sql",
-      "008_create_review_table.sql",
+      "006_create_image_products_table.sql",
+      "007_create_review_table.sql",
     ];
 
     // Run each migration file
