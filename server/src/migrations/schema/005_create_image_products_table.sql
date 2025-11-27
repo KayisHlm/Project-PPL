@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS image_products (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     image_url TEXT NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'sekunder' CHECK (status IN ('primer', 'sekunder')),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
