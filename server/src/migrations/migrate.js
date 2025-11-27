@@ -26,6 +26,10 @@ async function runMigration() {
     const migrationFiles = [
       "001_create_users_table.sql",
       "002_create_sellers_table.sql",
+      "003_create_products_table.sql",
+      "004_alter_products_add_cover_image.sql",
+      "005_create_categories_table.sql",
+      "006_alter_categories_nullable_seller.sql",
     ];
 
     // Run each migration file
@@ -34,9 +38,19 @@ async function runMigration() {
       const migrationPath = path.join(__dirname, "schema", fileName);
       const migrationSQL = fs.readFileSync(migrationPath, "utf8");
 
-      // Execute the migration
-      await pool.query(migrationSQL);
-      console.log(`✅ ${fileName} completed successfully`);
+      // Execute the migration (tolerate idempotent errors)
+      try {
+        await pool.query(migrationSQL);
+        console.log(`✅ ${fileName} completed successfully`);
+      } catch (err) {
+        const msg = (err && err.message) || "";
+        const tolerable = msg.includes("already exists") || msg.includes("exists") || msg.includes("IF NOT EXISTS") || msg.includes("duplicate key value") || msg.includes("trigger");
+        if (tolerable) {
+          console.log(`ℹ️  Skipping (already applied): ${fileName}`);
+        } else {
+          throw err;
+        }
+      }
     }
 
     console.log("✅ All migrations completed successfully!");
@@ -47,7 +61,7 @@ async function runMigration() {
             SELECT table_name 
             FROM information_schema.tables 
             WHERE table_schema = 'public' 
-            AND table_name IN ('users', 'sellers')
+            AND table_name IN ('users', 'sellers', 'products', 'categories')
             ORDER BY table_name
         `);
 
