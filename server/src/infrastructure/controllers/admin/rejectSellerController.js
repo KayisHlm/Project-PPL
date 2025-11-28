@@ -1,16 +1,25 @@
 const RejectSeller = require("../../../usecases/admin/rejectSeller");
 const SellerRepository = require("../../repositories/sellerRepository");
+const mailer = require("../../services/mailer");
 const { NotFound } = require("../../../domain/errors");
 
 async function RejectSellerController(req, res) {
     try {
         const { id } = req.params;
+        const { reason } = req.body || {};
+
+        if (!reason || !reason.trim()) {
+            return res.status(400).json({
+                code: 400,
+                message: "Rejection reason is required"
+            });
+        }
         console.log(`Admin rejecting seller ID: ${id}`);
 
         const sellerRepository = new SellerRepository();
-        const rejectSeller = new RejectSeller(sellerRepository);
+        const rejectSeller = new RejectSeller(sellerRepository, mailer);
 
-        const updatedSeller = await rejectSeller.execute(parseInt(id));
+        const updatedSeller = await rejectSeller.execute(parseInt(id), reason.trim());
 
         return res.status(200).json({
             code: 200,

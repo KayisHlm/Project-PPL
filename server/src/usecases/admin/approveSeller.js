@@ -1,8 +1,9 @@
 const { NotFound } = require("../../domain/errors");
 
 class ApproveSeller {
-    constructor(sellerRepository) {
+    constructor(sellerRepository, mailer) {
         this.sellerRepository = sellerRepository;
+        this.mailer = mailer;
     }
 
     async execute(sellerId) {
@@ -20,6 +21,21 @@ class ApproveSeller {
                 'approved', 
                 new Date()
             );
+
+            const sellerForEmail = {
+                ...seller,
+                ...updatedSeller
+            };
+
+            // Kirim email notifikasi persetujuan jika mailer tersedia
+            try {
+                if (this.mailer && this.mailer.sendApprovalEmail) {
+                    await this.mailer.sendApprovalEmail(sellerForEmail);
+                }
+            } catch (emailErr) {
+                console.error('ApproveSeller: failed to send approval email', emailErr);
+                // Jangan gagalkan perubahan status hanya karena email gagal
+            }
 
             return updatedSeller;
 

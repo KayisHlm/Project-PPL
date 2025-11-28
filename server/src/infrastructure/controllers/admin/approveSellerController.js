@@ -1,5 +1,6 @@
 const ApproveSeller = require("../../../usecases/admin/approveSeller");
 const SellerRepository = require("../../repositories/sellerRepository");
+const mailer = require("../../services/mailer");
 const { NotFound } = require("../../../domain/errors");
 
 async function ApproveSellerController(req, res) {
@@ -8,7 +9,7 @@ async function ApproveSellerController(req, res) {
         console.log(`Admin approving seller ID: ${id}`);
 
         const sellerRepository = new SellerRepository();
-        const approveSeller = new ApproveSeller(sellerRepository);
+        const approveSeller = new ApproveSeller(sellerRepository, mailer);
 
         const updatedSeller = await approveSeller.execute(parseInt(id));
 

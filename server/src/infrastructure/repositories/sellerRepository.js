@@ -206,7 +206,7 @@ class SellerRepository {
     /**
      * UPDATE STATUS - Untuk Approve/Reject Seller
      */
-    async updateStatus(sellerId, status, verifiedAt = null) {
+    async updateStatus(sellerId, status, verifiedAt = null, rejectionReason = null) {
         const client = await pool.connect();
         
         try {
@@ -216,14 +216,16 @@ class SellerRepository {
                 UPDATE sellers 
                 SET status = $1, 
                     verified_at = $2,
+                    rejection_reason = $3,
                     updated_at = NOW()
-                WHERE id = $3
+                WHERE id = $4
                 RETURNING *
             `;
 
             const result = await client.query(query, [
                 status, 
                 status === 'approved' ? (verifiedAt || new Date()) : null,
+                rejectionReason,
                 sellerId
             ]);
 

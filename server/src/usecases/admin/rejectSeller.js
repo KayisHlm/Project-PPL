@@ -1,11 +1,12 @@
 const { NotFound } = require("../../domain/errors");
 
 class RejectSeller {
-    constructor(sellerRepository) {
+    constructor(sellerRepository, mailer) {
         this.sellerRepository = sellerRepository;
+        this.mailer = mailer;
     }
 
-    async execute(sellerId) {
+    async execute(sellerId, reason = null) {
         try {
             // Cek apakah seller exists
             const seller = await this.sellerRepository.findById(sellerId);
@@ -18,8 +19,24 @@ class RejectSeller {
             const updatedSeller = await this.sellerRepository.updateStatus(
                 sellerId, 
                 'rejected', 
-                null
+                null,
+                reason
             );
+
+            const sellerForEmail = {
+                ...seller,
+                ...updatedSeller
+            };
+
+            // Kirim email notifikasi penolakan jika mailer tersedia
+            try {
+                if (this.mailer && this.mailer.sendRejectionEmail) {
+                    await this.mailer.sendRejectionEmail(sellerForEmail, reason);
+                }
+            } catch (emailErr) {
+                console.error('RejectSeller: failed to send rejection email', emailErr);
+                // Tidak menggagalkan update status jika email gagal
+            }
 
             return updatedSeller;
 
