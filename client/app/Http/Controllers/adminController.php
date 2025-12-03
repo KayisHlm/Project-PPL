@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Api\AdminApi;
+use App\Api\ProfileApi;
 use Illuminate\Support\Facades\Log; 
 
 class AdminController extends Controller

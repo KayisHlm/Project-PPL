@@ -30,6 +30,7 @@ const productRoutes = require("./src/routes/productRoutes");
 const categoryRoutes = require("./src/routes/categoryRoutes");
 const imageRoutes = require("./src/routes/imageRoutes");
 const reviewRoutes = require("./src/routes/reviewRoutes");
+const profileRoutes = require("./src/routes/profileRoutes");
 
 // buat endpoint
 app.use("/api/auth", authRoutes);
@@ -38,6 +39,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/profile", profileRoutes);
 
 // check health
 app.get("/api/health", (req, res) => {

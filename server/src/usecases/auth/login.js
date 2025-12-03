@@ -61,12 +61,13 @@ class Login {
         return {
             token : token,
             user: {
-            id: user.id,
-            email: user.email,
-            role: user.role,
-            sellerId: user.seller_id,
-            shopName: user.shop_name,
-            sellerStatus: user.seller_status
+                id: user.id,
+                email: user.email,
+                name: user.pic_name || null,  // Add name field
+                role: user.role,
+                sellerId: user.seller_id,
+                shopName: user.shop_name,
+                sellerStatus: user.seller_status
             }
         };
     }

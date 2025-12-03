@@ -5,7 +5,7 @@
 <!-- Mirrored from coderthemes.com/highdmin/layouts/layouts-detached.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 13 Nov 2025 11:06:09 GMT -->
 <head>
     <meta charset="utf-8" />
-    <title>Dashboard Admin</title>
+    <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name="author" />
@@ -57,12 +57,13 @@
             <div data-simplebar>
 
                 <!-- User -->
+                @php $role = (session('user_data')['role'] ?? null); @endphp
                 <div class="sidenav-user">
-                    <a href="{{ route('dashboard-admin.profile') }}" class="px-2 d-flex align-items-center justify-content-center text-reset text-decoration-none">
+                    <a href="{{ route($role === 'seller' ? 'dashboard-seller.profile' : 'dashboard-admin.profile') }}" class="px-2 d-flex align-items-center justify-content-center text-reset text-decoration-none">
                         <img src="assets/images/users/avatar-1.jpg" width="42" class="rounded-circle me-2 d-flex" alt="user-image">
                         <span class="d-flex flex-column gap-1 sidebar-user-name">
-                            <h4 class="my-0 fw-bold fs-15">Maxine Kennedy</h4>
-                            <h6 class="my-0">Admin Head</h6>
+                            <h4 class="my-0 fw-bold fs-15">{{ session('user_data.email', 'User') }}</h4>
+                            <h6 class="my-0">{{ ucfirst(str_replace('_', ' ', session('user_data.role', 'User'))) }}</h6>
                         </span>
                     </a>
                 </div>
@@ -71,7 +72,6 @@
                 <ul class="side-nav">
                     <li class="side-nav-title">Dashboard</li>
 
-                    @php $role = (session('user_data')['role'] ?? null); @endphp
                     <li class="side-nav-item">
                         <a href="{{ route($role === 'seller' ? 'dashboard-seller.dashboard' : 'dashboard-admin.dashboard') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-dashboard-3-line"></i></span>
@@ -184,7 +184,7 @@
                         <div class="px-2 d-flex align-items-center">
                             <img src="assets/images/users/avatar-1.jpg" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image">
                             <span class="d-lg-flex flex-column gap-1 d-none">
-                                <h5 class="my-0">Maxine K.</h5>
+                                <h5 class="my-0">{{ session('user_data.email', 'User') }}</h5>
                             </span>
                         </div>
                     </div>

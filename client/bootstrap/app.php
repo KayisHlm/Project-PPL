@@ -14,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\Admin::class,
             'seller' => \App\Http\Middleware\Seller::class,
+            'load.user' => \App\Http\Middleware\LoadUserData::class,
+        ]);
+        
+        // Apply LoadUserData to web routes
+        $middleware->web(append: [
+            \App\Http\Middleware\LoadUserData::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

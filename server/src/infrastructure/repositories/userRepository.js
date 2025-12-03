@@ -160,6 +160,46 @@ class UserRepository extends UserRepositoryInterface {
         }
     }
 
+    async findById(userId) {
+        const client = await pool.connect();
+        
+        try {
+            const query = `
+                SELECT 
+                    u.id as user_id,
+                    u.email,
+                    u.role,
+                    u.created_at,
+                    s.pic_name as name,
+                    s.pic_phone_number as phone,
+                    s.id as seller_id,
+                    s.shop_name,
+                    s.shop_description,
+                    s.pic_address as shop_address,
+                    s.pic_city as city,
+                    s.pic_province as province,
+                    s.pic_phone_number as shop_phone,
+                    s.status as seller_status
+                FROM users u
+                LEFT JOIN sellers s ON u.id = s.user_id
+                WHERE u.id = $1
+            `;
+            
+            const result = await client.query(query, [userId]);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            return result.rows[0];
+        } catch (error) {
+            console.error("Error in findById:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
     async findByEmail(email) {
         const query = `
             SELECT 
