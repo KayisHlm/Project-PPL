@@ -23,18 +23,6 @@
             <input type="email" class="form-control" id="review-email" placeholder="email@example.com" required />
           </div>
           <div class="mb-2">
-            <label class="form-label">Provinsi</label>
-            <select class="form-select" id="review-province" required>
-              <option value="">Pilih Provinsi</option>
-              <option>DKI Jakarta</option>
-              <option>Jawa Barat</option>
-              <option>Jawa Tengah</option>
-              <option>Jawa Timur</option>
-              <option>DI Yogyakarta</option>
-              <option>Banten</option>
-            </select>
-          </div>
-          <div class="mb-2">
             <label class="form-label">Rating</label>
             <div id="rater" dir="ltr"></div>
             <input type="hidden" id="review-rating" required />
@@ -63,13 +51,12 @@ document.addEventListener('DOMContentLoaded', function(){
   var nameInput = document.getElementById('review-name');
   var phoneInput = document.getElementById('review-phone');
   var emailInput = document.getElementById('review-email');
-  var provinceSel = document.getElementById('review-province');
   var ratingSel = document.getElementById('review-rating');
   var commentInput = document.getElementById('review-comment');
   var raterEl = document.getElementById('rater');
   function validEmail(v){ return /.+@.+\..+/.test(v); }
   function valid(){
-    return (nameInput.value||'').trim().length >= 3 && (phoneInput.value||'').trim().length >= 8 && validEmail(emailInput.value||'') && (provinceSel && provinceSel.value !== '') && parseInt(ratingSel.value||0) >= 1 && (commentInput.value||'').trim().length >= 3;
+    return (nameInput.value||'').trim().length >= 3 && (phoneInput.value||'').trim().length >= 8 && validEmail(emailInput.value||'') && parseInt(ratingSel.value||0) >= 1 && (commentInput.value||'').trim().length >= 3;
   }
   if(raterEl && typeof raterJs === 'function'){
     window.__reviewRater = raterJs({
@@ -82,24 +69,98 @@ document.addEventListener('DOMContentLoaded', function(){
       }
     });
   }
+  
+  // Reset form function
+  function resetForm() {
+    form.reset();
+    if (window.__reviewRater) {
+      window.__reviewRater.setRating(0);
+    }
+    ratingSel.value = '';
+    alertBox.classList.add('d-none');
+    var submitBtn = document.getElementById('review-submit');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Kirim';
+  }
+  
+  // Reset form when modal is closed
+  var modalEl = document.getElementById('reviewModal');
+  if (modalEl) {
+    modalEl.addEventListener('hidden.bs.modal', function() {
+      resetForm();
+    });
+  }
+  
   if(form){
     form.addEventListener('submit', function(e){
       e.preventDefault();
-      if(!valid()) return;
-      var idx = parseInt(targetIdxInput.value||'-1');
-      var payload = { name: nameInput.value, phone: phoneInput.value, email: emailInput.value, province: provinceSel ? provinceSel.value : '', rating: parseInt(ratingSel.value), comment: commentInput.value, ts: new Date().toISOString() };
-      if(window.StoreCatalog && window.StoreCatalog.addReview){ window.StoreCatalog.addReview(idx, payload); }
-      alertBox.textContent = 'Terima kasih atas ulasan Anda. Email ucapan terima kasih telah dikirim.';
-      alertBox.classList.remove('d-none');
-      setTimeout(function(){ alertBox.classList.add('d-none'); }, 3000);
-      form.reset();
-      ratingSel.value = '';
-      if(window.__reviewRater && typeof window.__reviewRater.setRating === 'function'){
-        window.__reviewRater.setRating(0);
+      console.log('Form submit triggered');
+      
+      // Validate
+      if(!valid()) {
+        console.log('Validation failed');
+        alertBox.className = 'alert alert-warning';
+        alertBox.textContent = 'Mohon lengkapi semua field dengan benar';
+        alertBox.classList.remove('d-none');
+        return;
       }
-      var modalEl = document.getElementById('reviewModal');
-      var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-      modal.hide();
+      
+      console.log('Validation passed');
+      
+      var submitBtn = document.getElementById('review-submit');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Mengirim...';
+      
+      var productId = targetIdxInput.value || window.location.pathname.split('/').pop();
+      var payload = { 
+        name: nameInput.value.trim(), 
+        no_telp: phoneInput.value.trim() || null,
+        email: emailInput.value.trim(), 
+        rating: parseInt(ratingSel.value), 
+        comment: commentInput.value.trim() 
+      };
+      
+      console.log('Sending review:', payload);
+      
+      fetch('/api/reviews/products/' + productId, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(function(res){ 
+        console.log('Response status:', res.status);
+        return res.json(); 
+      })
+      .then(function(data){
+        console.log('Response data:', data);
+        if(data.success){
+          alertBox.className = 'alert alert-success';
+          alertBox.textContent = 'Terima kasih atas ulasan Anda!';
+          alertBox.classList.remove('d-none');
+          
+          // Refresh halaman setelah 1.5 detik
+          setTimeout(function(){
+            window.location.reload();
+          }, 1500);
+        } else {
+          alertBox.className = 'alert alert-danger';
+          alertBox.textContent = data.message || 'Gagal menambahkan review';
+          alertBox.classList.remove('d-none');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Kirim';
+        }
+      })
+      .catch(function(err){
+        console.error('Error:', err);
+        alertBox.className = 'alert alert-danger';
+        alertBox.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
+        alertBox.classList.remove('d-none');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Kirim';
+      });
     });
   }
 });

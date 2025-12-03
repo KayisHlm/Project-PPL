@@ -49,7 +49,7 @@ INSERT INTO sellers (
         'Menteng',
         'Gondangdia',
         '3271012345670002',
-        'pending'
+        'approved'
     )
 ON CONFLICT (user_id) DO NOTHING;
 
@@ -121,4 +121,74 @@ INSERT INTO sellers (
     'Dago',
     '3217198401210004',
     'approved'
+);
+
+-- Create seller profile
+INSERT INTO sellers (
+    user_id,
+    shop_name,
+    shop_description,
+    pic_name,
+    pic_phone_number,
+    pic_email,
+    pic_address,
+    pic_rt,
+    pic_rw,
+    pic_province,
+    pic_city,
+    pic_district,
+    pic_village,
+    pic_ktp_number,
+    status
+) VALUES (
+    (SELECT id FROM users WHERE email = 'hasan@example.com'),
+    'Toko Laptop Hebat',
+    'Toko laptop dengan berbagai merk terkenal',
+    'Hasan',
+    '081841934131',
+    'hasan@example.com',
+    'Jl. Katalis No. 10',
+    '003',
+    '004',
+    'Jawa Barat',
+    'Bandung',
+    'Coblong',
+    'Dago',
+    '3219384599523005',
+    'pending'
+);
+
+-- Create seller profile
+INSERT INTO sellers (
+    user_id,
+    shop_name,
+    shop_description,
+    pic_name,
+    pic_phone_number,
+    pic_email,
+    pic_address,
+    pic_rt,
+    pic_rw,
+    pic_province,
+    pic_city,
+    pic_district,
+    pic_village,
+    pic_ktp_number,
+    status
+) VALUES (
+    (SELECT id FROM users WHERE email = 'budi@example.com'),
+    'Toko Handphone Mantap',
+    'Toko handphone dengan harga bersaing',
+    'Budi',
+    '081841918313',
+    'budi@example.com',
+    'Jl. Katalis No. 10',
+    '003',
+    '004',
+    'Jawa Barat',
+    'Bandung',
+    'Coblong',
+    'Dago',
+    '3219384599523006',
+    'pending'
 );

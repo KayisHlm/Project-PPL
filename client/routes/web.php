@@ -7,10 +7,9 @@ use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\SellerProductController;
 use App\Http\Controllers\SellerCategoryController;
 use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\StoreController;
 
-Route::get('/', function () {
-    return view('Page.Store.Landing');
-});
+Route::get('/', [StoreController::class, 'landing'])->name('store.landing');
 
 // Error pages
 Route::get('/unauthorized', function () {
@@ -61,10 +60,12 @@ Route::prefix('api')->group(function () {
     Route::get('regencies/{province}', [WilayahController::class, 'regencies']);
     Route::get('districts/{regency}', [WilayahController::class, 'districts']);
     Route::get('villages/{district}', [WilayahController::class, 'villages']);
+    
+    // Review endpoints
+    Route::post('reviews/products/{productId}', [\App\Http\Controllers\ReviewController::class, 'store'])->name('api.reviews.store');
 });
 
 
 Route::prefix('store')->name('store.')->group(function () {
-    Route::view('/', 'Page.Store.Landing')->name('landing');
-    Route::view('/detail/{id}', 'Page.Store.Detail')->name('detail');
+    Route::get('/detail/{id}', [StoreController::class, 'detail'])->name('detail');
 });

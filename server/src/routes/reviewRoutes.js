@@ -1,30 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const { authenticateToken } = require("../infrastructure/middleware/auth");
-const ReviewController = require("../infrastructure/controllers/review/reviewController");
+const CreateReviewController = require("../infrastructure/controllers/review/createReviewController");
+const GetReviewsByProductController = require("../infrastructure/controllers/review/getReviewsByProductController");
+const GetProductReviewStatsController = require("../infrastructure/controllers/review/getProductReviewStatsController");
+const GetReviewByIdController = require("../infrastructure/controllers/review/getReviewByIdController");
 
-// Create review for a product
-router.post("/products/:productId", ReviewController.create);
+// Create review for a product (public)
+router.post("/products/:productId", CreateReviewController.create);
 
 // Get all reviews for a product (public)
-router.get("/products/:productId", ReviewController.listByProduct);
+router.get("/products/:productId", GetReviewsByProductController.listByProduct);
 
 // Get product rating statistics (public)
-router.get("/products/:productId/stats", ReviewController.getProductStats);
-
-// Get all reviews by email (query parameter)
-router.get("/by-email", ReviewController.listByEmail);
-
-// Get all reviews (public)
-router.get("/", ReviewController.listAll);
+router.get("/products/:productId/stats", GetProductReviewStatsController.getProductStats);
 
 // Get review by ID (public)
-router.get("/:id", ReviewController.getById);
-
-// Update review (requires authentication by email match)
-router.put("/:id", authenticateToken, ReviewController.update);
-
-// Delete review (requires authentication by email match)
-router.delete("/:id", authenticateToken, ReviewController.remove);
+router.get("/:id", GetReviewByIdController.getById);
 
 module.exports = router;

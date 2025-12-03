@@ -5,27 +5,62 @@
         <div class="col-xl-7">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <div class="row row-cols-4 g-2 mb-2">
-                        @foreach(($product['images'] ?? ['assets/images/products/product-1.jpg']) as $img)
-                            <div class="col"><img src="{{ $img }}" class="img-fluid rounded" style="height:80px;object-fit:cover" alt="img"></div>
-                        @endforeach
-                    </div>
-                    <h4 class="fw-bold mb-1">{{ $product['name'] ?? 'Nama Produk' }}</h4>
+                    @if(!empty($product['images']) && count($product['images']) > 0)
+                        @php
+                            $imageCount = count($product['images']);
+                            $colClass = match($imageCount) {
+                                1 => 'row-cols-1',
+                                2 => 'row-cols-2',
+                                3 => 'row-cols-3',
+                                default => 'row-cols-4'
+                            };
+                        @endphp
+                        <div class="row {{ $colClass }} g-3 mb-3">
+                            @foreach($product['images'] as $img)
+                                <div class="col">
+                                    <img src="{{ $img['imageUrl'] }}" 
+                                         class="img-fluid rounded w-100" 
+                                         style="object-fit:contain;cursor:pointer;border:2px solid #e9ecef;background:#f8f9fa;max-height:400px" 
+                                         alt="Product Image"
+                                         onclick="this.requestFullscreen()">
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="mb-3">
+                            <div class="bg-light d-flex align-items-center justify-content-center rounded" 
+                                 style="height:250px">
+                                <i class="ri-image-line" style="font-size: 4rem; color: #ccc;"></i>
+                            </div>
+                        </div>
+                    @endif
+                    <h4 class="fw-bold mb-1">{{ $product['name'] }}</h4>
                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-primary-subtle text-primary">{{ $product['condition'] ?? 'Kondisi' }}</span>
-                        <span class="badge bg-light text-body">{{ $product['category'] ?? 'Kategori' }}</span>
-                        <span class="badge bg-light text-body">{{ isset($product['year']) ? 'Tahun '.$product['year'] : 'Tahun '.date('Y') }}</span>
+                        @if($product['category'])
+                            <span class="badge bg-light text-body">{{ $product['category'] }}</span>
+                        @endif
+                        <span class="badge bg-light text-body">
+                            <i class="ri-star-fill text-warning"></i> 
+                            {{ number_format($product['average_rating'] ?? 0, 1) }} 
+                            ({{ $product['review_count'] ?? 0 }} ulasan)
+                        </span>
+                        <span class="badge bg-light text-body">
+                            Stok: {{ $product['stock'] ?? 0 }}
+                        </span>
                     </div>
-                    <p class="fw-bold fs-5">{{ isset($product['price']) ? 'Rp '.number_format($product['price'],0,',','.') : 'Rp 0' }}</p>
+                    <p class="fw-bold fs-3 text-primary mb-2">Rp{{ number_format($product['price'], 0, ',', '.') }}</p>
                     <div class="d-flex flex-wrap gap-2 mb-3">
-                        <span class="badge bg-light text-body">{{ isset($product['weight']) ? $product['weight'].' gram' : '0 gram' }}</span>
-                        <span class="badge bg-light text-body">{{ isset($product['min']) ? 'Min '.$product['min'] : 'Min 1' }}</span>
-                        <span class="badge bg-light text-body">{{ $product['warranty'] ?? 'Garansi' }}</span>
+                        <span class="badge bg-light text-body">
+                            <i class="ri-scales-3-line"></i> {{ $product['weight'] }} gram
+                        </span>
+                        @if($product['shop_name'])
+                            <span class="badge bg-light text-body">
+                                <i class="ri-store-2-line"></i> {{ $product['shop_name'] }}
+                            </span>
+                        @endif
                     </div>
                     <h6 class="fw-semibold">Deskripsi</h6>
                     <p class="text-muted">{{ $product['description'] ?? 'Deskripsi belum tersedia' }}</p>
-                    <h6 class="fw-semibold">Cara Klaim Garansi</h6>
-                    <p class="text-muted">{{ $product['claim'] ?? 'Informasi klaim belum tersedia' }}</p>
                 </div>
             </div>
         </div>
@@ -38,15 +73,32 @@
                 </div>
                 <div class="card-body">
                     <div id="detail-reviews" class="d-flex flex-column gap-2">
-                        @foreach(($product['reviews'] ?? []) as $r)
+                        @forelse($product['reviews'] ?? [] as $r)
                         <div class="p-2 rounded bg-light bg-opacity-50">
-                            <div class="d-flex justify-content-between">
-                                <span class="fw-semibold">{{ $r['name'] ?? 'Anonim' }}</span>
-                                <span class="badge bg-primary-subtle text-primary">★ {{ $r['rating'] ?? 0 }}</span>
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <div>
+                                    <span class="fw-semibold d-block">{{ $r['name'] }}</span>
+                                    @if(isset($r['email']))
+                                        <small class="text-muted">{{ $r['email'] }}</small>
+                                    @endif
+                                </div>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="ri-star-fill"></i> {{ $r['rating'] }}
+                                </span>
                             </div>
-                            <div class="text-muted">{{ $r['comment'] ?? '' }}</div>
+                            @if(!empty($r['comment']))
+                                <div class="text-muted mt-2">{{ $r['comment'] }}</div>
+                            @endif
+                            @if(isset($r['created_at']))
+                                <small class="text-muted">{{ \Carbon\Carbon::parse($r['created_at'])->diffForHumans() }}</small>
+                            @endif
                         </div>
-                        @endforeach
+                        @empty
+                        <div class="text-center text-muted py-3">
+                            <i class="ri-message-3-line" style="font-size: 2rem;"></i>
+                            <p class="mb-0">Belum ada ulasan untuk produk ini</p>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -85,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(btn){
     btn.addEventListener('click', function(){
       var input = document.getElementById('review-target-index');
-      input.value = 'detail';
+      input.value = '{{ $product["id"] }}';
       var modalEl = document.getElementById('reviewModal');
       var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
       modal.show();

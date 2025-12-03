@@ -38,4 +38,20 @@ class ProductApi
         ];
         return Http::withHeaders($headers)->timeout(8)->get($this->apiUrl . '/categories');
     }
+
+    public function getAllWithImages()
+    {
+        $headers = [
+            'Accept' => 'application/json',
+        ];
+        return Http::withHeaders($headers)->timeout(8)->get($this->apiUrl);
+    }
+
+    public function getById(string $id)
+    {
+        $headers = [
+            'Accept' => 'application/json',
+        ];
+        return Http::withHeaders($headers)->timeout(8)->get($this->apiUrl . '/' . $id);
+    }
 }

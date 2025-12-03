@@ -12,7 +12,7 @@ class ReviewRepository {
       ) VALUES (
         $1, $2, $3, $4, $5, $6
       )
-      RETURNING id_review as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      RETURNING id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
     `;
     const values = [
       productId,
@@ -28,9 +28,9 @@ class ReviewRepository {
 
   async findById(reviewId) {
     const query = `
-      SELECT id_review as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      SELECT id as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
       FROM reviews 
-      WHERE id_review = $1
+      WHERE id = $1
     `;
     const result = await pool.query(query, [reviewId]);
     return result.rows[0];
@@ -44,8 +44,8 @@ class ReviewRepository {
     const query = `
       UPDATE reviews 
       SET email = $2, name = $3, no_telp = $4, rating = $5, comment = $6
-      WHERE id_review = $1
-      RETURNING id_review as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      WHERE id = $1
+      RETURNING id as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
     `;
     const values = [
       reviewId,
@@ -61,7 +61,7 @@ class ReviewRepository {
 
   async delete(reviewId) {
     const query = `
-      DELETE FROM reviews WHERE id_review = $1 RETURNING id_review as id
+      DELETE FROM reviews WHERE id = $1 RETURNING id as id
     `;
     const result = await pool.query(query, [reviewId]);
     return result.rows[0];
@@ -69,7 +69,7 @@ class ReviewRepository {
 
   async listByProduct(productId) {
     const query = `
-      SELECT id_review as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      SELECT id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
       FROM reviews 
       WHERE product_id = $1 
       ORDER BY created_at DESC
@@ -80,7 +80,7 @@ class ReviewRepository {
 
   async listByEmail(email) {
     const query = `
-      SELECT id_review as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      SELECT id as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
       FROM reviews 
       WHERE email = $1 
       ORDER BY created_at DESC
@@ -91,7 +91,7 @@ class ReviewRepository {
 
   async listAll() {
     const query = `
-      SELECT id_review as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      SELECT id as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
       FROM reviews 
       ORDER BY created_at DESC
     `;

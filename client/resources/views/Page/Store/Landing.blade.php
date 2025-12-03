@@ -40,52 +40,59 @@
         </div>
     </div>
 
-    <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-3" id="store-grid">
-        <div class="col" data-index="0" data-name="Earphone X" data-store="AudioHub" data-category="Elektronik" data-price="250000" data-rating="4.5" data-comments="3" data-province="Jawa Barat" data-city="Bandung" data-condition="Baru">
-            <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
-                <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ <span class="store-rating">4.5</span> (<span class="store-comments">3</span>)</span>
-                <img src="assets/images/products/product-1.jpg" class="card-img-top" alt="Produk" style="transition:transform .2s" onmouseenter="this.style.transform='scale(1.03)'" onmouseleave="this.style.transform='none'">
-                <div class="card-body">
-                    <h6 class="mb-1">Earphone X</h6>
-                    <p class="mb-1 text-muted">AudioHub • Elektronik • Bandung, Jawa Barat</p>
-                    <p class="mb-2 fw-bold">Rp 250.000</p>
-                    <div class="d-flex gap-2">
-                        <a href="{{ route('store.detail', ['id' => 0]) }}" class="btn btn-sm btn-light">Detail</a>
-                        <button class="btn btn-sm btn-primary" data-action="review" data-index="0">Beri Komentar & Rating</button>
+    <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2 g-3" id="store-grid">
+        @forelse($products as $index => $product)
+        <div class="col" 
+             data-index="{{ $index }}" 
+             data-name="{{ $product['name'] }}" 
+             data-store="Toko" 
+             data-category="{{ $product['category'] ?? 'Lainnya' }}" 
+             data-price="{{ $product['price'] }}" 
+             data-rating="{{ $product['rating'] }}" 
+             data-comments="0" 
+             data-province="" 
+             data-city="" 
+             data-condition="Baru">
+            <div class="card h-100 shadow-sm border-0" 
+                 style="transition:transform .2s, box-shadow .2s; cursor: pointer;" 
+                 onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" 
+                 onmouseleave="this.style.transform='none';this.style.boxShadow='';">
+                @if(!empty($product['images']) && count($product['images']) > 0)
+                    <img src="{{ $product['images'][0]['imageUrl'] }}" 
+                         class="card-img-top" 
+                         alt="{{ $product['name'] }}" 
+                         style="height: 180px; object-fit: cover; border-radius: 0.375rem 0.375rem 0 0;">
+                @else
+                    <div class="bg-light d-flex align-items-center justify-content-center" 
+                         style="height: 180px; border-radius: 0.375rem 0.375rem 0 0;">
+                        <i class="ri-image-line" style="font-size: 3rem; color: #ccc;"></i>
+                    </div>
+                @endif
+                <div class="card-body p-2">
+                    <h6 class="mb-1 text-truncate" style="font-size: 0.875rem;" title="{{ $product['name'] }}">{{ $product['name'] }}</h6>
+                    <p class="mb-1 fw-bold" style="font-size: 1rem; color: #000;">Rp{{ number_format($product['price'], 0, ',', '.') }}</p>
+                    <div class="d-flex align-items-center gap-1 mb-1">
+                        <i class="ri-star-fill text-warning" style="font-size: 0.75rem;"></i>
+                        <span class="store-rating" style="font-size: 0.75rem;">{{ number_format($product['average_rating'] ?? 0, 1) }}</span>
+                        <span class="text-muted" style="font-size: 0.7rem;">({{ $product['review_count'] ?? 0 }})</span>
+                    </div>
+                    <p class="mb-2 text-muted text-truncate" style="font-size: 0.75rem;" title="{{ $product['shop_name'] ?? 'Toko Produk' }}">
+                        <i class="ri-store-2-line"></i> {{ $product['shop_name'] ?? 'Toko Produk' }}
+                    </p>
+                    <div class="d-flex gap-1">
+                        <a href="{{ route('store.detail', ['id' => $product['id']]) }}" class="btn btn-outline-secondary btn-sm flex-fill" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">Detail</a>
+                        <button class="btn btn-primary btn-sm flex-fill" data-action="review" data-index="{{ $index }}" data-product-id="{{ $product['id'] }}" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">Review</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col" data-index="1" data-name="Sneakers Z" data-store="StyleMart" data-category="Fashion" data-price="550000" data-rating="4.2" data-comments="5" data-province="DKI Jakarta" data-city="Jakarta" data-condition="Bekas">
-            <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
-                <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ <span class="store-rating">4.2</span> (<span class="store-comments">5</span>)</span>
-                <img src="assets/images/products/product-2.jpg" class="card-img-top" alt="Produk" style="transition:transform .2s" onmouseenter="this.style.transform='scale(1.03)'" onmouseleave="this.style.transform='none'">
-                <div class="card-body">
-                    <h6 class="mb-1">Sneakers Z</h6>
-                    <p class="mb-1 text-muted">StyleMart • Fashion • Jakarta, DKI Jakarta</p>
-                    <p class="mb-2 fw-bold">Rp 550.000</p>
-                    <div class="d-flex gap-2">
-                        <a href="{{ route('store.detail', ['id' => 1]) }}" class="btn btn-sm btn-light">Detail</a>
-                        <button class="btn btn-sm btn-primary" data-action="review" data-index="1">Beri Komentar & Rating</button>
-                    </div>
-                </div>
+        @empty
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="ri-information-line"></i> Belum ada produk yang tersedia.
             </div>
         </div>
-        <div class="col" data-index="2" data-name="Coklat Premium" data-store="Sweet House" data-category="Makanan & Minuman" data-price="85000" data-rating="4.8" data-comments="11" data-province="DI Yogyakarta" data-city="Yogyakarta" data-condition="Baru">
-            <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
-                <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ <span class="store-rating">4.8</span> (<span class="store-comments">11</span>)</span>
-                <img src="assets/images/products/product-3.jpg" class="card-img-top" alt="Produk" style="transition:transform .2s" onmouseenter="this.style.transform='scale(1.03)'" onmouseleave="this.style.transform='none'">
-                <div class="card-body">
-                    <h6 class="mb-1">Coklat Premium</h6>
-                    <p class="mb-1 text-muted">Sweet House • Makanan & Minuman • Yogyakarta, DI Yogyakarta</p>
-                    <p class="mb-2 fw-bold">Rp 85.000</p>
-                    <div class="d-flex gap-2">
-                        <a href="{{ route('store.detail', ['id' => 2]) }}" class="btn btn-sm btn-light">Detail</a>
-                        <button class="btn btn-sm btn-primary" data-action="review" data-index="2">Beri Komentar & Rating</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endforelse
     </div>
 
     @include('Component.Review-Modal')
@@ -157,8 +164,9 @@ document.addEventListener('DOMContentLoaded', function(){
     var action = t.getAttribute('data-action');
     if(action === 'review'){
       var idx = t.getAttribute('data-index');
+      var productId = t.getAttribute('data-product-id');
       var input = document.getElementById('review-target-index');
-      input.value = String(idx);
+      input.value = productId || String(idx); // Use product ID, fallback to index
       var modalEl = document.getElementById('reviewModal');
       var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
       modal.show();

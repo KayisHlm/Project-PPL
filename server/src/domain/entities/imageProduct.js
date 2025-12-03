@@ -1,4 +1,4 @@
-class image {
+class imageProduct {
   constructor({ 
     id,
     product_id, 

@@ -1,4 +1,4 @@
-class imageinformation {
+class imageProductInformation {
     constructor(image) {
         this.id = image.id;
         this.productId = image.productId || image.product_id;
@@ -8,4 +8,4 @@ class imageinformation {
     }
 }
 
-module.exports = imageinformation;
+module.exports = imageProductInformation;

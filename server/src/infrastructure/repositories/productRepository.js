@@ -37,6 +37,45 @@ class ProductRepository {
     return result.rows[0];
   }
 
+  async findByIdWithDetails(productId) {
+    const query = `
+      SELECT 
+        p.id, p.seller_id, p.name, p.price, p.weight, p.stock, 
+        p.category, p.description, p.rating, p.created_at, p.updated_at,
+        
+        -- Get seller/shop info
+        s.shop_name,
+        
+        -- Get images as JSON array (using subquery to avoid duplication from reviews join)
+        COALESCE(
+          (SELECT json_agg(
+            jsonb_build_object(
+              'id', i.id,
+              'product_id', i.product_id,
+              'image_url', i.image_url,
+              'created_at', i.created_at,
+              'updated_at', i.updated_at
+            ) ORDER BY i.created_at ASC
+          )
+          FROM image_products i
+          WHERE i.product_id = p.id),
+          '[]'
+        ) as images,
+        
+        -- Get review count and average rating
+        COUNT(r.id)::integer as review_count,
+        COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) as average_rating
+        
+      FROM products p
+      LEFT JOIN sellers s ON p.seller_id = s.id
+      LEFT JOIN reviews r ON p.id = r.product_id
+      WHERE p.id = $1
+      GROUP BY p.id, s.shop_name
+    `;
+    const result = await pool.query(query, [productId]);
+    return result.rows[0];
+  }
+
   async update(productId, data) {
     const {
       name, price, weight, stock, category, description
@@ -92,11 +131,39 @@ class ProductRepository {
     return result.rows;
   }
 
-  async listAll() {
+  async listAllProduct() {
     const query = `
-      SELECT id, seller_id, name, price, weight, stock, category, description, rating, created_at, updated_at
-      FROM products 
-      ORDER BY created_at DESC
+      SELECT 
+        p.id, p.seller_id, p.name, p.price, p.weight, p.stock, 
+        p.category, p.description, p.rating, p.created_at, p.updated_at,
+        
+        -- Get seller/shop info
+        s.shop_name,
+        
+        -- Get images as JSON array
+        COALESCE(
+          json_agg(
+            jsonb_build_object(
+              'id', i.id,
+              'product_id', i.product_id,
+              'image_url', i.image_url,
+              'created_at', i.created_at,
+              'updated_at', i.updated_at
+            ) ORDER BY i.created_at ASC
+          ) FILTER (WHERE i.id IS NOT NULL),
+          '[]'
+        ) as images,
+        
+        -- Get review count and average rating
+        COUNT(DISTINCT r.id)::integer as review_count,
+        COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) as average_rating
+        
+      FROM products p
+      LEFT JOIN sellers s ON p.seller_id = s.id
+      LEFT JOIN image_products i ON p.id = i.product_id
+      LEFT JOIN reviews r ON p.id = r.product_id
+      GROUP BY p.id, s.shop_name
+      ORDER BY p.created_at DESC
     `;
     const result = await pool.query(query);
     return result.rows;
