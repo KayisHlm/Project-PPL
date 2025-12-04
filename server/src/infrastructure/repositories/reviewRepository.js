@@ -3,16 +3,16 @@ const pool = require("../../db");
 class ReviewRepository {
   async create(productId, data) {
     const {
-      email, name, no_telp, rating, comment
+      email, name, no_telp, rating, comment, province
     } = data;
 
     const query = `
       INSERT INTO reviews (
-        product_id, email, name, no_telp, rating, comment
+        product_id, email, name, no_telp, rating, comment, province
       ) VALUES (
-        $1, $2, $3, $4, $5, $6
+        $1, $2, $3, $4, $5, $6, $7
       )
-      RETURNING id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      RETURNING id, product_id, email, name, no_telp, rating, comment, province, created_at, updated_at
     `;
     const values = [
       productId,
@@ -20,7 +20,8 @@ class ReviewRepository {
       name,
       no_telp || null,
       parseInt(rating, 10),
-      comment || null
+      comment || null,
+      province || null
     ];
     const result = await pool.query(query, values);
     return result.rows[0];
@@ -28,7 +29,7 @@ class ReviewRepository {
 
   async findById(reviewId) {
     const query = `
-      SELECT id as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      SELECT id, product_id, email, name, no_telp, rating, comment, province, created_at, updated_at
       FROM reviews 
       WHERE id = $1
     `;
@@ -38,14 +39,14 @@ class ReviewRepository {
 
   async update(reviewId, data) {
     const {
-      email, name, no_telp, rating, comment
+      email, name, no_telp, rating, comment, province
     } = data;
 
     const query = `
       UPDATE reviews 
-      SET email = $2, name = $3, no_telp = $4, rating = $5, comment = $6
+      SET email = $2, name = $3, no_telp = $4, rating = $5, comment = $6, province = $7
       WHERE id = $1
-      RETURNING id as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      RETURNING id, product_id, email, name, no_telp, rating, comment, province, created_at, updated_at
     `;
     const values = [
       reviewId,
@@ -53,7 +54,8 @@ class ReviewRepository {
       name,
       no_telp || null,
       parseInt(rating, 10),
-      comment || null
+      comment || null,
+      province || null
     ];
     const result = await pool.query(query, values);
     return result.rows[0];
@@ -61,7 +63,7 @@ class ReviewRepository {
 
   async delete(reviewId) {
     const query = `
-      DELETE FROM reviews WHERE id = $1 RETURNING id as id
+      DELETE FROM reviews WHERE id = $1 RETURNING id
     `;
     const result = await pool.query(query, [reviewId]);
     return result.rows[0];
@@ -69,7 +71,7 @@ class ReviewRepository {
 
   async listByProduct(productId) {
     const query = `
-      SELECT id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      SELECT id, product_id, email, name, no_telp, rating, comment, province, created_at, updated_at
       FROM reviews 
       WHERE product_id = $1 
       ORDER BY created_at DESC
@@ -80,7 +82,7 @@ class ReviewRepository {
 
   async listByEmail(email) {
     const query = `
-      SELECT id as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      SELECT id, product_id, email, name, no_telp, rating, comment, province, created_at, updated_at
       FROM reviews 
       WHERE email = $1 
       ORDER BY created_at DESC
@@ -91,7 +93,7 @@ class ReviewRepository {
 
   async listAll() {
     const query = `
-      SELECT id as id, product_id, email, name, no_telp, rating, comment, created_at, updated_at
+      SELECT id, product_id, email, name, no_telp, rating, comment, province, created_at, updated_at
       FROM reviews 
       ORDER BY created_at DESC
     `;

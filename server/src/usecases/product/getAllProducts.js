@@ -1,11 +1,17 @@
+const { InternalServerError } = require("../../domain/errors");
+
 class GetAllProducts {
   constructor(productRepository) {
     this.productRepository = productRepository;
   }
 
   async execute() {
-    // Get all products with images, shop name, and review count in single query (optimized)
-    return await this.productRepository.listAllProduct();
+    try {
+      const products = await this.productRepository.listAllProduct();
+      return products;
+    } catch (error) {
+      throw new InternalServerError("Failed to retrieve products");
+    }
   }
 }
 

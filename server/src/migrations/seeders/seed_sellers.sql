@@ -192,3 +192,6 @@ INSERT INTO sellers (
     '3219384599523006',
     'pending'
 );
+
+INSERT INTO sellers ("user_id", "shop_name", "shop_description", "pic_name", "pic_phone_number", "pic_email", "pic_address", "pic_rt", "pic_rw", "pic_province", "pic_city", "pic_district", "pic_village", "pic_ktp_number", "pic_photo_path", "pic_ktp_path", "status", "rejection_reason", "verified_at") VALUES
+(9, 'Toko Kevin', 'Kelontong', 'Kevin Adi Santoso', '089515303060', 'kevinadsantoso@gmail.com', 'Jl.Parasamya tengah No.149', '001', '005', 'Jawa Tengah', 'Kabupaten Semarang', 'Ungaran Timur', 'Gedanganak', '1234567890987654', 'temp/d5bfe436-9f31-42b8-8f00-ffe42610b3a4_1764850768.jpg', 'temp/422e3131-7f71-42a0-92de-ca61f89bd41d_1764850743.png', 'approved', NULL, '2025-12-04 19:48:08.556');

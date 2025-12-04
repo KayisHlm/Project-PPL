@@ -13,7 +13,7 @@
                         <div class="card-body">
                             <div class="text-center mb-3">
                                 <div class="avatar-xxl mx-auto position-relative">
-                                    <img id="profile-avatar-preview" src="assets/images/users/avatar-1.jpg" class="rounded-circle" style="width:120px;height:120px;object-fit:cover" alt="avatar">
+                                    <img id="profile-avatar-preview" src="{{ asset('assets/images/users/avatar-1.jpg') }}" class="rounded-circle" style="width:120px;height:120px;object-fit:cover" alt="avatar">
                                 </div>
                                 <div class="mt-2 d-flex justify-content-center">
                                     <label class="btn btn-sm btn-light mb-0">

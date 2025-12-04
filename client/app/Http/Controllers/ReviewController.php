@@ -24,6 +24,7 @@ class ReviewController extends Controller
                 'name' => 'required|string|min:2|max:255',
                 'email' => 'required|email|max:255',
                 'no_telp' => 'nullable|string|max:20',
+                'province' => 'required|string|max:255',
                 'rating' => 'required|integer|min:1|max:5',
                 'comment' => 'nullable|string'
             ]);

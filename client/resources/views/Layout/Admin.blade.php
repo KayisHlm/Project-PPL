@@ -44,13 +44,13 @@
             <!-- Brand Logo -->
             <a href="#" class="logo">
                 <span class="logo-light">
-                    <span class="logo-lg"><img src="assets/images/logo.png" alt="logo"></span>
-                    <span class="logo-sm"><img src="assets/images/logo-sm.png" alt="small logo"></span>
+                    <span class="logo-lg"><img src="{{ asset('assets/images/logo.png') }}" alt="logo"></span>
+                    <span class="logo-sm"><img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo"></span>
                 </span>
 
                 <span class="logo-dark">
-                    <span class="logo-lg"><img src="assets/images/logo-dark.png" alt="dark logo"></span>
-                    <span class="logo-sm"><img src="assets/images/logo-sm.png" alt="small logo"></span>
+                    <span class="logo-lg"><img src="{{ asset('assets/images/logo-dark.png') }}" alt="dark logo"></span>
+                    <span class="logo-sm"><img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo"></span>
                 </span>
             </a>
 
@@ -59,11 +59,11 @@
                 <!-- User -->
                 @php $role = (session('user_data')['role'] ?? null); @endphp
                 <div class="sidenav-user">
-                    <a href="{{ route($role === 'seller' ? 'dashboard-seller.profile' : 'dashboard-admin.profile') }}" class="px-2 d-flex align-items-center justify-content-center text-reset text-decoration-none">
-                        <img src="assets/images/users/avatar-1.jpg" width="42" class="rounded-circle me-2 d-flex" alt="user-image">
-                        <span class="d-flex flex-column gap-1 sidebar-user-name">
-                            <h4 class="my-0 fw-bold fs-15">{{ session('user_data.email', 'User') }}</h4>
-                            <h6 class="my-0">{{ ucfirst(str_replace('_', ' ', session('user_data.role', 'User'))) }}</h6>
+                    <a href="{{ route($role === 'seller' ? 'dashboard-seller.profile' : 'dashboard-admin.profile') }}" class="px-2 d-flex align-items-center text-reset text-decoration-none" style="overflow: hidden;">
+                        <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" width="42" class="rounded-circle me-2 shrink-0" alt="user-image">
+                        <span class="d-flex flex-column gap-1 sidebar-user-name text-truncate" style="min-width: 0;">
+                            <h4 class="my-0 fw-bold fs-15 text-truncate">{{ session('user_data.email', 'User') }}</h4>
+                            <h6 class="my-0 text-truncate">{{ ucfirst(str_replace('_', ' ', session('user_data.role', 'User'))) }}</h6>
                         </span>
                     </a>
                 </div>
@@ -182,7 +182,7 @@
                     <!-- User Dropdown -->
                     <div class="topbar-item nav-user">
                         <div class="px-2 d-flex align-items-center">
-                            <img src="assets/images/users/avatar-1.jpg" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image">
+                            <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image">
                             <span class="d-lg-flex flex-column gap-1 d-none">
                                 <h5 class="my-0">{{ session('user_data.email', 'User') }}</h5>
                             </span>

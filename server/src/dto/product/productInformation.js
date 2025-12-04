@@ -8,7 +8,6 @@ class productInformation {
         this.stock = product.stock;
         this.category = product.category;
         this.description = product.description;
-        this.rating = parseFloat(product.rating || 0);
         this.createdAt = product.createdAt || product.created_at;
         this.updatedAt = product.updatedAt || product.updated_at;
     }

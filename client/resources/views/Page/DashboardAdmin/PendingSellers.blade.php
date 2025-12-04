@@ -274,10 +274,11 @@
                                                         <div class="col-md-6 mb-3">
                                                             <strong>Foto PIC:</strong>
                                                             <div class="mt-2">
-                                                                <img src="{{ env('BACKEND_URL', 'http://localhost:3001') }}/{{ $seller['picPhotoPath'] }}" 
+                                                                <img src="{{ asset('storage/' . $seller['picPhotoPath']) }}" 
                                                                      class="img-fluid rounded border" 
                                                                      alt="PIC Photo"
-                                                                     style="max-height: 400px; object-fit: contain; width: 100%;">
+                                                                     style="max-height: 400px; object-fit: contain; width: 100%;"
+                                                                     onerror="this.onerror=null; this.src='{{ asset('assets/images/no-image.png') }}'; this.alt='Gambar tidak tersedia';">
                                                             </div>
                                                         </div>
                                                         @endif
@@ -286,10 +287,11 @@
                                                         <div class="col-md-6 mb-3">
                                                             <strong>Foto KTP:</strong>
                                                             <div class="mt-2">
-                                                                <img src="{{ env('BACKEND_URL', 'http://localhost:3001') }}/{{ $seller['picKtpPath'] }}" 
+                                                                <img src="{{ asset('storage/' . $seller['picKtpPath']) }}" 
                                                                      class="img-fluid rounded border" 
                                                                      alt="KTP Photo"
-                                                                     style="max-height: 400px; object-fit: contain; width: 100%;">
+                                                                     style="max-height: 400px; object-fit: contain; width: 100%;"
+                                                                     onerror="this.onerror=null; this.src='{{ asset('assets/images/no-image.png') }}'; this.alt='Gambar tidak tersedia';">
                                                             </div>
                                                         </div>
                                                         @endif
@@ -299,20 +301,24 @@
                                             @endif
 
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                                                <i class="bi bi-x-circle"></i> Tutup
-                                            </button>
-                                            <button type="button" 
-                                                    class="btn btn-danger" 
-                                                    onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')">
-                                                <i class="bi bi-x-lg"></i> Tolak
-                                            </button>
-                                            <button type="button" 
-                                                    class="btn btn-success" 
-                                                    onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')">
-                                                <i class="bi bi-check-lg"></i> Setujui
-                                            </button>
+                                        <div class="modal-footer d-flex justify-content-between">
+                                            <div>
+                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                                    <i class="bi bi-x-circle"></i> Tutup
+                                                </button>
+                                            </div>
+                                            <div class="d-flex gap-3">
+                                                <button type="button" 
+                                                        class="btn btn-danger" 
+                                                        onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')">
+                                                    <i class="bi bi-x-lg"></i> Tolak
+                                                </button>
+                                                <button type="button" 
+                                                        class="btn btn-success" 
+                                                        onclick="confirmApprove({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')">
+                                                    <i class="bi bi-check-lg"></i> Setujui
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -352,7 +358,8 @@ function confirmApprove(sellerId, shopName) {
         confirmButtonColor: '#28a745',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Ya, Setujui!',
-        cancelButtonText: 'Batal'
+        cancelButtonText: 'Batal',
+        reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('approve-form-' + sellerId).submit();

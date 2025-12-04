@@ -23,6 +23,12 @@
             <input type="email" class="form-control" id="review-email" placeholder="email@example.com" required />
           </div>
           <div class="mb-2">
+            <label class="form-label">Provinsi</label>
+            <select class="form-select" id="review-province" required>
+              <option value="">Pilih Provinsi</option>
+            </select>
+          </div>
+          <div class="mb-2">
             <label class="form-label">Rating</label>
             <div id="rater" dir="ltr"></div>
             <input type="hidden" id="review-rating" required />
@@ -51,12 +57,37 @@ document.addEventListener('DOMContentLoaded', function(){
   var nameInput = document.getElementById('review-name');
   var phoneInput = document.getElementById('review-phone');
   var emailInput = document.getElementById('review-email');
+  var provinceSelect = document.getElementById('review-province');
   var ratingSel = document.getElementById('review-rating');
   var commentInput = document.getElementById('review-comment');
   var raterEl = document.getElementById('rater');
+  
+  // Load provinsi dari API
+  fetch('/api/provinces')
+    .then(function(res) { return res.json(); })
+    .then(function(result) {
+      var data = result.data;
+      if (data && data.length > 0) {
+        data.forEach(function(item) {
+          var option = document.createElement('option');
+          option.value = item.name;
+          option.textContent = item.name;
+          provinceSelect.appendChild(option);
+        });
+      }
+    })
+    .catch(function(err) {
+      console.error('Error loading provinces:', err);
+    });
+  
   function validEmail(v){ return /.+@.+\..+/.test(v); }
   function valid(){
-    return (nameInput.value||'').trim().length >= 3 && (phoneInput.value||'').trim().length >= 8 && validEmail(emailInput.value||'') && parseInt(ratingSel.value||0) >= 1 && (commentInput.value||'').trim().length >= 3;
+    return (nameInput.value||'').trim().length >= 3 
+      && (phoneInput.value||'').trim().length >= 8 
+      && validEmail(emailInput.value||'') 
+      && (provinceSelect.value||'').trim().length > 0
+      && parseInt(ratingSel.value||0) >= 1 
+      && (commentInput.value||'').trim().length >= 3;
   }
   if(raterEl && typeof raterJs === 'function'){
     window.__reviewRater = raterJs({
@@ -77,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function(){
       window.__reviewRater.setRating(0);
     }
     ratingSel.value = '';
+    provinceSelect.value = '';
     alertBox.classList.add('d-none');
     var submitBtn = document.getElementById('review-submit');
     submitBtn.disabled = false;
@@ -115,7 +147,8 @@ document.addEventListener('DOMContentLoaded', function(){
       var payload = { 
         name: nameInput.value.trim(), 
         no_telp: phoneInput.value.trim() || null,
-        email: emailInput.value.trim(), 
+        email: emailInput.value.trim(),
+        province: provinceSelect.value.trim(),
         rating: parseInt(ratingSel.value), 
         comment: commentInput.value.trim() 
       };

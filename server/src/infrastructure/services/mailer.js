@@ -85,8 +85,59 @@ async function sendRejectionEmail(seller, reason) {
     });
 }
 
+async function sendThankyouEmail(user, product) {
+    const to = user.email;
+    const productName = product.name || '';
+
+    const subject = 'Terima Kasih Telah Membuat Review Produk ' + productName + ' <3';
+
+    const text = `
+    Hi ${user.name || ''},
+
+    Terima kasih telah meluangkan waktu untuk menulis ulasan mengenai produk "${productName}".
+
+    Masukan Anda sangat berarti bagi kami untuk meningkatkan kualitas layanan dan membantu pengguna lain membuat keputusan yang lebih baik.
+
+    Hormat kami,
+    Tim Support
+    `;
+
+        const html = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <h2 style="color: #4A90E2;">Terima Kasih atas Review Anda!</h2>
+
+    <p>Hi <strong>${user.name || ''}</strong>,</p>
+
+    <p>
+        Terima kasih telah meluangkan waktu untuk memberikan ulasan mengenai produk 
+        <strong>"${productName}"</strong>.
+    </p>
+
+    <p>
+        Masukan Anda sangat berharga bagi kami untuk meningkatkan kualitas produk dan
+        membantu pengguna lain membuat keputusan yang lebih baik.
+    </p>
+
+    <p>Hormat kami,<br><strong>Tim Support</strong></p>
+
+    <hr style="margin-top: 30px;" />
+    <small>Email ini dikirim secara otomatis. Mohon tidak membalas email ini.</small>
+    </div>
+    `;
+
+    return sendMail({
+        from: FROM_EMAIL,
+        to,
+        subject,
+        text,
+        html
+    });
+}
+
+
 module.exports = {
     sendApprovalEmail,
     sendRejectionEmail,
+    sendThankyouEmail,
     transporter
 };

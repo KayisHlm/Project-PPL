@@ -12,7 +12,7 @@ class ProductRepository {
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7
       )
-      RETURNING id, seller_id, name, price, weight, stock, category, description, rating, created_at, updated_at
+      RETURNING id, seller_id, name, price, weight, stock, category, description, created_at, updated_at
     `;
     const values = [
       sellerId,
@@ -29,7 +29,7 @@ class ProductRepository {
 
   async findById(productId) {
     const query = `
-      SELECT id, seller_id, name, price, weight, stock, category, description, rating, created_at, updated_at
+      SELECT id, seller_id, name, price, weight, stock, category, description, created_at, updated_at
       FROM products 
       WHERE id = $1
     `;
@@ -41,12 +41,8 @@ class ProductRepository {
     const query = `
       SELECT 
         p.id, p.seller_id, p.name, p.price, p.weight, p.stock, 
-        p.category, p.description, p.rating, p.created_at, p.updated_at,
-        
-        -- Get seller/shop info
+        p.category, p.description, p.created_at, p.updated_at,
         s.shop_name,
-        
-        -- Get images as JSON array (using subquery to avoid duplication from reviews join)
         COALESCE(
           (SELECT json_agg(
             jsonb_build_object(
@@ -61,11 +57,8 @@ class ProductRepository {
           WHERE i.product_id = p.id),
           '[]'
         ) as images,
-        
-        -- Get review count and average rating
         COUNT(r.id)::integer as review_count,
         COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) as average_rating
-        
       FROM products p
       LEFT JOIN sellers s ON p.seller_id = s.id
       LEFT JOIN reviews r ON p.id = r.product_id
@@ -85,7 +78,7 @@ class ProductRepository {
       UPDATE products 
       SET name = $2, price = $3, weight = $4, stock = $5, category = $6, description = $7
       WHERE id = $1
-      RETURNING id, seller_id, name, price, weight, stock, category, description, rating, created_at, updated_at
+      RETURNING id, seller_id, name, price, weight, stock, category, description, created_at, updated_at
     `;
     const values = [
       productId,
@@ -110,7 +103,7 @@ class ProductRepository {
 
   async listBySeller(sellerId) {
     const query = `
-      SELECT id, seller_id, name, price, weight, stock, category, description, rating, created_at, updated_at
+      SELECT id, seller_id, name, price, weight, stock, category, description, created_at, updated_at
       FROM products 
       WHERE seller_id = $1 
       ORDER BY created_at DESC
@@ -135,12 +128,8 @@ class ProductRepository {
     const query = `
       SELECT 
         p.id, p.seller_id, p.name, p.price, p.weight, p.stock, 
-        p.category, p.description, p.rating, p.created_at, p.updated_at,
-        
-        -- Get seller/shop info
+        p.category, p.description, p.created_at, p.updated_at,
         s.shop_name,
-        
-        -- Get images as JSON array
         COALESCE(
           json_agg(
             jsonb_build_object(
@@ -153,11 +142,8 @@ class ProductRepository {
           ) FILTER (WHERE i.id IS NOT NULL),
           '[]'
         ) as images,
-        
-        -- Get review count and average rating
         COUNT(DISTINCT r.id)::integer as review_count,
         COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) as average_rating
-        
       FROM products p
       LEFT JOIN sellers s ON p.seller_id = s.id
       LEFT JOIN image_products i ON p.id = i.product_id
@@ -169,23 +155,12 @@ class ProductRepository {
     return result.rows;
   }
 
-  async updateRating(productId, newRating) {
-    const query = `
-      UPDATE products 
-      SET rating = $2
-      WHERE id = $1
-      RETURNING id, seller_id, name, price, weight, stock, category, description, rating, created_at, updated_at
-    `;
-    const result = await pool.query(query, [productId, parseFloat(newRating)]);
-    return result.rows[0];
-  }
-
   async updateStock(productId, newStock) {
     const query = `
       UPDATE products 
       SET stock = $2
       WHERE id = $1
-      RETURNING id, seller_id, name, price, weight, stock, category, description, rating, created_at, updated_at
+      RETURNING id, seller_id, name, price, weight, stock, category, description, created_at, updated_at
     `;
     const result = await pool.query(query, [productId, parseInt(newStock, 10)]);
     return result.rows[0];

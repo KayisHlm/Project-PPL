@@ -55,14 +55,17 @@ Route::middleware('seller')->prefix('seller')->name('dashboard-seller.')->group(
 });
 
 // API endpoints for wilayah (used by registration dropdowns)
-Route::prefix('api')->group(function () {
-    Route::get('provinces', [WilayahController::class, 'provinces']);
-    Route::get('regencies/{province}', [WilayahController::class, 'regencies']);
-    Route::get('districts/{regency}', [WilayahController::class, 'districts']);
-    Route::get('villages/{district}', [WilayahController::class, 'villages']);
-    
-    // Review endpoints
-    Route::post('reviews/products/{productId}', [\App\Http\Controllers\ReviewController::class, 'store'])->name('api.reviews.store');
+Route::prefix('api')->name('api.')->group(function () {
+    // Wilayah endpoints
+    Route::get('provinces', [WilayahController::class, 'provinces'])->name('provinces');
+    Route::get('regencies/{province}', [WilayahController::class, 'regencies'])->name('regencies');
+    Route::get('districts/{regency}', [WilayahController::class, 'districts'])->name('districts');
+    Route::get('villages/{district}', [WilayahController::class, 'villages'])->name('villages');
+});
+
+// API endpoints for reviews
+Route::prefix('api/reviews')->name('api.reviews.')->group(function () {
+    Route::post('products/{productId}', [\App\Http\Controllers\ReviewController::class, 'store'])->name('store');
 });
 
 

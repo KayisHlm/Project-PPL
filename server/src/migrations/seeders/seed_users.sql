@@ -10,5 +10,6 @@ INSERT INTO users (email, password, role) VALUES
     ('seller_api@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller'),
     ('seller_new@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller'),
     ('hasan@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller'),
-    ('budi@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller')
+    ('budi@example.com', '$2b$10$PG9WPBpiZAPYAjCobfYotulAzfbLsSee7wAQ/DTxdST2tz.r7CUpC', 'seller'),
+    ('kevinadsantoso@gmail.com', '$2b$10$VNRP86qb.L6/64bgs6izdepND96r1MoFV/t8sVA/S9Tv9nhCS74iq', 'seller')
 ON CONFLICT (email) DO NOTHING;

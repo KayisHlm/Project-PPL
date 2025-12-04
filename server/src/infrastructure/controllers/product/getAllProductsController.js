@@ -2,13 +2,14 @@ const GetAllProducts = require("../../../usecases/product/getAllProducts");
 const ProductRepository = require("../../repositories/productRepository");
 const ProductInformation = require("../../../dto/product/productInformation");
 const ImageProductInformation = require("../../../dto/imageProduct/imageProductInformation");
+const { InternalServerError } = require("../../../domain/errors");
 
 async function getAll(req, res) {
   try {
-    const usecase = new GetAllProducts(new ProductRepository());
+    const productRepository = new ProductRepository();
+    const usecase = new GetAllProducts(productRepository);
     const products = await usecase.execute();
     
-    // Map to DTO using class constructors
     const productsDTO = products.map(product => {
       const productDTO = new ProductInformation(product);
       productDTO.images = product.images.map(image => new ImageProductInformation(image));
@@ -23,10 +24,16 @@ async function getAll(req, res) {
       data: productsDTO
     });
   } catch (error) {
+    if (error instanceof InternalServerError) {
+      return res.status(error.statusCode).json({
+        code: error.statusCode,
+        message: error.message
+      });
+    }
+    
     return res.status(500).json({
       code: 500,
-      message: "Internal Server Error",
-      error: error.message
+      message: "Internal Server Error"
     });
   }
 }

@@ -263,7 +263,7 @@ class AuthController extends Controller
                 DB::commit();
                 
                 return redirect()->route('login.loginIndex')
-                    ->with('success', 'Registrasi berhasil! Silakan login dengan akun Anda.');
+                    ->with('success', 'Registrasi berhasil! Cek email Anda secara berkala untuk status verifikasi akun Anda.');
             }
         } catch (\Throwable $e) {
             DB::rollBack();
