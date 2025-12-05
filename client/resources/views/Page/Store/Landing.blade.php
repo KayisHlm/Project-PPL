@@ -37,12 +37,12 @@
         <div class="col" 
              data-index="{{ $index }}" 
              data-name="{{ $product['name'] }}" 
-             data-store="{{ $product['shop_name'] ?? 'Toko' }}" 
+             data-store="{{ $product['shopName'] ?? $product['shop_name'] ?? 'Toko' }}" 
              data-category="{{ $product['category'] ?? 'Lainnya' }}" 
              data-price="{{ $product['price'] }}" 
-             data-rating="{{ $product['average_rating'] ?? 0 }}" 
-             data-comments="{{ $product['review_count'] ?? 0 }}" 
-             data-location="{{ implode(', ', array_filter([($product['shop_village'] ?? ''), ($product['shop_district'] ?? ''), ($product['shop_city'] ?? ''), ($product['shop_province'] ?? '')])) }}">
+             data-rating="{{ $product['averageRating'] ?? $product['average_rating'] ?? 0 }}" 
+             data-comments="{{ $product['reviewCount'] ?? $product['review_count'] ?? 0 }}" 
+             data-location="{{ implode(', ', array_filter([($product['shopVillage'] ?? $product['shop_village'] ?? ''), ($product['shopDistrict'] ?? $product['shop_district'] ?? ''), ($product['shopCity'] ?? $product['shop_city'] ?? ''), ($product['shopProvince'] ?? $product['shop_province'] ?? '')])) }}">
             <div class="card h-100 shadow-sm border-0" 
                  style="transition:transform .2s, box-shadow .2s; cursor: pointer;" 
                  onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" 
@@ -63,11 +63,11 @@
                     <p class="mb-1 fw-bold" style="font-size: 1rem; color: #000;">Rp{{ number_format($product['price'], 0, ',', '.') }}</p>
                     <div class="d-flex align-items-center gap-1 mb-1">
                         <i class="ri-star-fill text-warning" style="font-size: 0.75rem;"></i>
-                        <span class="store-rating" style="font-size: 0.75rem;">{{ number_format($product['average_rating'] ?? 0, 1) }}</span>
-                        <span class="text-muted" style="font-size: 0.7rem;">({{ $product['review_count'] ?? 0 }})</span>
+                        <span class="store-rating" style="font-size: 0.75rem;">{{ number_format($product['averageRating'] ?? $product['average_rating'] ?? 0, 1) }}</span>
+                        <span class="text-muted" style="font-size: 0.7rem;">({{ $product['reviewCount'] ?? $product['review_count'] ?? 0 }})</span>
                     </div>
-                    <p class="mb-2 text-muted text-truncate" style="font-size: 0.75rem;" title="{{ $product['shop_name'] ?? 'Toko Produk' }}">
-                        <i class="ri-store-2-line"></i> {{ $product['shop_name'] ?? 'Toko Produk' }}
+                    <p class="mb-2 text-muted text-truncate" style="font-size: 0.75rem;" title="{{ $product['shopName'] ?? $product['shop_name'] ?? 'Toko Produk' }}">
+                        <i class="ri-store-2-line"></i> {{ $product['shopName'] ?? $product['shop_name'] ?? 'Toko Produk' }}
                     </p>
                     <div class="d-flex gap-1">
                         <a href="{{ route('store.detail', ['id' => $product['id']]) }}" class="btn btn-outline-secondary btn-sm flex-fill" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">Detail</a>
