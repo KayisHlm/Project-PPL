@@ -54,4 +54,21 @@ class ProductApi
         ];
         return Http::withHeaders($headers)->timeout(8)->get($this->apiUrl . '/' . $id);
     }
+
+    public function getMyProducts()
+    {
+        $token = session('auth_token');
+        
+        if (!$token) {
+            throw new \Exception('No authentication token found');
+        }
+
+        Log::info('ProductApi.getMyProducts called');
+        
+        // ✅ FIXED: sesuaikan dengan route backend
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->timeout(8)->get("{$this->apiUrl}/user/products");
+    }
 }

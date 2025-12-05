@@ -11,18 +11,42 @@ class SellerProductController extends Controller
 {
     public function index(Request $request)
     {
-        $token = session('auth_token');
-        if (!$token) {
-            return redirect()->route('login.loginIndex')->with('error', 'Silakan login terlebih dahulu.');
+        try {
+            $token = session('auth_token');
+            if (!$token) {
+                return redirect()->route('login.loginIndex')->with('error', 'Silakan login terlebih dahulu.');
+            }
+            
+            $api = new ProductApi();
+            $resp = $api->getMyProducts(); 
+            $products = [];
+            
+            if ($resp->successful()) {
+                $json = $resp->json();
+                $products = $json['data']['products'] ?? [];
+                
+                Log::info('Products loaded successfully', [
+                    'count' => count($products)
+                ]);
+            } else {
+                Log::warning('Failed to fetch seller products', [
+                    'status' => $resp->status(),
+                    'body' => $resp->body()
+                ]);
+            }
+            
+            return view('Page.DashboardSeller.Produk', compact('products'));
+            
+        } catch (\Exception $e) {
+            Log::error('Error in SellerProductController@index', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()
+                ->route('dashboard-seller.dashboard')
+                ->with('error', 'Gagal memuat produk: ' . $e->getMessage());
         }
-        $api = new ProductApi();
-        $resp = $api->list($token);
-        $products = [];
-        if ($resp->status() === 200) {
-            $json = $resp->json();
-            $products = $json['data'] ?? [];
-        }
-        return view('Page.DashboardSeller.Produk', compact('products'));
     }
 
     public function createView(Request $request)

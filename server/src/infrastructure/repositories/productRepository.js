@@ -155,6 +155,66 @@ class ProductRepository {
     return result.rows;
   }
 
+  async findByUserId(userId) {
+      try {
+          console.log(`ProductRepository.findByUserId called for userId: ${userId}`);
+          
+          const query = `
+              SELECT 
+                  p.id,
+                  p.seller_id,
+                  p.name,
+                  p.price,
+                  p.weight,
+                  p.stock,
+                  p.category,
+                  p.description,
+                  p.created_at,
+                  p.updated_at,
+                  s.shop_name,
+                  COALESCE(
+                      json_agg(
+                          jsonb_build_object(
+                              'id', ip.id,
+                              'product_id', ip.product_id,
+                              'image_url', ip.image_url,
+                              'created_at', ip.created_at,
+                              'updated_at', ip.updated_at
+                          ) ORDER BY ip.created_at ASC
+                      ) FILTER (WHERE ip.id IS NOT NULL),
+                      '[]'
+                  ) AS images,
+                  COUNT(DISTINCT r.id)::integer AS review_count,
+                  COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) AS average_rating
+              FROM products p
+              INNER JOIN sellers s ON p.seller_id = s.id
+              LEFT JOIN image_products ip ON p.id = ip.product_id
+              LEFT JOIN reviews r ON p.id = r.product_id
+              WHERE s.user_id = $1
+              GROUP BY 
+                  p.id,
+                  p.seller_id,
+                  p.name,
+                  p.price,
+                  p.weight,
+                  p.stock,
+                  p.category,
+                  p.description,
+                  p.created_at,
+                  p.updated_at,
+                  s.shop_name
+              ORDER BY p.created_at DESC
+          `;
+
+          const result = await pool.query(query, [userId]);
+          console.log(`Found ${result.rows.length} products for userId: ${userId}`);
+          return result.rows;
+      } catch (error) {
+          console.error('Error in findByUserId:', error);
+          throw error;
+      }
+  }
+
   async updateStock(productId, newStock) {
     const query = `
       UPDATE products 

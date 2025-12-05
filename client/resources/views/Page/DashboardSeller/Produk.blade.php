@@ -33,14 +33,35 @@
 
                     <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-3" id="seller-product-grid">
                         @foreach(($products ?? []) as $p)
-                        <div class="col" data-name="{{ $p['name'] }}" data-category="{{ $p['category'] }}" data-price="{{ $p['price'] }}" data-rating="4.0">
-                            <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
-                                <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ 4.0</span>
-                                <img src="{{ isset($p['cover_image']) && $p['cover_image'] ? asset($p['cover_image']) : asset('assets/images/products/product-1.jpg') }}" class="card-img-top" alt="Produk" onerror="this.onerror=null;this.src='{{ asset('assets/images/products/product-1.jpg') }}';">
-                                <div class="card-body">
-                                    <h6 class="mb-1">{{ $p['name'] }}</h6>
-                                    <p class="mb-1 text-muted">{{ $p['category'] }}</p>
-                                    <p class="mb-0 fw-bold">Rp {{ number_format($p['price'],0,',','.') }}</p>
+                        <div class="col" data-name="{{ $p['name'] }}" data-category="{{ $p['category'] }}" data-price="{{ $p['price'] }}" data-rating="{{ $p['average_rating'] ?? '0' }}">
+                            <div class="card h-100 shadow-sm border-0" 
+                                 style="transition:transform .2s, box-shadow .2s; cursor: pointer; background: white;" 
+                                 onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" 
+                                 onmouseleave="this.style.transform='none';this.style.boxShadow='';">
+                                @if(!empty($p['images']) && count($p['images']) > 0)
+                                    <div style="height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.375rem 0.375rem 0 0; background: white;">
+                                        <img src="{{ $p['images'][0]['imageUrl'] }}" 
+                                             alt="{{ $p['name'] }}" 
+                                             onerror="this.onerror=null;this.src='{{ asset('assets/images/products/product-1.jpg') }}';" 
+                                             style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;">
+                                    </div>
+                                @else
+                                    <div class="bg-light d-flex align-items-center justify-content-center" 
+                                         style="height: 180px; border-radius: 0.375rem 0.375rem 0 0;">
+                                        <i class="ri-image-line" style="font-size: 3rem; color: #ccc;"></i>
+                                    </div>
+                                @endif
+                                <div class="card-body p-2">
+                                    <h6 class="mb-1 text-truncate" style="font-size: 0.875rem;" title="{{ $p['name'] }}">{{ $p['name'] }}</h6>
+                                    <p class="mb-1 fw-bold" style="font-size: 1rem; color: #000;">Rp{{ number_format($p['price'], 0, ',', '.') }}</p>
+                                    <div class="d-flex align-items-center gap-1 mb-1">
+                                        <i class="ri-star-fill text-warning" style="font-size: 0.75rem;"></i>
+                                        <span style="font-size: 0.75rem;">{{ number_format($p['average_rating'] ?? 0, 1) }}</span>
+                                        <span class="text-muted" style="font-size: 0.7rem;">({{ $p['review_count'] ?? 0 }})</span>
+                                    </div>
+                                    <p class="mb-2 text-muted text-truncate" style="font-size: 0.75rem;" title="{{ $p['shop_name'] ?? 'Toko Saya' }}">
+                                        <i class="ri-store-2-line"></i> {{ $p['shop_name'] ?? 'Toko Saya' }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
