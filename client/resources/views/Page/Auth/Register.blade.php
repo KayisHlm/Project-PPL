@@ -323,7 +323,12 @@
                                                 </div>
                                             </div>
 
-                                            <div class="d-flex wizard justify-content-between align-items-center flex-wrap gap-2 mt-3">                    
+                                            <div class="d-flex wizard justify-content-between align-items-center flex-wrap gap-2 mt-3">
+                                                <div>
+                                                    <a href="{{ route('store.landing') }}" class="btn btn-sm btn-outline-secondary">
+                                                        <i class="mdi mdi-home me-1"></i> Beranda
+                                                    </a>
+                                                </div>
                                                 <div class="login ms-auto text-end">
                                                     <a href="{{ url('/login') }}" class="text-muted fs-14">Already have an account? <span class="text-primary">Login !</span></a>
                                                 </div>

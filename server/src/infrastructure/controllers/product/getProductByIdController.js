@@ -1,8 +1,7 @@
 const GetProductById = require("../../../usecases/product/getProductById");
 const ProductRepository = require("../../repositories/productRepository");
 const ReviewRepository = require("../../repositories/reviewRepository");
-const ProductInformation = require("../../../dto/product/productInformation");
-const ImageProductInformation = require("../../../dto/imageProduct/imageProductInformation");
+const ProductDetailInformation = require("../../../dto/product/productDetailInformation");
 
 async function getById(req, res) {
   try {
@@ -26,12 +25,7 @@ async function getById(req, res) {
     }
 
     // Map to DTO
-    const productDTO = new ProductInformation(product);
-    productDTO.images = product.images.map(image => new ImageProductInformation(image));
-    productDTO.shop_name = product.shop_name;
-    productDTO.review_count = product.review_count;
-    productDTO.average_rating = parseFloat(product.average_rating);
-    productDTO.reviews = product.reviews || [];
+    const productDTO = new ProductDetailInformation(product);
 
     return res.status(200).json({
       code: 200,

@@ -1,5 +1,6 @@
 const GetReviewsByProduct = require("../../../usecases/review/getReviewsByProduct");
 const ReviewRepository = require("../../repositories/reviewRepository");
+const ReviewInformation = require("../../../dto/review/reviewInformation");
 
 async function listByProduct(req, res) {
   try {
@@ -14,9 +15,12 @@ async function listByProduct(req, res) {
     const usecase = new GetReviewsByProduct(new ReviewRepository());
     const reviews = await usecase.execute(productId);
     
+    // Map to DTO
+    const reviewsDTO = reviews.map(review => new ReviewInformation(review));
+    
     return res.status(200).json({ 
       code: 200, 
-      data: reviews 
+      data: reviewsDTO 
     });
   } catch (error) {
     return res.status(500).json({ 

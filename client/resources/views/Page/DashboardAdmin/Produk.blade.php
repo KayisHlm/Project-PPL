@@ -22,30 +22,67 @@
                                 </select>
                                 <select class="form-select form-select-sm w-auto" id="admin-product-filter-category" style="min-width:200px">
                                     <option value="">Semua Kategori</option>
-                                    @php $cats = collect($products ?? [])->pluck('category')->unique()->values(); @endphp
-                                    @foreach($cats as $cat)
-                                        <option>{{ $cat }}</option>
-                                    @endforeach
+                                    @if(!empty($products))
+                                        @php 
+                                            $cats = collect($products)->pluck('category')->filter()->unique()->sort()->values(); 
+                                        @endphp
+                                        @foreach($cats as $cat)
+                                            <option value="{{ $cat }}">{{ $cat }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-3" id="admin-product-grid">
-                        @foreach(($products ?? []) as $p)
-                        <div class="col" data-name="{{ $p['name'] }}" data-category="{{ $p['category'] }}" data-price="{{ $p['price'] }}" data-rating="4.0">
-                            <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
-                                <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ 4.0</span>
-                                <img src="{{ isset($p['cover_image']) && $p['cover_image'] ? asset($p['cover_image']) : asset('assets/images/products/product-1.jpg') }}" class="card-img-top" alt="Produk" onerror="this.onerror=null;this.src='{{ asset('assets/images/products/product-1.jpg') }}';">
-                                <div class="card-body">
-                                    <h6 class="mb-1">{{ $p['name'] }}</h6>
-                                    <p class="mb-1 text-muted">{{ $p['category'] }}</p>
-                                    <p class="mb-0 fw-bold">Rp {{ number_format($p['price'],0,',','.') }}</p>
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                            @foreach($errors->all() as $error)
+                                {{ $error }}
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if(empty($products))
+                        <div class="text-center py-5">
+                            <i class="ri-inbox-line" style="font-size: 4rem; color: #ccc;"></i>
+                            <p class="text-muted mt-3">Belum ada produk yang terdaftar</p>
+                        </div>
+                    @else
+                        <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-3" id="admin-product-grid">
+                            @foreach($products as $p)
+                            @php
+                                // Get first image from images array
+                                $imageUrl = null;
+                                if (isset($p['images']) && is_array($p['images']) && count($p['images']) > 0) {
+                                    $imageUrl = $p['images'][0]['imageUrl'] ?? null;
+                                }
+                                $defaultImage = asset('assets/images/products/product-1.jpg');
+                            @endphp
+                            <div class="col" data-name="{{ $p['name'] ?? '' }}" data-category="{{ $p['category'] ?? '' }}" data-price="{{ $p['price'] ?? 0 }}" data-rating="{{ $p['average_rating'] ?? 0 }}">
+                                <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
+                                    @if(isset($p['average_rating']) && $p['average_rating'] > 0)
+                                        <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ {{ number_format($p['average_rating'], 1) }}</span>
+                                    @endif
+                                    <img src="{{ $imageUrl ?? $defaultImage }}" class="card-img-top" alt="{{ $p['name'] ?? 'Produk' }}" style="height: 200px; object-fit: cover;" onerror="this.onerror=null;this.src='{{ $defaultImage }}';">
+                                    <div class="card-body">
+                                        <h6 class="mb-1 text-truncate">{{ $p['name'] ?? 'Nama Produk' }}</h6>
+                                        <p class="mb-1 text-muted small">{{ $p['category'] ?? 'Kategori' }}</p>
+                                        @if(isset($p['shop_name']))
+                                            <p class="mb-1 text-muted small"><i class="ri-store-2-line"></i> {{ $p['shop_name'] }}</p>
+                                        @endif
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="mb-0 fw-bold text-primary">Rp {{ number_format($p['price'] ?? 0, 0, ',', '.') }}</p>
+                                            @if(isset($p['stock']))
+                                                <small class="text-muted">Stok: {{ $p['stock'] }}</small>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            @endforeach
                         </div>
-                        @endforeach
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>

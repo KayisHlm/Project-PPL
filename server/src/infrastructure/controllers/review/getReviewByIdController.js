@@ -1,5 +1,6 @@
 const GetReviewById = require("../../../usecases/review/getReviewById");
 const ReviewRepository = require("../../repositories/reviewRepository");
+const ReviewInformation = require("../../../dto/review/reviewInformation");
 
 async function getById(req, res) {
   try {
@@ -21,9 +22,12 @@ async function getById(req, res) {
       });
     }
 
+    // Map to DTO
+    const reviewDTO = new ReviewInformation(review);
+
     return res.status(200).json({ 
       code: 200, 
-      data: review 
+      data: reviewDTO 
     });
   } catch (error) {
     return res.status(500).json({ 

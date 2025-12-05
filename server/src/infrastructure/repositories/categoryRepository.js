@@ -1,7 +1,7 @@
 const pool = require("../../db");
 
 class CategoryRepository {
-  async create(name, description = null) {
+  async create(name) {
     const check = await pool.query(
       `SELECT id FROM categories WHERE name = $1 LIMIT 1`,
       [name]
@@ -10,17 +10,17 @@ class CategoryRepository {
       return null;
     }
     const insert = await pool.query(
-      `INSERT INTO categories (name, description)
-       VALUES ($1, $2)
-       RETURNING id, name, description, created_at, updated_at`,
-      [name, description]
+      `INSERT INTO categories (name)
+       VALUES ($1)
+       RETURNING id, name, created_at, updated_at`,
+      [name]
     );
     return insert.rows[0] || null;
   }
 
   async findById(categoryId) {
     const result = await pool.query(
-      `SELECT id, name, description, created_at, updated_at
+      `SELECT id, name, created_at, updated_at
        FROM categories 
        WHERE id = $1`,
       [categoryId]
@@ -30,7 +30,7 @@ class CategoryRepository {
 
   async findByName(name) {
     const result = await pool.query(
-      `SELECT id, name, description, created_at, updated_at
+      `SELECT id, name, created_at, updated_at
        FROM categories 
        WHERE name = $1`,
       [name]
@@ -38,13 +38,13 @@ class CategoryRepository {
     return result.rows[0];
   }
 
-  async update(categoryId, name, description = null) {
+  async update(categoryId, name) {
     const result = await pool.query(
       `UPDATE categories 
-       SET name = $2, description = $3
+       SET name = $2
        WHERE id = $1
-       RETURNING id, name, description, created_at, updated_at`,
-      [categoryId, name, description]
+       RETURNING id, name, created_at, updated_at`,
+      [categoryId, name]
     );
     return result.rows[0];
   }
@@ -61,7 +61,7 @@ class CategoryRepository {
 
   async listAll() {
     const result = await pool.query(
-      `SELECT id, name, description, created_at, updated_at
+      `SELECT id, name, created_at, updated_at
        FROM categories 
        ORDER BY name ASC`
     );
@@ -70,7 +70,7 @@ class CategoryRepository {
 
   async listWithCount() {
     const result = await pool.query(
-      `SELECT c.id, c.name, c.description, COALESCE(p.count, 0) AS product_count
+      `SELECT c.id, c.name, COALESCE(p.count, 0) AS product_count
        FROM categories c
        LEFT JOIN (
          SELECT category, COUNT(*) AS count

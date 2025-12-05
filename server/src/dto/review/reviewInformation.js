@@ -1,4 +1,4 @@
-class reviewInformation {
+class ReviewInformation {
     constructor(review) {
         this.id = review.id;
         this.productId = review.productId || review.product_id;
@@ -12,4 +12,4 @@ class reviewInformation {
     }
 }
 
-module.exports = reviewInformation;
+module.exports = ReviewInformation;

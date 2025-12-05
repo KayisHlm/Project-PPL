@@ -6,25 +6,52 @@
             <div class="card shadow-sm border-0">
                 <div class="card-body">
                     @if(!empty($product['images']) && count($product['images']) > 0)
-                        @php
-                            $imageCount = count($product['images']);
-                            $colClass = match($imageCount) {
-                                1 => 'row-cols-1',
-                                2 => 'row-cols-2',
-                                3 => 'row-cols-3',
-                                default => 'row-cols-4'
-                            };
-                        @endphp
-                        <div class="row {{ $colClass }} g-3 mb-3">
-                            @foreach($product['images'] as $img)
-                                <div class="col">
-                                    <img src="{{ $img['imageUrl'] }}" 
-                                         class="img-fluid rounded w-100" 
-                                         style="object-fit:contain;cursor:pointer;border:2px solid #e9ecef;background:#f8f9fa;max-height:400px" 
-                                         alt="Product Image"
-                                         onclick="this.requestFullscreen()">
+                        <!-- Carousel untuk Product Images -->
+                        <div id="productImageCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
+                            <div class="carousel-inner rounded" style="background:#f8f9fa;">
+                                @foreach($product['images'] as $index => $img)
+                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                        <img src="{{ $img['imageUrl'] }}" 
+                                             class="d-block w-100" 
+                                             style="object-fit:contain;max-height:500px;cursor:pointer;" 
+                                             alt="Product Image {{ $index + 1 }}"
+                                             onclick="this.requestFullscreen()">
+                                    </div>
+                                @endforeach
+                            </div>
+                            
+                            @if(count($product['images']) > 1)
+                                <!-- Previous Button -->
+                                <button class="carousel-control-prev" type="button" data-bs-target="#productImageCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <!-- Next Button -->
+                                <button class="carousel-control-next" type="button" data-bs-target="#productImageCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                                
+                                <!-- Custom Thumbnail Navigation -->
+                                <div class="d-flex justify-content-center gap-2 mt-3">
+                                    @foreach($product['images'] as $index => $img)
+                                        <button type="button" 
+                                                data-bs-target="#productImageCarousel" 
+                                                data-bs-slide-to="{{ $index }}" 
+                                                class="border-0 p-0 {{ $index === 0 ? 'active-thumbnail' : '' }}" 
+                                                aria-current="{{ $index === 0 ? 'true' : 'false' }}" 
+                                                aria-label="Slide {{ $index + 1 }}"
+                                                style="width:70px;height:70px;border-radius:8px;overflow:hidden;cursor:pointer;opacity:0.6;transition:all 0.3s;"
+                                                onmouseover="this.style.opacity='1';this.style.transform='scale(1.05)'" 
+                                                onmouseout="this.style.opacity=this.classList.contains('active-thumbnail')?'1':'0.6';this.style.transform='scale(1)'">
+                                            <img src="{{ $img['imageUrl'] }}" 
+                                                 class="w-100 h-100" 
+                                                 style="object-fit:cover;pointer-events:none;" 
+                                                 alt="Thumbnail {{ $index + 1 }}">
+                                        </button>
+                                    @endforeach
                                 </div>
-                            @endforeach
+                            @endif
                         </div>
                     @else
                         <div class="mb-3">
@@ -53,9 +80,9 @@
                         <span class="badge bg-light text-body">
                             <i class="ri-scales-3-line"></i> {{ $product['weight'] }} gram
                         </span>
-                        @if($product['shop_name'])
+                        @if(isset($product['shopName']) || isset($product['shop_name']))
                             <span class="badge bg-light text-body">
-                                <i class="ri-store-2-line"></i> {{ $product['shop_name'] }}
+                                <i class="ri-store-2-line"></i> {{ $product['shopName'] ?? $product['shop_name'] ?? 'Toko' }}
                             </span>
                         @endif
                     </div>
@@ -111,6 +138,25 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function(){
+  // Carousel thumbnail active state management
+  var carousel = document.getElementById('productImageCarousel');
+  if(carousel){
+    carousel.addEventListener('slide.bs.carousel', function(event){
+      var thumbnails = document.querySelectorAll('[data-bs-target="#productImageCarousel"]');
+      thumbnails.forEach(function(thumb, idx){
+        if(idx === event.to){
+          thumb.classList.add('active-thumbnail');
+          thumb.style.opacity = '1';
+          thumb.style.border = '2px solid #0d6efd';
+        } else {
+          thumb.classList.remove('active-thumbnail');
+          thumb.style.opacity = '0.6';
+          thumb.style.border = 'none';
+        }
+      });
+    });
+  }
+
   var btn = document.getElementById('detail-review-btn');
   var reviews = document.getElementById('detail-reviews');
   window.StoreCatalog = window.StoreCatalog || {};

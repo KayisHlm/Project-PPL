@@ -1,6 +1,7 @@
 const CreateReview = require("../../../usecases/review/createReview");
 const ReviewRepository = require("../../repositories/reviewRepository");
 const ProductRepository = require("../../repositories/productRepository");
+const ReviewInformation = require("../../../dto/review/reviewInformation");
 const mailer = require("../../services/mailer");
 const { BadRequest, NotFound, AlreadyExist, InternalServerError } = require("../../../domain/errors");
 
@@ -15,10 +16,13 @@ async function create(req, res) {
     const review = await usecase.execute(productId, req.body);
     console.log("[CreateReviewController] Incoming body:", req.body);
 
+    // Map to DTO
+    const reviewDTO = new ReviewInformation(review);
+
     return res.status(201).json({ 
       code: 201, 
       message: "Review created successfully", 
-      data: review 
+      data: reviewDTO 
     });
   } catch (error) {
     console.error("[CreateReviewController] Error:", error);

@@ -30,7 +30,7 @@ INSERT INTO sellers (
         'DKI Jakarta',
         'Jakarta Selatan',
         'Kebayoran Baru',
-        'Melawai',
+        'Gunung',
         '3271012345670001',
         'approved'
     ),
@@ -47,7 +47,7 @@ INSERT INTO sellers (
         'DKI Jakarta',
         'Jakarta Pusat',
         'Menteng',
-        'Gondangdia',
+        'Kebon Sirih',
         '3271012345670002',
         'approved'
     )
@@ -82,8 +82,8 @@ INSERT INTO sellers (
     '004',
     'Jawa Barat',
     'Bandung',
-    'Jatinangor',
-    'Dago',
+    'Sukasari',
+    'Gegerkalong',
     '3271012345670003',
     'approved'
 );
@@ -118,7 +118,7 @@ INSERT INTO sellers (
     'Jawa Barat',
     'Bandung',
     'Coblong',
-    'Dago',
+    'Cipaganti',
     '3217198401210004',
     'approved'
 );
@@ -147,13 +147,13 @@ INSERT INTO sellers (
     'Hasan',
     '081841934131',
     'hasan@example.com',
-    'Jl. Katalis No. 10',
-    '003',
-    '004',
+    'Jl. Cihampelas No. 15',
+    '002',
+    '006',
     'Jawa Barat',
     'Bandung',
-    'Coblong',
-    'Dago',
+    'Cidadap',
+    'Ciumbuleuit',
     '3219384599523005',
     'pending'
 );
@@ -182,13 +182,13 @@ INSERT INTO sellers (
     'Budi',
     '081841918313',
     'budi@example.com',
-    'Jl. Katalis No. 10',
-    '003',
-    '004',
+    'Jl. Asia Afrika No. 50',
+    '005',
+    '002',
     'Jawa Barat',
     'Bandung',
-    'Coblong',
-    'Dago',
+    'Sumur Bandung',
+    'Braga',
     '3219384599523006',
     'pending'
 );

@@ -19,9 +19,6 @@ class CreateCategory {
       throw new BadRequest("Category name must not exceed 100 characters");
     }
 
-    // Optional description validation
-    const description = body.description ? body.description.trim() : null;
-
     // Check if category already exists
     const existing = await this.categoryRepository.findByName(name);
     if (existing) {
@@ -29,7 +26,7 @@ class CreateCategory {
     }
 
     // Create new category
-    const created = await this.categoryRepository.create(name, description);
+    const created = await this.categoryRepository.create(name);
     return created;
   }
 }
