@@ -80,7 +80,54 @@ class AdminApi
 
     public function getProducts()
     {
+        Log::info('AdminApi.getProducts called');
+        
         return Http::withHeaders($this->getAuthHeaders())
-            ->get($this->baseUrl . '/admin/products');
+            ->timeout(10)
+            ->get($this->baseUrl . '/products');
+    }
+
+    /**
+     * Get products by category statistics
+     * GET /api/statistics/products-by-category
+     */
+    public function getProductsByCategory()
+    {
+        return Http::withHeaders($this->getAuthHeaders())
+            ->timeout(10)
+            ->get($this->baseUrl . '/statistics/products-by-category');
+    }
+
+    /**
+     * Get shops by province statistics
+     * GET /api/statistics/shops-by-province
+     */
+    public function getShopsByProvince()
+    {
+        return Http::withHeaders($this->getAuthHeaders())
+            ->timeout(10)
+            ->get($this->baseUrl . '/statistics/shops-by-province');
+    }
+
+    /**
+     * Get sellers active status statistics
+     * GET /api/statistics/sellers-active-status
+     */
+    public function getSellersActiveStatus()
+    {
+        return Http::withHeaders($this->getAuthHeaders())
+            ->timeout(10)
+            ->get($this->baseUrl . '/statistics/sellers-active-status');
+    }
+
+    /**
+     * Get reviews and rating statistics
+     * GET /api/statistics/reviews-rating-stats
+     */
+    public function getReviewsRatingStats()
+    {
+        return Http::withHeaders($this->getAuthHeaders())
+            ->timeout(10)
+            ->get($this->baseUrl . '/statistics/reviews-rating-stats');
     }
 }

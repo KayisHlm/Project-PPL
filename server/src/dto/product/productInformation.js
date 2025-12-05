@@ -1,4 +1,4 @@
-class productInformation {
+class ProductInformation {
     constructor (product) {
         this.id = product.id;
         this.sellerId = product.sellerId || product.seller_id;
@@ -13,4 +13,4 @@ class productInformation {
     }
 }
 
-module.exports = productInformation;
+module.exports = ProductInformation;

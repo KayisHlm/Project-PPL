@@ -33,12 +33,118 @@ class AdminController extends Controller
                 $pendingCount = $data['data']['total'] ?? $data['total'] ?? 0;
             }
 
-            return view('Page.DashboardAdmin.Dashboard', compact('pendingCount'));
+            // Get approved sellers count
+            $approvedResponse = $this->adminApi->getApprovedSellers($token);
+            
+            $approvedCount = 0;
+            if ($approvedResponse && $approvedResponse->successful()) {
+                $data = $approvedResponse->json();
+                $approvedCount = $data['data']['total'] ?? $data['total'] ?? 0;
+            }
+
+            // Get products for catalog section
+            Log::info('Fetching products for dashboard');
+            $productResponse = $this->adminApi->getProducts();
+            
+            $products = [];
+            if ($productResponse && $productResponse->successful()) {
+                $data = $productResponse->json();
+                $products = $data['data'] ?? [];
+                
+                Log::info('Products loaded for dashboard', [
+                    'count' => count($products)
+                ]);
+            } else {
+                Log::error('Failed to fetch products for dashboard', [
+                    'status' => $productResponse ? $productResponse->status() : 'null'
+                ]);
+            }
+
+            // Calculate average rating and total reviews
+            $avgRating = 0;
+            $totalReviews = 0;
+            
+            if (!empty($products)) {
+                $totalRating = 0;
+                $productCount = 0;
+                
+                foreach ($products as $product) {
+                    // API returns camelCase: averageRating, reviewCount
+                    $productRating = $product['averageRating'] ?? $product['average_rating'] ?? 0;
+                    if ($productRating > 0) {
+                        $totalRating += $productRating;
+                        $productCount++;
+                    }
+                    
+                    $reviewCount = $product['reviewCount'] ?? $product['review_count'] ?? 0;
+                    if ($reviewCount > 0) {
+                        $totalReviews += $reviewCount;
+                    }
+                }
+                
+                if ($productCount > 0) {
+                    $avgRating = round($totalRating / $productCount, 1);
+                }
+            }
+
+            // Fetch statistics data for charts
+            $productsByCategory = [];
+            $shopsByProvince = [];
+            $sellersActiveStatus = [];
+            $reviewsRatingStats = [];
+
+            // Get products by category
+            $categoryResponse = $this->adminApi->getProductsByCategory();
+            if ($categoryResponse && $categoryResponse->successful()) {
+                $data = $categoryResponse->json();
+                $productsByCategory = $data['data'] ?? [];
+            }
+
+            // Get shops by province
+            $provinceResponse = $this->adminApi->getShopsByProvince();
+            if ($provinceResponse && $provinceResponse->successful()) {
+                $data = $provinceResponse->json();
+                $shopsByProvince = $data['data'] ?? [];
+            }
+
+            // Get sellers active status
+            $activeStatusResponse = $this->adminApi->getSellersActiveStatus();
+            if ($activeStatusResponse && $activeStatusResponse->successful()) {
+                $data = $activeStatusResponse->json();
+                $sellersActiveStatus = $data['data'] ?? [];
+            }
+
+            // Get reviews rating stats
+            $reviewStatsResponse = $this->adminApi->getReviewsRatingStats();
+            if ($reviewStatsResponse && $reviewStatsResponse->successful()) {
+                $data = $reviewStatsResponse->json();
+                $reviewsRatingStats = $data['data'] ?? [];
+            }
+
+            return view('Page.DashboardAdmin.Dashboard', compact(
+                'pendingCount', 
+                'approvedCount', 
+                'products', 
+                'avgRating', 
+                'totalReviews',
+                'productsByCategory',
+                'shopsByProvince',
+                'sellersActiveStatus',
+                'reviewsRatingStats'
+            ));
 
         } catch (\Exception $e) {
             Log::error('Dashboard error: ' . $e->getMessage());
             return view('Page.DashboardAdmin.Dashboard')
-                ->with('pendingCount', 0);
+                ->with('pendingCount', 0)
+                ->with('approvedCount', 0)
+                ->with('products', [])
+                ->with('avgRating', 0)
+                ->with('totalReviews', 0)
+                ->with('productsByCategory', [])
+                ->with('shopsByProvince', [])
+                ->with('sellersActiveStatus', [])
+                ->with('reviewsRatingStats', []);
         }
     }
 
@@ -293,23 +399,40 @@ class AdminController extends Controller
             $token = session('auth_token');
             
             if (!$token) {
+                Log::warning('No auth token found for products');
                 return redirect()->route('login.loginIndex');
             }
 
+            Log::info('Fetching products list');
+            
             $response = $this->adminApi->getProducts();
             
             $products = [];
             if ($response && $response->successful()) {
                 $data = $response->json();
                 $products = $data['data'] ?? [];
+                
+                Log::info('Products loaded successfully', [
+                    'count' => count($products)
+                ]);
+            } else {
+                Log::error('Failed to fetch products', [
+                    'status' => $response ? $response->status() : 'null',
+                    'error' => $response ? $response->body() : 'No response'
+                ]);
             }
             
             return view('Page.DashboardAdmin.Produk', compact('products'));
             
         } catch (\Exception $e) {
-            Log::error('Products Exception: ' . $e->getMessage());
+            Log::error('Products Exception', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
             return view('Page.DashboardAdmin.Produk')
-                ->withErrors(['fetch' => 'Failed to load products'])
+                ->withErrors(['fetch' => 'Failed to load products: ' . $e->getMessage()])
                 ->with('products', []);
         }
     }

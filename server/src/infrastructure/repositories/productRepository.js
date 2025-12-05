@@ -43,6 +43,10 @@ class ProductRepository {
         p.id, p.seller_id, p.name, p.price, p.weight, p.stock, 
         p.category, p.description, p.created_at, p.updated_at,
         s.shop_name,
+        s.pic_province as shop_province,
+        s.pic_city as shop_city,
+        s.pic_district as shop_district,
+        s.pic_village as shop_village,
         COALESCE(
           (SELECT json_agg(
             jsonb_build_object(
@@ -57,13 +61,13 @@ class ProductRepository {
           WHERE i.product_id = p.id),
           '[]'
         ) as images,
-        COUNT(r.id)::integer as review_count,
+        COUNT(DISTINCT r.id)::integer as review_count,
         COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) as average_rating
       FROM products p
       LEFT JOIN sellers s ON p.seller_id = s.id
       LEFT JOIN reviews r ON p.id = r.product_id
       WHERE p.id = $1
-      GROUP BY p.id, s.shop_name
+      GROUP BY p.id, s.shop_name, s.pic_province, s.pic_city, s.pic_district, s.pic_village
     `;
     const result = await pool.query(query, [productId]);
     return result.rows[0];
@@ -130,6 +134,10 @@ class ProductRepository {
         p.id, p.seller_id, p.name, p.price, p.weight, p.stock, 
         p.category, p.description, p.created_at, p.updated_at,
         s.shop_name,
+        s.pic_province as shop_province,
+        s.pic_city as shop_city,
+        s.pic_district as shop_district,
+        s.pic_village as shop_village,
         COALESCE(
           json_agg(
             jsonb_build_object(
@@ -148,7 +156,7 @@ class ProductRepository {
       LEFT JOIN sellers s ON p.seller_id = s.id
       LEFT JOIN image_products i ON p.id = i.product_id
       LEFT JOIN reviews r ON p.id = r.product_id
-      GROUP BY p.id, s.shop_name
+      GROUP BY p.id, s.shop_name, s.pic_province, s.pic_city, s.pic_district, s.pic_village
       ORDER BY p.created_at DESC
     `;
     const result = await pool.query(query);

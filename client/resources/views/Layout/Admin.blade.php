@@ -100,18 +100,11 @@
                     </li>
                     @endif
 
+                    @if ($role === 'seller')
                     <li class="side-nav-item">
-                        <a href="{{ route($role === 'seller' ? 'dashboard-seller.produk' : 'dashboard-admin.produk') }}" class="side-nav-link">
+                        <a href="{{ route('dashboard-seller.produk') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-shopping-bag-3-line"></i></span>
                             <span class="menu-text"> Katalog Produk </span>
-                        </a>
-                    </li>
-
-                    @if ($role === 'platform_admin')
-                    <li class="side-nav-item">
-                        <a href="{{ route('dashboard-admin.tambah-kategori') }}" class="side-nav-link">
-                            <span class="menu-icon"><i class="ri-add-circle-line"></i></span>
-                            <span class="menu-text"> Tambah Kategori </span>
                         </a>
                     </li>
                     @endif
@@ -165,20 +158,6 @@
 
                 <div class="d-flex align-items-center gap-2">
 
-                    <!-- Search for small devices -->
-                    <div class="topbar-item d-flex d-xl-none">
-                        <button class="topbar-link" data-bs-toggle="modal" data-bs-target="#searchModal" type="button">
-                            <i class="ri-search-line fs-22"></i>
-                        </button>
-                    </div>
-
-                    <!-- Button Trigger Search Modal -->
-                    <div class="topbar-search d-none d-xl-flex gap-2 me-2 align-items-center" data-bs-toggle="modal"
-                        data-bs-target="#searchModal" type="button">
-                        <i class="ri-search-line fs-18"></i>
-                        <span class="me-2">Search something..</span>
-                    </div>
-
                     <!-- User Dropdown -->
                     <div class="topbar-item nav-user">
                         <div class="px-2 d-flex align-items-center">
@@ -192,24 +171,6 @@
             </div>
         </header>
         <!-- Topbar End -->
-
-        <!-- Search Modal -->
-        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content bg-transparent">
-                    <form>
-                        <div class="card mb-1">
-                            <div class="px-3 py-2 d-flex flex-row align-items-center" id="top-search">
-                                <i class="ri-search-line fs-22"></i>
-                                <input type="search" class="form-control border-0" id="search-modal-input"
-                                    placeholder="Search for actions, people,">
-                                <button type="submit" class="btn p-0" data-bs-dismiss="modal" aria-label="Close">[esc]</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
 
         @yield('content')
     

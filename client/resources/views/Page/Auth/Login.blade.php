@@ -29,7 +29,14 @@
     <div class="auth-bg d-flex min-vh-100 justify-content-center align-items-center">
         <div class="row g-0 justify-content-center w-100 m-xxl-5 px-xxl-4 m-3">
             <div class="col-xl-4 col-lg-5 col-md-6">
-                <div class="card overflow-hidden text-center h-100 p-xxl-4 p-3 mb-0">       
+                <div class="card overflow-hidden text-center h-100 p-xxl-4 p-3 mb-0">
+                    <!-- Tombol Beranda -->
+                    <div class="text-start mb-3">
+                        <a href="{{ route('store.landing') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="mdi mdi-home me-1"></i> Beranda
+                        </a>
+                    </div>
+                    
                     <h4 class="fw-semibold mb-2 fs-18">Log in to your account</h4>
 
                     <p class="text-muted mb-4">Enter your email address and password to access admin panel.</p>

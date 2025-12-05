@@ -26,18 +26,20 @@ app.use(cookieParser());
 
 // import Routes
 const authRoutes = require("./src/routes/authRoutes");
-const productWithImageRoutes = require("./src/routes/product");
+const productRoutes = require("./src/routes/productRoutes");
 const categoryRoutes = require("./src/routes/categoryRoutes");
 const reviewRoutes = require("./src/routes/reviewRoutes");
 const profileRoutes = require("./src/routes/profileRoutes");
+const statisticsRoutes = require("./src/routes/statisticsRoutes");
 
 // buat endpoint
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/products", productWithImageRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/statistics", statisticsRoutes);
 
 // check health
 app.get("/api/health", (req, res) => {

@@ -1,11 +1,10 @@
-class categoryInformation {
+class CategoryInformation {
     constructor (category) {
         this.id = category.id;
         this.name = category.name;
-        this.description = category.description;
         this.createdAt = category.createdAt || category.created_at;
         this.updatedAt = category.updatedAt || category.updated_at;
     }
 }
 
-module.exports = categoryInformation;
+module.exports = CategoryInformation;

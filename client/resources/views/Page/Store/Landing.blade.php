@@ -4,36 +4,28 @@
     <div class="card border-0 shadow-sm mb-3">
         <div class="card-body py-2">
             <div class="d-flex flex-nowrap gap-2 align-items-center overflow-auto">
-                <div class="input-group w-auto" style="min-width:280px">
+                <div class="input-group w-auto" style="min-width:260px">
                     <span class="input-group-text"><i class="ri-search-line"></i></span>
-                    <input type="text" class="form-control form-control-sm" id="store-search" placeholder="Cari produk atau nama toko...">
+                    <input type="text" class="form-control form-control-sm" id="store-search-product" placeholder="Cari nama produk...">
                 </div>
-                <select class="form-select form-select-sm w-auto" id="store-filter-condition" style="min-width:140px">
-                    <option value="">Semua Kondisi</option>
-                    <option>Baru</option>
-                    <option>Bekas</option>
-                </select>
+                <div class="input-group w-auto" style="min-width:220px">
+                    <span class="input-group-text"><i class="ri-store-2-line"></i></span>
+                    <input type="text" class="form-control form-control-sm" id="store-search-shop" placeholder="Cari nama toko...">
+                </div>
                 <select class="form-select form-select-sm w-auto" id="store-filter-category" style="min-width:180px">
                     <option value="">Semua Kategori</option>
-                    <option>Elektronik</option>
-                    <option>Fashion</option>
-                    <option>Makanan & Minuman</option>
-                    <option>Aksesoris</option>
-                    <option>Rumah Tangga</option>
-                    <option>Olahraga</option>
+                    @if(!empty($products))
+                        @php 
+                            $categories = collect($products)->pluck('category')->filter()->unique()->sort()->values(); 
+                        @endphp
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat }}">{{ $cat }}</option>
+                        @endforeach
+                    @endif
                 </select>
-                <select class="form-select form-select-sm w-auto" id="store-filter-province" style="min-width:180px">
-                    <option value="">Semua Provinsi</option>
-                    <option>DKI Jakarta</option>
-                    <option>Jawa Barat</option>
-                    <option>Jawa Tengah</option>
-                    <option>Jawa Timur</option>
-                    <option>DI Yogyakarta</option>
-                    <option>Banten</option>
-                </select>
-                <div class="input-group w-auto" style="min-width:200px">
+                <div class="input-group w-auto" style="min-width:220px">
                     <span class="input-group-text"><i class="ri-map-pin-line"></i></span>
-                    <input type="text" class="form-control form-control-sm" id="store-filter-city" placeholder="Kota/Kabupaten">
+                    <input type="text" class="form-control form-control-sm" id="store-filter-location" placeholder="Cari lokasi toko...">
                 </div>
                 <button type="button" class="btn btn-sm btn-light" id="store-filter-reset"><i class="ri-refresh-line"></i> Reset</button>
             </div>
@@ -45,14 +37,12 @@
         <div class="col" 
              data-index="{{ $index }}" 
              data-name="{{ $product['name'] }}" 
-             data-store="{{ $product['shopName'] ?? 'Toko' }}" 
+             data-store="{{ $product['shop_name'] ?? 'Toko' }}" 
              data-category="{{ $product['category'] ?? 'Lainnya' }}" 
              data-price="{{ $product['price'] }}" 
-             data-rating="{{ $product['averageRating'] ?? 0 }}" 
-             data-comments="{{ $product['reviewCount'] ?? 0 }}" 
-             data-province="" 
-             data-city="" 
-             data-condition="Baru">
+             data-rating="{{ $product['average_rating'] ?? 0 }}" 
+             data-comments="{{ $product['review_count'] ?? 0 }}" 
+             data-location="{{ implode(', ', array_filter([($product['shop_village'] ?? ''), ($product['shop_district'] ?? ''), ($product['shop_city'] ?? ''), ($product['shop_province'] ?? '')])) }}">
             <div class="card h-100 shadow-sm border-0" 
                  style="transition:transform .2s, box-shadow .2s; cursor: pointer;" 
                  onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" 
@@ -102,45 +92,43 @@
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   var grid = document.getElementById('store-grid');
-  var qInput = document.getElementById('store-search');
-  var condSel = document.getElementById('store-filter-condition');
+  var productInput = document.getElementById('store-search-product');
+  var shopInput = document.getElementById('store-search-shop');
   var catSel = document.getElementById('store-filter-category');
-  var provSel = document.getElementById('store-filter-province');
-  var cityInput = document.getElementById('store-filter-city');
+  var locationInput = document.getElementById('store-filter-location');
   var resetBtn = document.getElementById('store-filter-reset');
+  
   function apply(){
-    var q = (qInput && qInput.value || '').toLowerCase();
-    var cond = (condSel && condSel.value) || '';
+    var product = (productInput && productInput.value || '').toLowerCase();
+    var shop = (shopInput && shopInput.value || '').toLowerCase();
     var cat = (catSel && catSel.value) || '';
-    var prov = (provSel && provSel.value) || '';
-    var city = (cityInput && cityInput.value || '').toLowerCase();
+    var location = (locationInput && locationInput.value || '').toLowerCase();
+    
     Array.from(grid.children).forEach(function(col){
       var name = (col.getAttribute('data-name')||'').toLowerCase();
       var store = (col.getAttribute('data-store')||'').toLowerCase();
       var category = col.getAttribute('data-category')||'';
-      var province = col.getAttribute('data-province')||'';
-      var cityAttr = (col.getAttribute('data-city')||'').toLowerCase();
-      var condition = col.getAttribute('data-condition')||'';
-      var matchQ = name.indexOf(q) !== -1 || store.indexOf(q) !== -1;
-      var matchCond = cond === '' || condition === cond;
+      var loc = (col.getAttribute('data-location')||'').toLowerCase();
+      
+      var matchProduct = product === '' || name.indexOf(product) !== -1;
+      var matchShop = shop === '' || store.indexOf(shop) !== -1;
       var matchCat = cat === '' || category === cat;
-      var matchProv = prov === '' || province === prov;
-      var matchCity = city === '' || cityAttr.indexOf(city) !== -1;
-      var show = matchQ && matchCond && matchCat && matchProv && matchCity;
+      var matchLocation = location === '' || loc.indexOf(location) !== -1;
+      
+      var show = matchProduct && matchShop && matchCat && matchLocation;
       col.style.display = show ? '' : 'none';
     });
   }
-  if(qInput) qInput.addEventListener('input', apply);
-  if(condSel) condSel.addEventListener('change', apply);
+  
+  if(productInput) productInput.addEventListener('input', apply);
+  if(shopInput) shopInput.addEventListener('input', apply);
   if(catSel) catSel.addEventListener('change', apply);
-  if(provSel) provSel.addEventListener('change', apply);
-  if(cityInput) cityInput.addEventListener('input', apply);
+  if(locationInput) locationInput.addEventListener('input', apply);
   if(resetBtn) resetBtn.addEventListener('click', function(){
-    if(qInput) qInput.value = '';
-    if(condSel) condSel.value = '';
+    if(productInput) productInput.value = '';
+    if(shopInput) shopInput.value = '';
     if(catSel) catSel.value = '';
-    if(provSel) provSel.value = '';
-    if(cityInput) cityInput.value = '';
+    if(locationInput) locationInput.value = '';
     apply();
   });
   apply();

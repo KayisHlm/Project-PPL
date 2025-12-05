@@ -6,9 +6,14 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="header-title mb-0">Daftar Kategori</h4>
-                    <div class="input-group w-auto">
-                        <span class="input-group-text"><i class="ri-search-line"></i></span>
-                        <input type="text" class="form-control form-control-sm" id="admin-category-search" placeholder="Cari kategori...">
+                    <div class="d-flex gap-2">
+                        <div class="input-group w-auto">
+                            <span class="input-group-text"><i class="ri-search-line"></i></span>
+                            <input type="text" class="form-control form-control-sm" id="admin-category-search" placeholder="Cari kategori...">
+                        </div>
+                        <a href="{{ route('dashboard-admin.tambah-kategori') }}" class="btn btn-primary btn-sm">
+                            <i class="ri-add-line me-1"></i> Tambah Kategori
+                        </a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -18,18 +23,22 @@
                                 <tr>
                                     <th style="width:60px">No</th>
                                     <th>Nama Kategori</th>
-                                    <th class="text-end">Jumlah Produk</th>
+                                    <th>Dibuat Pada</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @php($i = 1)
-                                @foreach(($categories ?? []) as $c)
+                                @forelse(($categories ?? []) as $c)
                                 <tr>
                                     <td>{{ $i++ }}</td>
                                     <td>{{ $c['name'] ?? '' }}</td>
-                                    <td class="text-end">{{ $c['count'] ?? 0 }}</td>
+                                    <td>{{ isset($c['createdAt']) ? date('d M Y', strtotime($c['createdAt'])) : '-' }}</td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">Belum ada kategori</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

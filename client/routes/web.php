@@ -31,11 +31,11 @@ Route::prefix('login')->name('login.')->group(function () {
 });
 
 Route::middleware('admin')->prefix('admin')->name('dashboard-admin.')->group(function () {
-    Route::view('/dashboard', 'Page.DashboardAdmin.Dashboard')->name('dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/kategori', [AdminCategoryController::class, 'index'])->name('kategori');
     Route::post('/kategori/create', [AdminCategoryController::class, 'store'])->name('kategori.create');
     Route::get('/tambah-kategori', [AdminCategoryController::class, 'createView'])->name('tambah-kategori');
-    Route::get('/produk', [AdminController::class, 'products'])->name('produk');
+    // Route::get('/produk', [AdminController::class, 'products'])->name('produk'); // Moved to dashboard
     Route::view('/laporan', 'Page.DashboardAdmin.Laporan')->name('laporan');
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
     Route::get('/sellers', [AdminController::class, 'approvedSellers'])->name('sellers');
