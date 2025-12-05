@@ -66,17 +66,16 @@ class SellerProductController extends Controller
 
     public function store(Request $request)
     {
+        // Validate request
         $request->validate([
             'name' => 'required|string|min:3|max:255',
-            'condition' => 'required|in:Baru,Bekas',
             'price' => 'required|integer|min:1',
             'weight' => 'required|integer|min:1',
-            'minOrder' => 'required|integer|min:1',
+            'stock' => 'required|integer|min:0',
             'category' => 'required|string|max:100',
-            'warranty' => 'required|string|max:50',
-            'year' => 'required|integer|min:2000',
-            'claim' => 'required|string|min:5',
             'description' => 'required|string|min:10',
+            'images' => 'required|array|min:1|max:6',
+            'images.*' => 'required|image|mimes:jpeg,jpg,png,webp|max:2048',
         ]);
 
         $token = session('auth_token');
@@ -84,43 +83,95 @@ class SellerProductController extends Controller
             return redirect()->route('login.loginIndex')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        $cover = null;
         try {
-            $files = $request->file('images');
-            if (is_array($files) && count($files) > 0 && $files[0]) {
-                $dir = public_path('uploads/products');
-                if (!File::exists($dir)) { File::makeDirectory($dir, 0755, true); }
-                $f = $files[0];
-                $safeName = time().'_'.uniqid().'_'.preg_replace('/[^A-Za-z0-9_.-]/','_', $f->getClientOriginalName());
-                $f->move($dir, $safeName);
-                $cover = '/uploads/products/'.$safeName;
+            // Upload images langsung ke public/uploads/products
+            $imageUrls = [];
+            $uploadDir = public_path('uploads/products');
+            
+            if (!File::exists($uploadDir)) {
+                File::makeDirectory($uploadDir, 0755, true);
             }
-        } catch (\Throwable $e) {
-            Log::error('[SellerProductController] upload image error: '.$e->getMessage());
+
+            $files = $request->file('images');
+            foreach ($files as $file) {
+                // Validate image
+                if (!$file->isValid()) {
+                    return back()->withInput()->with('error', 'File upload gagal');
+                }
+
+                // Generate unique filename
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '_' . uniqid() . '.' . $extension;
+                
+                // Move file
+                $file->move($uploadDir, $filename);
+                
+                // Store full URL
+                $imageUrls[] = url('uploads/products/' . $filename);
+            }
+
+            // Prepare payload for backend API
+            $payload = [
+                'name' => $request->input('name'),
+                'price' => (int) $request->input('price'),
+                'weight' => (int) $request->input('weight'),
+                'stock' => (int) $request->input('stock'),
+                'category' => $request->input('category'),
+                'description' => $request->input('description'),
+                'imageUrls' => $imageUrls,
+            ];
+
+            Log::info('Creating product', [
+                'payload' => $payload,
+                'image_count' => count($imageUrls)
+            ]);
+
+            // Call backend API
+            $api = new ProductApi();
+            $resp = $api->create($payload, $token);
+
+            if ($resp->status() === 201) {
+                Log::info('Product created successfully', ['response' => $resp->json()]);
+                return redirect()->route('dashboard-seller.produk')->with('success', 'Produk berhasil ditambahkan!');
+            }
+
+            // Handle error - hapus file yang sudah diupload
+            $errorMessage = $resp->json()['message'] ?? 'Gagal menambahkan produk.';
+            Log::warning('Failed to create product', [
+                'status' => $resp->status(),
+                'response' => $resp->json()
+            ]);
+
+            // Delete uploaded images on failure
+            foreach ($imageUrls as $url) {
+                $path = str_replace(url('/'), '', $url);
+                $fullPath = public_path($path);
+                if (file_exists($fullPath)) {
+                    unlink($fullPath);
+                }
+            }
+
+            return back()->withInput()->with('error', $errorMessage);
+
+        } catch (\Exception $e) {
+            Log::error('Error in SellerProductController@store', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Delete uploaded images on exception
+            if (isset($imageUrls) && count($imageUrls) > 0) {
+                foreach ($imageUrls as $url) {
+                    $path = str_replace(url('/'), '', $url);
+                    $fullPath = public_path($path);
+                    if (file_exists($fullPath)) {
+                        unlink($fullPath);
+                    }
+                }
+            }
+
+            return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        $payload = [
-            'name' => $request->input('name'),
-            'condition' => $request->input('condition'),
-            'price' => (int) $request->input('price'),
-            'weight' => (int) $request->input('weight'),
-            'minOrder' => (int) $request->input('minOrder'),
-            'category' => $request->input('category'),
-            'warranty' => $request->input('warranty'),
-            'year' => (int) $request->input('year'),
-            'claim' => $request->input('claim'),
-            'description' => $request->input('description'),
-            'cover_image' => $cover,
-        ];
-
-        $api = new ProductApi();
-        $resp = $api->create($payload, $token);
-
-        if ($resp->status() === 201) {
-            return redirect()->route('dashboard-seller.produk')->with('success', 'Produk berhasil ditambahkan.');
-        }
-        $msg = $resp->json()['message'] ?? 'Gagal menambahkan produk.';
-        return back()->withInput()->with('error', $msg);
     }
 
     public function categories(Request $request)

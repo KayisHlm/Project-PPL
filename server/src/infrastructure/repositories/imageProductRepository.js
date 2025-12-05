@@ -1,16 +1,16 @@
 const pool = require("../../db");
 
 class ImageRepository {
-  async create(productId, imageUrl) {
+  async create(productId, imageUrl, isCover = false) {
     const query = `
       INSERT INTO image_products (
-        product_id, image_url
+        product_id, image_url, is_cover
       ) VALUES (
-        $1, $2
+        $1, $2, $3
       )
-      RETURNING id, product_id, image_url, created_at, updated_at
+      RETURNING id, product_id, image_url, is_cover, created_at, updated_at
     `;
-    const values = [productId, imageUrl];
+    const values = [productId, imageUrl, isCover];
     const result = await pool.query(query, values);
     return result.rows[0];
   }
@@ -20,15 +20,16 @@ class ImageRepository {
     const placeholders = [];
     
     imageUrls.forEach((url, index) => {
-      const baseIndex = index * 2;
-      placeholders.push(`($${baseIndex + 1}, $${baseIndex + 2})`);
-      values.push(productId, url);
+      const baseIndex = index * 3;
+      const isCover = index === 0; 
+      placeholders.push(`($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3})`);
+      values.push(productId, url, isCover);
     });
 
     const query = `
-      INSERT INTO image_products (product_id, image_url)
+      INSERT INTO image_products (product_id, image_url, is_cover)
       VALUES ${placeholders.join(', ')}
-      RETURNING id, product_id, image_url, created_at, updated_at
+      RETURNING id, product_id, image_url, is_cover, created_at, updated_at
     `;
     const result = await pool.query(query, values);
     return result.rows;
@@ -36,7 +37,7 @@ class ImageRepository {
 
   async findById(imageId) {
     const query = `
-      SELECT id, product_id, image_url, created_at, updated_at
+      SELECT id, product_id, image_url, is_cover, created_at, updated_at
       FROM image_products 
       WHERE id = $1
     `;
@@ -44,14 +45,30 @@ class ImageRepository {
     return result.rows[0];
   }
 
-  async update(imageId, imageUrl) {
+  async update(imageId, imageUrl, isCover) {
+    const updates = [];
+    const values = [];
+    let paramCount = 1;
+
+    if (imageUrl !== undefined) {
+      updates.push(`image_url = $${paramCount++}`);
+      values.push(imageUrl);
+    }
+
+    if (isCover !== undefined) {
+      updates.push(`is_cover = $${paramCount++}`);
+      values.push(isCover);
+    }
+
+    values.push(imageId);
+
     const query = `
       UPDATE image_products 
-      SET image_url = $2
-      WHERE id = $1
-      RETURNING id, product_id, image_url, created_at, updated_at
+      SET ${updates.join(', ')}
+      WHERE id = $${paramCount}
+      RETURNING id, product_id, image_url, is_cover, created_at, updated_at
     `;
-    const result = await pool.query(query, [imageId, imageUrl]);
+    const result = await pool.query(query, values);
     return result.rows[0];
   }
 
@@ -73,10 +90,10 @@ class ImageRepository {
 
   async listByProduct(productId) {
     const query = `
-      SELECT id, product_id, image_url, created_at, updated_at
+      SELECT id, product_id, image_url, is_cover, created_at, updated_at
       FROM image_products 
       WHERE product_id = $1 
-      ORDER BY created_at ASC
+      ORDER BY is_cover DESC, created_at ASC
     `;
     const result = await pool.query(query, [productId]);
     return result.rows;
@@ -84,7 +101,7 @@ class ImageRepository {
 
   async listAll() {
     const query = `
-      SELECT id, product_id, image_url, created_at, updated_at
+      SELECT id, product_id, image_url, is_cover, created_at, updated_at
       FROM image_products 
       ORDER BY created_at DESC
     `;
@@ -104,10 +121,21 @@ class ImageRepository {
 
   async getFirstImageByProduct(productId) {
     const query = `
-      SELECT id, product_id, image_url, created_at, updated_at
+      SELECT id, product_id, image_url, is_cover, created_at, updated_at
       FROM image_products 
       WHERE product_id = $1 
-      ORDER BY created_at ASC
+      ORDER BY is_cover DESC, created_at ASC
+      LIMIT 1
+    `;
+    const result = await pool.query(query, [productId]);
+    return result.rows[0];
+  }
+
+  async getCoverImageByProduct(productId) {
+    const query = `
+      SELECT id, product_id, image_url, is_cover, created_at, updated_at
+      FROM image_products 
+      WHERE product_id = $1 AND is_cover = TRUE
       LIMIT 1
     `;
     const result = await pool.query(query, [productId]);

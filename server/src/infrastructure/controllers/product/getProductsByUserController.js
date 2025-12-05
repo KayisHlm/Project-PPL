@@ -26,7 +26,6 @@ async function GetProductsByUserController(req, res) {
 
         const result = await getProductsByUser.execute(userId);
 
-        // Transform using DTO (same as GetAllProductsController)
         const productsDTO = result.products.map(product => {
             const productDTO = new ProductInformation(product);
             productDTO.images = product.images.map(image => new ImageProductInformation(image));

@@ -2,12 +2,13 @@ CREATE TABLE IF NOT EXISTS image_products (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     image_url TEXT NOT NULL,
-    status VARCHAR(50) NOT NULL DEFAULT 'sekunder' CHECK (status IN ('primer', 'sekunder')),
+    is_cover BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX IF NOT EXISTS idx_image_products_product_id ON image_products(product_id);
+CREATE INDEX IF NOT EXISTS idx_image_products_is_cover ON image_products(is_cover);
 
 -- Trigger untuk update timestamp
 CREATE OR REPLACE FUNCTION update_image_products_updated_at_column()

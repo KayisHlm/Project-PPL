@@ -28,7 +28,7 @@ class CategoryApi
     {
         $headers = [ 'Accept' => 'application/json' ];
         if ($token) { $headers['Authorization'] = 'Bearer ' . $token; }
-        return Http::withHeaders($headers)->timeout(8)->get($this->apiUrl . '/public');
+        return Http::withHeaders($headers)->timeout(8)->get($this->apiUrl);
     }
 
     public function create(array $body, string $token)
