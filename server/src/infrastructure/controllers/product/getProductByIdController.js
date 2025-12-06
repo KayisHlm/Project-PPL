@@ -1,7 +1,7 @@
 const GetProductById = require("../../../usecases/product/getProductById");
 const ProductRepository = require("../../repositories/productRepository");
 const ReviewRepository = require("../../repositories/reviewRepository");
-const ProductDetailInformation = require("../../../dto/product/productDetailInformation");
+const ProductCompleteInformation = require("../../../dto/product/productCompleteInformation");
 
 async function getById(req, res) {
   try {
@@ -25,7 +25,7 @@ async function getById(req, res) {
     }
 
     // Map to DTO
-    const productDTO = new ProductDetailInformation(product);
+    const productDTO = new ProductCompleteInformation(product);
 
     return res.status(200).json({
       code: 200,

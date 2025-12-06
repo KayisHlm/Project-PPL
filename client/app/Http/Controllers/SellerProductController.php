@@ -35,7 +35,19 @@ class SellerProductController extends Controller
                 ]);
             }
             
-            return view('Page.DashboardSeller.Produk', compact('products'));
+            // Fetch available categories from database
+            $categories = [];
+            try {
+                $catApi = new \App\Api\CategoryApi();
+                $catResp = $catApi->publicList($token);
+                if ($catResp->status() === 200) {
+                    $categories = $catResp->json()['data'] ?? [];
+                }
+            } catch (\Exception $e) {
+                Log::warning('Failed to fetch categories', ['error' => $e->getMessage()]);
+            }
+            
+            return view('Page.DashboardSeller.Produk', compact('products', 'categories'));
             
         } catch (\Exception $e) {
             Log::error('Error in SellerProductController@index', [
@@ -188,5 +200,144 @@ class SellerProductController extends Controller
             $categories = $json['data'] ?? [];
         }
         return view('Page.DashboardSeller.Kategori', compact('categories'));
+    }
+
+    public function dashboard()
+    {
+        try {
+            $token = session('auth_token');
+            if (!$token) {
+                return redirect()->route('login.loginIndex')->with('error', 'Silakan login terlebih dahulu.');
+            }
+            
+            $api = new ProductApi();
+            $resp = $api->getMyProducts(); 
+            
+            $totalProducts = 0;
+            $averageRating = 0;
+            $totalReviews = 0;
+            $products = [];
+            
+            // For charts
+            $stockByProduct = [];
+            $ratingByProduct = [];
+            $reviewersByProvince = [];
+            
+            if ($resp->successful()) {
+                $json = $resp->json();
+                $products = $json['data']['products'] ?? [];
+                
+                $totalProducts = count($products);
+                
+                // Calculate average rating and prepare chart data
+                $ratingSum = 0;
+                $ratingCount = 0;
+                $provinceReviewCount = [];
+                
+                foreach ($products as $product) {
+                    $rating = $product['averageRating'] ?? $product['average_rating'] ?? 0;
+                    $reviewCount = $product['reviewCount'] ?? $product['review_count'] ?? 0;
+                    $stock = $product['stock'] ?? 0;
+                    $name = $product['name'] ?? 'Produk';
+                    
+                    // Stock by product chart data
+                    $stockByProduct[] = [
+                        'name' => strlen($name) > 20 ? substr($name, 0, 20) . '...' : $name,
+                        'stock' => $stock
+                    ];
+                    
+                    // Rating by product chart data
+                    if ($rating > 0) {
+                        $ratingByProduct[] = [
+                            'name' => strlen($name) > 20 ? substr($name, 0, 20) . '...' : $name,
+                            'rating' => $rating
+                        ];
+                        $ratingSum += $rating;
+                        $ratingCount++;
+                    }
+                    
+                    $totalReviews += $reviewCount;
+                    
+                    // Count reviews by province from actual review data
+                    if (isset($product['reviews']) && is_array($product['reviews'])) {
+                        foreach ($product['reviews'] as $review) {
+                            $province = $review['province'] ?? null;
+                            
+                            // Skip if province is null or empty
+                            if (empty($province)) {
+                                continue;
+                            }
+                            
+                            if (!isset($provinceReviewCount[$province])) {
+                                $provinceReviewCount[$province] = 0;
+                            }
+                            $provinceReviewCount[$province]++;
+                        }
+                    }
+                }
+                
+                if ($ratingCount > 0) {
+                    $averageRating = round($ratingSum / $ratingCount, 1);
+                }
+                
+                // Sort and limit chart data
+                usort($stockByProduct, function($a, $b) {
+                    return $b['stock'] - $a['stock'];
+                });
+                $stockByProduct = array_slice($stockByProduct, 0, 10);
+                
+                usort($ratingByProduct, function($a, $b) {
+                    return $b['rating'] <=> $a['rating'];
+                });
+                $ratingByProduct = array_slice($ratingByProduct, 0, 10);
+                
+                // Prepare province data
+                arsort($provinceReviewCount);
+                $provinceReviewCount = array_slice($provinceReviewCount, 0, 10, true);
+                
+                foreach ($provinceReviewCount as $province => $count) {
+                    $reviewersByProvince[] = [
+                        'province' => $province,
+                        'count' => $count
+                    ];
+                }
+                
+                Log::info('Seller dashboard data loaded', [
+                    'totalProducts' => $totalProducts,
+                    'averageRating' => $averageRating,
+                    'totalReviews' => $totalReviews,
+                    'chartDataCount' => [
+                        'stock' => count($stockByProduct),
+                        'rating' => count($ratingByProduct),
+                        'province' => count($reviewersByProvince)
+                    ]
+                ]);
+            }
+            
+            return view('Page.DashboardSeller.Dashboard', compact(
+                'totalProducts', 
+                'averageRating', 
+                'totalReviews',
+                'stockByProduct',
+                'ratingByProduct',
+                'reviewersByProvince',
+                'products'
+            ));
+            
+        } catch (\Exception $e) {
+            Log::error('Error in SellerProductController@dashboard', [
+                'message' => $e->getMessage()
+            ]);
+            
+            return view('Page.DashboardSeller.Dashboard', [
+                'totalProducts' => 0,
+                'averageRating' => 0,
+                'totalReviews' => 0,
+                'stockByProduct' => [],
+                'ratingByProduct' => [],
+                'reviewersByProvince' => [],
+                'products' => []
+            ]);
+        }
     }
 }

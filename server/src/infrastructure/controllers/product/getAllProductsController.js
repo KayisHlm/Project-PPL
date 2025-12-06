@@ -1,6 +1,6 @@
 const GetAllProducts = require("../../../usecases/product/getAllProducts");
 const ProductRepository = require("../../repositories/productRepository");
-const ProductDetailInformation = require("../../../dto/product/productDetailInformation");
+const ProductCompleteInformation = require("../../../dto/product/productCompleteInformation");
 const { InternalServerError } = require("../../../domain/errors");
 
 async function getAll(req, res) {
@@ -9,7 +9,7 @@ async function getAll(req, res) {
     const usecase = new GetAllProducts(productRepository);
     const products = await usecase.execute();
     
-    const productsDTO = products.map(product => new ProductDetailInformation(product));
+    const productsDTO = products.map(product => new ProductCompleteInformation(product));
     
     return res.status(200).json({
       code: 200,

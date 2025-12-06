@@ -80,6 +80,12 @@
                     </li>
                     @if ($role === 'platform_admin')
                     <li class="side-nav-item">
+                        <a href="{{ route('dashboard-admin.produk') }}" class="side-nav-link">
+                            <span class="menu-icon"><i class="ri-shopping-bag-3-line"></i></span>
+                            <span class="menu-text"> Katalog Produk </span>
+                        </a>
+                    </li>
+                    <li class="side-nav-item">
                         <a href="{{ route('dashboard-admin.kategori') }}" class="side-nav-link">
                             <span class="menu-icon"><i class="ri-price-tag-3-line"></i></span>
                             <span class="menu-text"> Kategori </span>

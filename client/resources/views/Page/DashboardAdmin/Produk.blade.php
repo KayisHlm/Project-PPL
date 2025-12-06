@@ -59,23 +59,34 @@
                                 }
                                 $defaultImage = asset('assets/images/products/product-1.jpg');
                             @endphp
-                            <div class="col" data-name="{{ $p['name'] ?? '' }}" data-category="{{ $p['category'] ?? '' }}" data-price="{{ $p['price'] ?? 0 }}" data-rating="{{ $p['average_rating'] ?? 0 }}">
+                            <div class="col" data-name="{{ $p['name'] ?? '' }}" data-category="{{ $p['category'] ?? '' }}" data-price="{{ $p['price'] ?? 0 }}" data-rating="{{ $p['averageRating'] ?? $p['average_rating'] ?? 0 }}">
                                 <div class="card h-100 shadow-sm border-0 position-relative" style="transition:transform .2s, box-shadow .2s" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" onmouseleave="this.style.transform='none';this.style.boxShadow='';">
-                                    @if(isset($p['average_rating']) && $p['average_rating'] > 0)
-                                        <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ {{ number_format($p['average_rating'], 1) }}</span>
+                                    @php
+                                        $avgRating = $p['averageRating'] ?? $p['average_rating'] ?? 0;
+                                    @endphp
+                                    @if($avgRating > 0)
+                                        <span class="badge bg-primary-subtle text-primary position-absolute top-0 end-0 m-2">★ {{ number_format($avgRating, 1) }}</span>
                                     @endif
-                                    <img src="{{ $imageUrl ?? $defaultImage }}" class="card-img-top" alt="{{ $p['name'] ?? 'Produk' }}" style="height: 200px; object-fit: cover;" onerror="this.onerror=null;this.src='{{ $defaultImage }}';">
+                                    <div style="height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: white;">
+                                        <img src="{{ $imageUrl ?? $defaultImage }}" alt="{{ $p['name'] ?? 'Produk' }}" style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;" onerror="this.onerror=null;this.src='{{ $defaultImage }}';"></div>
                                     <div class="card-body">
                                         <h6 class="mb-1 text-truncate">{{ $p['name'] ?? 'Nama Produk' }}</h6>
                                         <p class="mb-1 text-muted small">{{ $p['category'] ?? 'Kategori' }}</p>
-                                        @if(isset($p['shop_name']))
-                                            <p class="mb-1 text-muted small"><i class="ri-store-2-line"></i> {{ $p['shop_name'] }}</p>
+                                        @if(isset($p['shopName']) || isset($p['shop_name']))
+                                            <p class="mb-2 text-muted small"><i class="ri-store-2-line"></i> {{ $p['shopName'] ?? $p['shop_name'] }}</p>
                                         @endif
-                                        <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
                                             <p class="mb-0 fw-bold text-primary">Rp {{ number_format($p['price'] ?? 0, 0, ',', '.') }}</p>
                                             @if(isset($p['stock']))
                                                 <small class="text-muted">Stok: {{ $p['stock'] }}</small>
                                             @endif
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <a href="{{ route('store.detail', ['id' => $p['id']]) }}" 
+                                               class="btn btn-sm btn-primary" 
+                                               style="font-size: 0.75rem;">
+                                                <i class="ri-eye-line"></i> Lihat Detail
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

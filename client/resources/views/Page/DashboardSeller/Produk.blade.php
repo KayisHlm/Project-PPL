@@ -22,10 +22,16 @@
                                 </select>
                                 <select class="form-select form-select-sm w-auto" id="seller-product-filter-category" style="min-width:200px">
                                     <option value="">Semua Kategori</option>
-                                    @php $cats = collect($products ?? [])->pluck('category')->unique()->values(); @endphp
-                                    @foreach($cats as $cat)
-                                        <option>{{ $cat }}</option>
-                                    @endforeach
+                                    @if(isset($categories) && !empty($categories))
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat['name'] ?? $cat }}">{{ $cat['name'] ?? $cat }}</option>
+                                        @endforeach
+                                    @else
+                                        @php $cats = collect($products ?? [])->pluck('category')->unique()->filter()->values(); @endphp
+                                        @foreach($cats as $cat)
+                                            <option value="{{ $cat }}">{{ $cat }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                         </div>
@@ -33,13 +39,13 @@
 
                     <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-3" id="seller-product-grid">
                         @foreach(($products ?? []) as $p)
-                        <div class="col" data-name="{{ $p['name'] }}" data-category="{{ $p['category'] }}" data-price="{{ $p['price'] }}" data-rating="{{ $p['average_rating'] ?? '0' }}">
+                        <div class="col" data-name="{{ $p['name'] }}" data-category="{{ $p['category'] ?? '' }}" data-price="{{ $p['price'] }}" data-rating="{{ $p['averageRating'] ?? $p['average_rating'] ?? '0' }}">
                             <div class="card h-100 shadow-sm border-0" 
-                                 style="transition:transform .2s, box-shadow .2s; cursor: pointer; background: white;" 
+                                 style="transition:transform .2s, box-shadow .2s; background: white;" 
                                  onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" 
                                  onmouseleave="this.style.transform='none';this.style.boxShadow='';">
                                 @if(!empty($p['images']) && count($p['images']) > 0)
-                                    <div style="height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 0.375rem 0.375rem 0 0; background: white;">
+                                    <div style="height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: white;">
                                         <img src="{{ $p['images'][0]['imageUrl'] }}" 
                                              alt="{{ $p['name'] }}" 
                                              onerror="this.onerror=null;this.src='{{ asset('assets/images/products/product-1.jpg') }}';" 
@@ -47,7 +53,7 @@
                                     </div>
                                 @else
                                     <div class="bg-light d-flex align-items-center justify-content-center" 
-                                         style="height: 180px; border-radius: 0.375rem 0.375rem 0 0;">
+                                         style="height: 200px;">
                                         <i class="ri-image-line" style="font-size: 3rem; color: #ccc;"></i>
                                     </div>
                                 @endif
@@ -56,12 +62,19 @@
                                     <p class="mb-1 fw-bold" style="font-size: 1rem; color: #000;">Rp{{ number_format($p['price'], 0, ',', '.') }}</p>
                                     <div class="d-flex align-items-center gap-1 mb-1">
                                         <i class="ri-star-fill text-warning" style="font-size: 0.75rem;"></i>
-                                        <span style="font-size: 0.75rem;">{{ number_format($p['average_rating'] ?? 0, 1) }}</span>
-                                        <span class="text-muted" style="font-size: 0.7rem;">({{ $p['review_count'] ?? 0 }})</span>
+                                        <span style="font-size: 0.75rem;">{{ number_format($p['averageRating'] ?? $p['average_rating'] ?? 0, 1) }}</span>
+                                        <span class="text-muted" style="font-size: 0.7rem;">({{ $p['reviewCount'] ?? $p['review_count'] ?? 0 }})</span>
                                     </div>
-                                    <p class="mb-2 text-muted text-truncate" style="font-size: 0.75rem;" title="{{ $p['shop_name'] ?? 'Toko Saya' }}">
-                                        <i class="ri-store-2-line"></i> {{ $p['shop_name'] ?? 'Toko Saya' }}
+                                    <p class="mb-2 text-muted text-truncate" style="font-size: 0.75rem;" title="{{ $p['shopName'] ?? $p['shop_name'] ?? 'Toko Saya' }}">
+                                        <i class="ri-store-2-line"></i> {{ $p['shopName'] ?? $p['shop_name'] ?? 'Toko Saya' }}
                                     </p>
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ route('store.detail', ['id' => $p['id']]) }}" 
+                                           class="btn btn-sm btn-primary" 
+                                           style="font-size: 0.75rem;">
+                                            <i class="ri-eye-line"></i> Lihat Detail
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var items = Array.from(grid.children);
     items.forEach(function(el){
       var name = (el.getAttribute('data-name')||'').toLowerCase();
-      var category = el.getAttribute('data-category')||'';
+      var category = (el.getAttribute('data-category')||'').trim();
       var show = name.indexOf(q) !== -1 && (cat === '' || category === cat);
       el.style.display = show ? '' : 'none';
     });

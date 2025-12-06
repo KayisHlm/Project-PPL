@@ -61,6 +61,21 @@ class ProductRepository {
           WHERE i.product_id = p.id),
           '[]'
         ) as images,
+        COALESCE(
+          (SELECT json_agg(jsonb_build_object(
+            'id', r2.id,
+            'rating', r2.rating,
+            'comment', r2.comment,
+            'name', r2.name,
+            'email', r2.email,
+            'no_telp', r2.no_telp,
+            'province', r2.province,
+            'created_at', r2.created_at
+          ) ORDER BY r2.created_at DESC)
+          FROM reviews r2
+          WHERE r2.product_id = p.id),
+          '[]'
+        ) as reviews,
         COUNT(DISTINCT r.id)::integer as review_count,
         COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) as average_rating
       FROM products p
@@ -150,6 +165,21 @@ class ProductRepository {
           ) FILTER (WHERE i.id IS NOT NULL),
           '[]'
         ) as images,
+        COALESCE(
+          (SELECT json_agg(jsonb_build_object(
+            'id', r2.id,
+            'rating', r2.rating,
+            'comment', r2.comment,
+            'name', r2.name,
+            'email', r2.email,
+            'no_telp', r2.no_telp,
+            'province', r2.province,
+            'created_at', r2.created_at
+          ) ORDER BY r2.created_at DESC)
+          FROM reviews r2
+          WHERE r2.product_id = p.id),
+          '[]'
+        ) as reviews,
         COUNT(DISTINCT r.id)::integer as review_count,
         COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) as average_rating
       FROM products p
@@ -192,6 +222,20 @@ class ProductRepository {
                       ) FILTER (WHERE ip.id IS NOT NULL),
                       '[]'
                   ) AS images,
+                  COALESCE(
+                      (SELECT json_agg(jsonb_build_object(
+                          'id', r2.id,
+                          'rating', r2.rating,
+                          'comment', r2.comment,
+                          'name', r2.name,
+                          'email', r2.email,
+                          'province', r2.province,
+                          'created_at', r2.created_at
+                      ) ORDER BY r2.created_at DESC)
+                       FROM reviews r2
+                       WHERE r2.product_id = p.id),
+                      '[]'
+                  ) AS reviews,
                   COUNT(DISTINCT r.id)::integer AS review_count,
                   COALESCE(ROUND(AVG(r.rating)::numeric, 1), 0) AS average_rating
               FROM products p

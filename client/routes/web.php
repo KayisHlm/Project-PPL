@@ -35,7 +35,7 @@ Route::middleware('admin')->prefix('admin')->name('dashboard-admin.')->group(fun
     Route::get('/kategori', [AdminCategoryController::class, 'index'])->name('kategori');
     Route::post('/kategori/create', [AdminCategoryController::class, 'store'])->name('kategori.create');
     Route::get('/tambah-kategori', [AdminCategoryController::class, 'createView'])->name('tambah-kategori');
-    // Route::get('/produk', [AdminController::class, 'products'])->name('produk'); // Moved to dashboard
+    Route::get('/produk', [AdminController::class, 'products'])->name('produk');
     Route::view('/laporan', 'Page.DashboardAdmin.Laporan')->name('laporan');
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
     Route::get('/sellers', [AdminController::class, 'approvedSellers'])->name('sellers');
@@ -45,7 +45,7 @@ Route::middleware('admin')->prefix('admin')->name('dashboard-admin.')->group(fun
 });
 
 Route::middleware('seller')->prefix('seller')->name('dashboard-seller.')->group(function () {
-    Route::view('/dashboard', 'Page.DashboardSeller.Dashboard')->name('dashboard');
+    Route::get('/dashboard', [SellerProductController::class, 'dashboard'])->name('dashboard');
     Route::get('/kategori', [SellerProductController::class, 'categories'])->name('kategori');
     Route::get('/produk', [SellerProductController::class, 'index'])->name('produk');
     Route::view('/laporan', 'Page.DashboardSeller.Laporan')->name('laporan');

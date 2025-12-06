@@ -68,8 +68,8 @@
                         @endif
                         <span class="badge bg-light text-body">
                             <i class="ri-star-fill text-warning"></i> 
-                            {{ number_format($product['average_rating'] ?? 0, 1) }} 
-                            ({{ $product['review_count'] ?? 0 }} ulasan)
+                            {{ number_format($product['averageRating'] ?? $product['average_rating'] ?? 0, 1) }} 
+                            ({{ $product['reviewCount'] ?? $product['review_count'] ?? 0 }} ulasan)
                         </span>
                         <span class="badge bg-light text-body">
                             Stok: {{ $product['stock'] ?? 0 }}
