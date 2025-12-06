@@ -70,12 +70,15 @@ class AdminApi
      * Reject seller by ID
      * POST /api/admin/sellers/{id}/reject
      */
-    public function rejectSeller($token, $sellerId)
+    public function rejectSeller($token, $sellerId, string $reason = '')
     {
         return Http::withHeaders([
             'Authorization' => 'Bearer ' . $token,
             'Accept' => 'application/json',
-        ])->post($this->baseUrl . "/admin/sellers/{$sellerId}/reject");
+            'Content-Type' => 'application/json',
+        ])->post($this->baseUrl . "/admin/sellers/{$sellerId}/reject", [
+            'reason' => $reason,
+        ]);
     }
 
     public function getProducts()

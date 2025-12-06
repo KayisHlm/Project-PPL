@@ -131,6 +131,7 @@
                                         method="POST" 
                                         style="display: none;">
                                         @csrf
+                                        <input type="hidden" name="reason" id="reject-reason-input-{{ $seller['id'] }}">
                                     </form>
                                 </td>
                             </tr>
@@ -310,7 +311,7 @@
                                             <div class="d-flex gap-3">
                                                 <button type="button" 
                                                         class="btn btn-danger" 
-                                                        onclick="confirmReject({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')">
+                                                        data-reject-target="rejectModal{{ $seller['id'] }}">
                                                     <i class="bi bi-x-lg"></i> Tolak
                                                 </button>
                                                 <button type="button" 
@@ -319,6 +320,34 @@
                                                     <i class="bi bi-check-lg"></i> Setujui
                                                 </button>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            {{-- Reject Modal (separate from detail modal to avoid stacking issues) --}}
+                            <div class="modal fade" id="rejectModal{{ $seller['id'] }}" tabindex="-1" aria-labelledby="rejectModalLabel{{ $seller['id'] }}" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title" id="rejectModalLabel{{ $seller['id'] }}">
+                                                <i class="bi bi-x-circle"></i> Alasan Penolakan
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="reject-reason-{{ $seller['id'] }}" class="form-label">Tuliskan alasan penolakan (min. 10 karakter)</label>
+                                                <textarea class="form-control" id="reject-reason-{{ $seller['id'] }}" rows="4" minlength="10" required></textarea>
+                                                <div class="form-text">Wajib diisi, minimal 10 karakter.</div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                            <button type="button" class="btn btn-danger" onclick="handleRejectSubmit({{ $seller['id'] }}, '{{ addslashes($seller['shopName'] ?? 'seller ini') }}')">
+                                                <i class="bi bi-send"></i> Kirim Penolakan
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -379,10 +408,50 @@ function confirmReject(sellerId, shopName) {
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Ya, Tolak!',
-        cancelButtonText: 'Batal'
+        cancelButtonText: 'Batal',
+        reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('reject-form-' + sellerId).submit();
+        }
+    });
+}
+
+function handleRejectSubmit(sellerId, shopName) {
+    const textarea = document.getElementById('reject-reason-' + sellerId);
+    if (!textarea) return;
+    const reason = (textarea.value || '').trim();
+
+    if (reason.length < 10) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Alasan terlalu singkat',
+            text: 'Minimal 10 karakter.',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    // Set hidden input and submit form
+    const hiddenInput = document.getElementById('reject-reason-input-' + sellerId);
+    if (hiddenInput) {
+        hiddenInput.value = reason;
+    }
+
+    Swal.fire({
+        title: 'Tolak Seller?',
+        text: `Anda akan menolak "${shopName}" dengan alasan: ${reason}`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Tolak!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById('reject-form-' + sellerId);
+            if (form) form.submit();
         }
     });
 }
@@ -396,6 +465,19 @@ document.addEventListener('DOMContentLoaded', function() {
             bsAlert.close();
         });
     }, 5000);
+
+    // Wire reject modal triggers
+    document.querySelectorAll('[data-reject-target]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var targetId = btn.getAttribute('data-reject-target');
+            if(!targetId) return;
+            var modalEl = document.getElementById(targetId);
+            if(!modalEl) return;
+
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: false, focus: true });
+            modal.show();
+        });
+    });
 });
 </script>
 @endpush

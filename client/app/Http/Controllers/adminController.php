@@ -367,9 +367,14 @@ class AdminController extends Controller
                 return back()->withErrors(['reject' => 'Invalid seller ID']);
             }
 
+            $reason = trim(request()->input('reason', ''));
+            if (strlen($reason) < 10) {
+                return back()->withErrors(['reject' => 'Alasan penolakan wajib diisi minimal 10 karakter']);
+            }
+
             Log::info('Rejecting seller', ['id' => $sellerId]);
 
-            $response = $this->adminApi->rejectSeller($token, $sellerId);
+            $response = $this->adminApi->rejectSeller($token, $sellerId, $reason);
 
             if ($response && $response->successful()) {
                 Log::info('Seller rejected successfully', ['id' => $sellerId]);

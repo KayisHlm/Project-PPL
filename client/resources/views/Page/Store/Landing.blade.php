@@ -4,11 +4,11 @@
     <div class="card border-0 shadow-sm mb-3">
         <div class="card-body py-2">
             <div class="d-flex flex-nowrap gap-2 align-items-center overflow-auto">
-                <div class="input-group w-auto" style="min-width:260px">
+                <div class="input-group w-auto" style="min-width:200px">
                     <span class="input-group-text"><i class="ri-search-line"></i></span>
                     <input type="text" class="form-control form-control-sm" id="store-search-product" placeholder="Cari nama produk...">
                 </div>
-                <div class="input-group w-auto" style="min-width:220px">
+                <div class="input-group w-auto" style="min-width:200px">
                     <span class="input-group-text"><i class="ri-store-2-line"></i></span>
                     <input type="text" class="form-control form-control-sm" id="store-search-shop" placeholder="Cari nama toko...">
                 </div>
@@ -23,10 +23,18 @@
                         @endforeach
                     @endif
                 </select>
-                <div class="input-group w-auto" style="min-width:220px">
+                <div class="input-group w-auto" style="min-width:200px">
                     <span class="input-group-text"><i class="ri-map-pin-line"></i></span>
                     <input type="text" class="form-control form-control-sm" id="store-filter-location" placeholder="Cari lokasi toko...">
                 </div>
+                @if(!empty($provinces))
+                <select class="form-select form-select-sm w-auto" id="store-filter-province" style="min-width:200px">
+                    <option value="">Semua Provinsi</option>
+                    @foreach($provinces as $prov)
+                        <option value="{{ $prov['code'] ?? $prov['id'] ?? '' }}" data-name="{{ $prov['name'] ?? '' }}">{{ $prov['name'] ?? 'Tanpa Nama' }}</option>
+                    @endforeach
+                </select>
+                @endif
                 <button type="button" class="btn btn-sm btn-light" id="store-filter-reset"><i class="ri-refresh-line"></i> Reset</button>
             </div>
         </div>
@@ -42,7 +50,9 @@
              data-price="{{ $product['price'] }}" 
              data-rating="{{ $product['averageRating'] ?? $product['average_rating'] ?? 0 }}" 
              data-comments="{{ $product['reviewCount'] ?? $product['review_count'] ?? 0 }}" 
-             data-location="{{ implode(', ', array_filter([($product['shopVillage'] ?? $product['shop_village'] ?? ''), ($product['shopDistrict'] ?? $product['shop_district'] ?? ''), ($product['shopCity'] ?? $product['shop_city'] ?? ''), ($product['shopProvince'] ?? $product['shop_province'] ?? '')])) }}">
+             data-location="{{ implode(', ', array_filter([($product['shopVillage'] ?? $product['shop_village'] ?? ''), ($product['shopDistrict'] ?? $product['shop_district'] ?? ''), ($product['shopCity'] ?? $product['shop_city'] ?? ''), ($product['shopProvince'] ?? $product['shop_province'] ?? '')])) }}"
+             data-province-code="{{ $product['shopProvinceCode'] ?? $product['shop_province_code'] ?? '' }}"
+             data-province-name="{{ $product['shopProvince'] ?? $product['shop_province'] ?? '' }}">
             <div class="card h-100 shadow-sm border-0" 
                  style="transition:transform .2s, box-shadow .2s; cursor: pointer;" 
                  onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 .5rem 1rem rgba(0,0,0,.15)';" 
@@ -96,26 +106,44 @@ document.addEventListener('DOMContentLoaded', function(){
   var shopInput = document.getElementById('store-search-shop');
   var catSel = document.getElementById('store-filter-category');
   var locationInput = document.getElementById('store-filter-location');
+    var provSel = document.getElementById('store-filter-province');
   var resetBtn = document.getElementById('store-filter-reset');
   
   function apply(){
     var product = (productInput && productInput.value || '').toLowerCase();
     var shop = (shopInput && shopInput.value || '').toLowerCase();
     var cat = (catSel && catSel.value) || '';
-    var location = (locationInput && locationInput.value || '').toLowerCase();
+        var location = (locationInput && locationInput.value || '').toLowerCase();
+        var provCode = (provSel && provSel.value || '').toLowerCase();
+        var provName = '';
+        if (provSel && provSel.selectedOptions && provSel.selectedOptions[0]) {
+            provName = (provSel.selectedOptions[0].getAttribute('data-name') || '').toLowerCase();
+        }
     
     Array.from(grid.children).forEach(function(col){
       var name = (col.getAttribute('data-name')||'').toLowerCase();
       var store = (col.getAttribute('data-store')||'').toLowerCase();
       var category = col.getAttribute('data-category')||'';
-      var loc = (col.getAttribute('data-location')||'').toLowerCase();
+    var loc = (col.getAttribute('data-location')||'').toLowerCase();
+    var pCode = (col.getAttribute('data-province-code')||'').toLowerCase();
+    var pName = (col.getAttribute('data-province-name')||'').toLowerCase();
       
       var matchProduct = product === '' || name.indexOf(product) !== -1;
       var matchShop = shop === '' || store.indexOf(shop) !== -1;
       var matchCat = cat === '' || category === cat;
       var matchLocation = location === '' || loc.indexOf(location) !== -1;
       
-      var show = matchProduct && matchShop && matchCat && matchLocation;
+            var matchProv;
+            if (provCode === '' && provName === '') {
+                matchProv = true;
+            } else {
+                matchProv = (
+                    (provCode && pCode === provCode) ||
+                    (provCode && pName.indexOf(provCode) !== -1) ||
+                    (provName && pName.indexOf(provName) !== -1)
+                );
+            }
+            var show = matchProduct && matchShop && matchCat && matchLocation && matchProv;
       col.style.display = show ? '' : 'none';
     });
   }
@@ -124,11 +152,13 @@ document.addEventListener('DOMContentLoaded', function(){
   if(shopInput) shopInput.addEventListener('input', apply);
   if(catSel) catSel.addEventListener('change', apply);
   if(locationInput) locationInput.addEventListener('input', apply);
+    if(provSel) provSel.addEventListener('change', apply);
   if(resetBtn) resetBtn.addEventListener('click', function(){
     if(productInput) productInput.value = '';
     if(shopInput) shopInput.value = '';
     if(catSel) catSel.value = '';
     if(locationInput) locationInput.value = '';
+        if(provSel) provSel.value = '';
     apply();
   });
   apply();

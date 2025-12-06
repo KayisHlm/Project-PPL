@@ -3,25 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Api\ProductApi;
+use App\Api\WilayahApi;
 use Illuminate\Support\Facades\Log;
 
 class StoreController extends Controller
 {
     protected $productApi;
+    protected $wilayahApi;
 
     public function __construct()
     {
         $this->productApi = new ProductApi();
+        $this->wilayahApi = new WilayahApi();
     }
 
     public function landing()
     {
         try {
             $response = $this->productApi->getAllWithImages();
+            $provinceResponse = $this->wilayahApi->provinces();
             
             if ($response->successful()) {
                 $products = $response->json()['data'] ?? [];
-                return view('Page.Store.Landing', compact('products'));
+                $provinces = $provinceResponse && $provinceResponse->successful()
+                    ? ($provinceResponse->json()['data'] ?? [])
+                    : [];
+                return view('Page.Store.Landing', compact('products', 'provinces'));
             }
 
             Log::error('Failed to fetch products', [
@@ -29,10 +36,10 @@ class StoreController extends Controller
                 'body' => $response->body()
             ]);
 
-            return view('Page.Store.Landing', ['products' => []]);
+            return view('Page.Store.Landing', ['products' => [], 'provinces' => []]);
         } catch (\Exception $e) {
             Log::error('Exception fetching products: ' . $e->getMessage());
-            return view('Page.Store.Landing', ['products' => []]);
+            return view('Page.Store.Landing', ['products' => [], 'provinces' => []]);
         }
     }
 
