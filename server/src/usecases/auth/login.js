@@ -43,7 +43,13 @@ class Login {
 
         console.log("[Login UseCase] Password correct!");
 
-        // 5. Generate JWT Token
+        // 5. Check seller status 
+        if (user.role === 'seller' && user.seller_status === 'pending') {
+            console.log("[Login UseCase] Seller account is pending verification");
+            throw new BadRequest("Akun anda masih dalam tahap verifikasi");
+        }
+
+        // 6. Generate JWT Token
         console.log("[Login UseCase] Generating JWT token...");
         const token = generateToken({
             userId: user.id,
@@ -54,10 +60,10 @@ class Login {
 
         console.log("[Login UseCase] Token generated successfully");
 
-        // 6. Hapus password dari response (security)
+        // 7. Hapus password dari response (security)
         delete user.password;
 
-        // 7. Return token + user data
+        // 8. Return token + user data
         return {
             token : token,
             user: {

@@ -214,7 +214,8 @@ class UserRepository extends UserRepositoryInterface {
                 s.shop_description,
                 s.pic_name,
                 s.pic_phone_number,
-                s.pic_email
+                s.pic_email,
+                s.status as seller_status
             FROM users u
             LEFT JOIN sellers s ON u.id = s.user_id
             WHERE u.email = $1
