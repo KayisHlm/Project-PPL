@@ -70,5 +70,7 @@ Route::prefix('api/reviews')->name('api.reviews.')->group(function () {
 
 
 Route::prefix('store')->name('store.')->group(function () {
-    Route::get('/detail/{id}', [StoreController::class, 'detail'])->name('detail');
+    Route::get('/detail/{id}', [StoreController::class, 'detail'])
+        ->middleware('check.product.owner')
+        ->name('detail');
 });

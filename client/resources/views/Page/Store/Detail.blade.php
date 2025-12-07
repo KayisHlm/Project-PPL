@@ -96,7 +96,9 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5 class="header-title mb-0">Ulasan</h5>
+                    @if(!isset($isProductOwner) || !$isProductOwner)
                     <button class="btn btn-sm btn-primary" id="detail-review-btn">Tulis Ulasan</button>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div id="detail-reviews" class="d-flex flex-column gap-2">
@@ -132,7 +134,9 @@
         </div>
     </div>
 
+    @if(!isset($isProductOwner) || !$isProductOwner)
     @include('Component.Review-Modal')
+    @endif
 @endsection
 
 @push('scripts')
@@ -159,6 +163,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
   var btn = document.getElementById('detail-review-btn');
   var reviews = document.getElementById('detail-reviews');
+  
+  @if(!isset($isProductOwner) || !$isProductOwner)
   window.StoreCatalog = window.StoreCatalog || {};
   window.StoreCatalog.addReview = function(idx, payload){
     var item = document.createElement('div');
@@ -189,6 +195,7 @@ document.addEventListener('DOMContentLoaded', function(){
       modal.show();
     });
   }
+  @endif
 });
 </script>
 @endpush

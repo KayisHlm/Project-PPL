@@ -87,11 +87,15 @@ class AuthController extends Controller
             // Handle response berdasarkan status
             if ($statusCode === 200 && isset($responseData['token'])) {
                 Log::info('[AuthController] Login successful for: ' . $request->email);
+                
+                $role = $responseData['user']['role'] ?? null;
+                
                 session([
                     'auth_token' => $responseData['token'],
-                    'user_data' => $responseData['user']
+                    'user_data' => $responseData['user'],
+                    'user_role' => $role
                 ]);
-                $role = $responseData['user']['role'] ?? null;
+                
                 if ($role === 'seller') {
                     return redirect()->route('dashboard-seller.dashboard')
                         ->with('success', 'Login successful! Welcome back.');
@@ -280,7 +284,7 @@ class AuthController extends Controller
             $this->authApi->logout();
         } catch (\Throwable $e) {
         }
-        $request->session()->forget(['auth_token','user_data']);
+        $request->session()->forget(['auth_token', 'user_data', 'user_role']);
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login.loginIndex')->with('success', 'Anda telah logout.');

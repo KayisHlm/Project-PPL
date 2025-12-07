@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Api\ProductApi;
 use App\Api\WilayahApi;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class StoreController extends Controller
@@ -43,7 +44,7 @@ class StoreController extends Controller
         }
     }
 
-    public function detail($id)
+    public function detail(Request $request, $id)
     {
         try {
             $response = $this->productApi->getById($id);
@@ -54,8 +55,11 @@ class StoreController extends Controller
                 if (!$product) {
                     abort(404, 'Product not found');
                 }
+
+                $isProductOwner = $request->attributes->get('isProductOwner', false);
+                $userRole = $request->attributes->get('userRole', null);
                 
-                return view('Page.Store.Detail', compact('product'));
+                return view('Page.Store.Detail', compact('product', 'isProductOwner', 'userRole'));
             }
 
             if ($response->status() === 404) {
