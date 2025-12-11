@@ -56,7 +56,7 @@
                                         <label class="form-label" for="seller-product-price">Harga <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <span class="input-group-text">Rp</span>
-                                            <input type="number" name="price" class="form-control" id="seller-product-price" min="0" step="100" placeholder="250000" value="{{ old('price') }}" required>
+                                            <input type="number" name="price" class="form-control" id="seller-product-price" min="1" placeholder="250000" value="{{ old('price') }}" required>
                                         </div>
                                         @error('price')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -101,7 +101,7 @@
                                     <!-- DESKRIPSI -->
                                     <div class="col-12">
                                         <label class="form-label" for="seller-product-description">Deskripsi <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" name="description" id="seller-product-description" rows="5" placeholder="Jelaskan detail produk, spesifikasi, fitur..." required>{{ old('description') }}</textarea>
+                                        <textarea class="form-control" name="description" id="seller-product-description" rows="5" placeholder="Jelaskan detail produk (Minimal 10 karakter)" required>{{ old('description') }}</textarea>
                                         @error('description')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
