@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use App\Api\ProductApi;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SellerProductController extends Controller
 {
@@ -340,4 +341,50 @@ class SellerProductController extends Controller
             ]);
         }
     }
+
+    public function pdfStokProduk()
+    {
+        try {
+            $token = session('auth_token');
+            
+            if (!$token) {
+                Log::warning('No auth token found for stok produk');
+                return redirect()->route('login.loginIndex');
+            }
+
+            Log::info('Fetching stok produk list');
+            $productApi = new ProductApi();
+            $response = $productApi->getMyProducts();
+            
+            $products = [];
+            if ($response && $response->successful()) {
+                $data = $response->json();
+                $products = $data['data']['products'] ?? [];
+                
+                Log::info('Stok produk loaded successfully', [
+                    'count' => count($products)
+                ]);
+            } else {
+                Log::error('Failed to fetch stok produk', [
+                    'status' => $response ? $response->status() : 'null',
+                    'error' => $response ? $response->body() : 'No response'
+                ]);
+            }
+            
+            $pdf = Pdf::loadView('Page.DashboardSeller.StokPerProduk-PDF', compact('products'));
+            return $pdf->download('stok-per-produk.pdf');
+            
+        } catch (\Exception $e) {
+            Log::error('Stok Produk Exception', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            return view('Page.DashboardSeller.StokPerProduk-PDF')
+                ->withErrors(['fetch' => 'Failed to load stok produk: ' . $e->getMessage()])
+                ->with('products', []);
+        }
+    }
+
 }
