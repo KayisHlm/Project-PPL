@@ -387,4 +387,48 @@ class SellerProductController extends Controller
         }
     }
 
+    public function pdfRatingProduk()
+    {
+        try {
+            $token = session('auth_token');
+            
+            if (!$token) {
+                Log::warning('No auth token found for rating produk');
+                return redirect()->route('login.loginIndex');
+            }
+
+            Log::info('Fetching rating produk list');
+            $productApi = new ProductApi();
+            $response = $productApi->getMyProducts();
+            
+            $products = [];
+            if ($response && $response->successful()) {
+                $data = $response->json();
+                $products = $data['data']['products'] ?? [];
+                
+                Log::info('Rating produk loaded successfully', [    
+                    'count' => count($products)
+                ]);
+            } else {
+                Log::error('Failed to fetch rating produk', [
+                    'status' => $response ? $response->status() : 'null',
+                    'error' => $response ? $response->body() : 'No response'
+                ]);
+            }
+            
+            $pdf = Pdf::loadView('Page.DashboardSeller.RatingPerProduk-PDF', compact('products'));
+            return $pdf->download('rating-per-produk.pdf');
+            
+        } catch (\Exception $e) {
+            Log::error('Rating Produk Exception', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            return view('Page.DashboardSeller.RatingPerProduk-PDF')
+                ->withErrors(['fetch' => 'Failed to load rating produk: ' . $e->getMessage()])
+                ->with('products', []);
+        }
+    }
 }

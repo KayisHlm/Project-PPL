@@ -20,7 +20,7 @@
                         </div>
                         <div class="tab-pane fade" id="laporan-rating-produk">
                             <p class="mb-2">Unduh daftar produk diurutkan berdasarkan rating menurun. Termasuk stok, kategori produk, dan harga.</p>
-                            <a href="javascript:void(0);" class="btn btn-soft-primary btn-sm">Download PDF</a>
+                            <a href="{{ route('dashboard-seller.pdf-rating-produk') }}" class="btn btn-soft-primary btn-sm">Download PDF</a>
                         </div>
                         <div class="tab-pane fade" id="laporan-stok-tipis">
                             <p class="mb-2">Unduh daftar produk yang harus segera dipesan (stok kurang dari 2).</p>

@@ -28,9 +28,7 @@
                 <th style="width:50px">No</th>
                 <th>Produk</th>
                 <th>Kategori</th>
-                <th class="text-right" style="width:120px">Harga</th>
                 <th class="text-center" style="width:90px">Rating</th>
-                <th class="text-center" style="width:90px">Stok</th>
             </tr>
         </thead>
         <tbody>
@@ -40,9 +38,7 @@
                     <td class="text-center">{{ $i++ }}</td>
                     <td>{{ $p['name'] ?? '' }}</td>
                     <td>{{ $p['category'] ?? '' }}</td>
-                    <td class="text-right">{{ isset($p['price']) ? 'Rp '.number_format($p['price'],0,',','.') : '' }}</td>
-                    <td class="text-center">{{ $p['rating'] ?? '-' }}</td>
-                    <td class="text-center">{{ $p['stock'] ?? 0 }}</td>
+                    <td class="text-center">{{ $p['rating'] ?? '-' }}</td>                  
                 </tr>
             @endforeach
         </tbody>
