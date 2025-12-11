@@ -34,12 +34,12 @@
             </thead>
             <tbody>
                 @php($i = 1)
-                @foreach(($sellersActive ?? []) as $s)
+                @foreach(($activeSellers ?? []) as $s)
                     <tr>
                         <td class="text-center">{{ $i++ }}</td>
-                        <td>{{ $s['seller_name'] ?? '' }}</td>
-                        <td>{{ $s['store_name'] ?? '' }}</td>
-                        <td>{{ $s['province'] ?? '' }}</td>
+                        <td>{{ $s['pic_name'] ?? '' }}</td>
+                        <td>{{ $s['shop_name'] ?? '' }}</td>
+                        <td>{{ $s['pic_province'] ?? '' }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -59,12 +59,12 @@
             </thead>
             <tbody>
                 @php($j = 1)
-                @foreach(($sellersInactive ?? []) as $s)
+                @foreach(($nonActiveSellers ?? []) as $s)
                     <tr>
                         <td class="text-center">{{ $j++ }}</td>
-                        <td>{{ $s['seller_name'] ?? '' }}</td>
-                        <td>{{ $s['store_name'] ?? '' }}</td>
-                        <td>{{ $s['province'] ?? '' }}</td>
+                        <td>{{ $s['pic_name'] ?? '' }}</td>
+                        <td>{{ $s['shop_name'] ?? '' }}</td>
+                        <td>{{ $s['pic_province'] ?? '' }}</td>
                     </tr>
                 @endforeach
             </tbody>

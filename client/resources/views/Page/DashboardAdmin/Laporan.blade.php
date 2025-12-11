@@ -16,7 +16,7 @@
                     <div class="tab-content border border-light border-dashed p-3">
                         <div class="tab-pane fade show active" id="laporan-penjual-status">
                             <p class="mb-2">Unduh daftar akun penjual aktif dan tidak aktif.</p>
-                            <a href="javascript:void(0);" class="btn btn-soft-primary btn-sm">Download PDF</a>
+                            <a href="{{ route('dashboard-admin.pdf-akun') }}" class="btn btn-soft-primary btn-sm">Download PDF</a>
                         </div>
                         <div class="tab-pane fade" id="laporan-toko-provinsi">
                             <p class="mb-2">Unduh daftar penjual (toko) per provinsi.</p>

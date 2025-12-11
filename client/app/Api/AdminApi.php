@@ -133,4 +133,28 @@ class AdminApi
             ->timeout(10)
             ->get($this->baseUrl . '/statistics/reviews-rating-stats');
     }
+
+    /**
+     * Get all non-active sellers
+     * GET /api/admin/non-active-sellers
+     */
+    public function getNonActiveSellers($token)
+    {
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->get($this->baseUrl . '/admin/non-active-sellers');
+    }
+    
+    /**
+     * Get all active sellers
+     * GET /api/admin/active-sellers
+     */
+    public function getActiveSellers($token)
+    {
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->get($this->baseUrl . '/admin/active-sellers');
+    }
 }

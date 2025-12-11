@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Api\AdminApi;
 use App\Api\ProfileApi;
 use Illuminate\Support\Facades\Log; 
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminController extends Controller
 {
@@ -439,6 +440,57 @@ class AdminController extends Controller
             return view('Page.DashboardAdmin.Produk')
                 ->withErrors(['fetch' => 'Failed to load products: ' . $e->getMessage()])
                 ->with('products', []);
+        }
+    }
+    public function pdfAkun()
+    {
+        try {
+            $token = session('auth_token');
+
+            if (!$token) {
+                Log::warning('No auth token found for pdfAkun');
+                return redirect()->route('login.loginIndex');
+            }
+
+            Log::info('Fetching active and nonactive sellers PDF');
+
+            $activeSellers = $this->adminApi->getActiveSellers($token);
+
+            if ($activeSellers && $activeSellers->successful()) {
+                $activeSellers = $activeSellers->json()['data']['sellers'] ?? [];
+            } else {
+                Log::error('Failed to fetch active sellers', [
+                    'status' => $activeSellers ? $activeSellers->status() : 'null',
+                    'error' => $activeSellers ? $activeSellers->body() : 'No response'
+                ]);
+                $activeSellers = [];
+            }
+
+            $nonActiveSellers = $this->adminApi->getNonActiveSellers($token);
+
+            if ($nonActiveSellers && $nonActiveSellers->successful()) {
+                $nonActiveSellers = $nonActiveSellers->json()['data']['sellers'] ?? [];
+            } else {
+                Log::error('Failed to fetch nonactive sellers', [
+                    'status' => $nonActiveSellers ? $nonActiveSellers->status() : 'null',
+                    'error' => $nonActiveSellers ? $nonActiveSellers->body() : 'No response'
+                ]);
+                $nonActiveSellers = [];
+            }
+
+            $pdf = Pdf::loadView('Page.DashboardAdmin.PenjualAktifNonaktif-PDF', compact('activeSellers', 'nonActiveSellers'));
+            return $pdf->download('penjual-aktif-nonaktif.pdf');
+        } catch (\Exception $e) {
+            Log::error('PDF Exception', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return view('Page.DashboardAdmin.PenjualAktifNonaktif-PDF')
+                ->withErrors(['fetch' => 'Failed to load sellers PDF: ' . $e->getMessage()])
+                ->with('activeSellers', [])
+                ->with('nonActiveSellers', []);
         }
     }
 }

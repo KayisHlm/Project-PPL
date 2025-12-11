@@ -3,8 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const adminRoutes = require("./src/routes/adminRoutes");
-
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -26,6 +24,7 @@ app.use(cookieParser());
 
 // import Routes
 const authRoutes = require("./src/routes/authRoutes");
+const adminRoutes = require("./src/routes/adminRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const categoryRoutes = require("./src/routes/categoryRoutes");
 const reviewRoutes = require("./src/routes/reviewRoutes");
