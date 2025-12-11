@@ -493,4 +493,28 @@ class AdminController extends Controller
                 ->with('nonActiveSellers', []);
         }
     }
+
+    public function sellerByProvince() {
+        try {
+            $token = session('auth_token');
+            if (!$token) {
+                return redirect()->route('login.loginIndex');
+            }
+
+            $response = $this->adminApi->getSellersByProvince($token);
+            $groups = [];
+            if ($response && $response->successful()) {
+                $data = $response->json();
+                $groups = $data['data']['sellers'] ?? [];
+            }
+
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('Page.DashboardAdmin.PenjualPerProvinsi-PDF', [
+                'sellersByProvince' => $groups
+            ]);
+            return $pdf->download('penjual-per-provinsi.pdf');
+        } catch (\Exception $e) {
+            return view('Page.DashboardAdmin.PenjualPerProvinsi-PDF')
+                ->with('sellersByProvince', []);
+        }
+    }
 }

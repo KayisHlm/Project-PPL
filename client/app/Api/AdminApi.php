@@ -157,4 +157,16 @@ class AdminApi
             'Accept' => 'application/json',
         ])->get($this->baseUrl . '/admin/active-sellers');
     }
+
+    /**
+     * Get all sellers by province
+     * GET /api/admin/sellers/province
+     */
+    public function getSellersByProvince($token)
+    {
+        return Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->get($this->baseUrl . '/admin/sellers-by-province');
+    }
 }

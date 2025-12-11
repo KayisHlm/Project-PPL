@@ -10,6 +10,7 @@ const GetApprovedSellersController = require("../infrastructure/controllers/admi
 const ApproveSellerController = require("../infrastructure/controllers/admin/approveSellerController");
 const RejectSellerController = require("../infrastructure/controllers/admin/rejectSellerController");
 const ListProductsController = require("../infrastructure/controllers/admin/listProductsController");
+const GetSellersByProvinceController = require("../infrastructure/controllers/admin/getSellersByProvinceController.js");
 
 // Semua route admin harus authenticated dan role = 'platform_admin'
 router.use(authenticateToken);
@@ -32,6 +33,9 @@ router.get("/non-active-sellers", GetNonActiveSellersController);
 
 // GET /api/admin/active-sellers
 router.get("/active-sellers", GetActiveSellersController);
+
+// GET /api/admin/sellers-by-province
+router.get("/sellers-by-province", GetSellersByProvinceController);
 
 // GET /api/admin/products
 router.get("/products", ListProductsController);

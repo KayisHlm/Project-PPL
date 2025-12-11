@@ -43,6 +43,7 @@ Route::middleware('admin')->prefix('admin')->name('dashboard-admin.')->group(fun
     Route::post('/sellers/{sellerId}/approve', [AdminController::class, 'approveSeller'])->name('sellers.approve');
     Route::post('/sellers/{sellerId}/reject', [AdminController::class, 'rejectSeller'])->name('sellers.reject');
     Route::get('/pdf-akun',[AdminController::class,'pdfAkun'])->name('pdf-akun');
+    Route::get('/pdf-seller-province',[AdminController::class,'sellerByProvince'])->name('pdf-seller-province');
 });
 
 Route::middleware('seller')->prefix('seller')->name('dashboard-seller.')->group(function () {

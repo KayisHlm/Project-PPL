@@ -21,15 +21,14 @@
     <div class="title">Laporan Penjual (Toko) per Provinsi</div>
     <div class="subtitle">Dicetak: {{ now()->format('d/m/Y H:i') }}</div>
 
-    @php($i = 1)
     @foreach(($sellersByProvince ?? []) as $group)
         <div class="section">
-            <div class="section-title">{{ $group['province'] ?? 'Provinsi' }} (Total Toko: {{ is_array($group['sellers'] ?? null) ? count($group['sellers']) : 0 }})</div>
+            <div class="section-title">{{ $group['province'] ?? 'Provinsi' }} (Total: {{ is_array($group['sellers'] ?? null) ? count($group['sellers']) : 0 }})</div>
             <table>
                 <thead>
                     <tr>
                         <th style="width:60px">No</th>
-                        <th>Nama Toko</th>
+                        <th style="width:45%">Nama Toko</th>
                         <th>Penjual</th>
                     </tr>
                 </thead>

@@ -53,6 +53,35 @@ class SellerRepository {
         }
     }
 
+    async findSellersByProvince() {
+        const client = await pool.connect();
+        try {
+            const query = `
+                SELECT 
+                    COALESCE(s.pic_province, 'Tidak diketahui') AS province,
+                    COALESCE(
+                        json_agg(
+                            jsonb_build_object(
+                                'store_name', s.shop_name,
+                                'seller_name', s.pic_name
+                            ) ORDER BY s.shop_name ASC
+                        ) FILTER (WHERE s.shop_name IS NOT NULL),
+                        '[]'
+                    ) AS sellers
+                FROM sellers s
+                WHERE s.status = 'approved'
+                GROUP BY COALESCE(s.pic_province, 'Tidak diketahui')
+                ORDER BY province ASC
+            `;
+            const result = await client.query(query);
+            return result.rows;
+        } catch (error) {
+            console.error("SellerRepository - findSellersByProvince Error:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
     /**
      * Ambil semua seller dengan status 'approved' ✨ NEW METHOD
      */
@@ -303,6 +332,68 @@ class SellerRepository {
 
         } catch (error) {
             console.error("FindAllSellers Error:", error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    /**
+     * Ambil seller berdasarkan province
+     */
+    async findByProvince(province) {
+        const client = await pool.connect();
+        
+        try {
+            const values = Array.isArray(province)
+                ? province.map(p => (p || '').trim()).filter(p => p.length)
+                : [(province || '').trim()].filter(p => p.length);
+
+            let query = `
+                SELECT 
+                    s.id,
+                    s.user_id,
+                    s.shop_name,
+                    s.shop_description,
+                    s.pic_name,
+                    s.pic_phone_number,
+                    s.pic_email,
+                    s.pic_ktp_number,
+                    s.pic_address,
+                    s.pic_rt,
+                    s.pic_rw,
+                    s.pic_province,
+                    s.pic_city,
+                    s.pic_district,
+                    s.pic_village,
+                    s.pic_photo_path,
+                    s.pic_ktp_path,
+                    s.status,
+                    s.verified_at,
+                    s.created_at,
+                    s.updated_at,
+                    u.email as user_email,
+                    u.role
+                FROM sellers s
+                INNER JOIN users u ON s.user_id = u.id
+                WHERE s.status = 'approved'
+            `;
+
+            const params = [];
+
+            if (values.length > 0 && values[0].toLowerCase() !== 'all' && values[0] !== '*') {
+                const placeholders = values.map((_, i) => `UPPER($${i + 1})`).join(', ');
+                query += ` AND UPPER(s.pic_province) IN (${placeholders})`;
+                params.push(...values);
+            }
+
+            query += ` ORDER BY s.shop_name ASC`;
+
+            const result = await client.query(query, params);
+            return result.rows;
+
+        } catch (error) {
+            console.error("SellerRepository - findByProvince Error:", error);
             throw error;
         } finally {
             client.release();
