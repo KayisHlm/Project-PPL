@@ -30,12 +30,6 @@
         <div class="row g-0 justify-content-center w-100 m-xxl-5 px-xxl-4 m-3">
             <div class="col-xl-4 col-lg-5 col-md-6">
                 <div class="card overflow-hidden text-center h-100 p-xxl-4 p-3 mb-0">
-                    <!-- Tombol Beranda -->
-                    <div class="text-start mb-3">
-                        <a href="{{ route('store.landing') }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="mdi mdi-home me-1"></i> Beranda
-                        </a>
-                    </div>
                     
                     <h4 class="fw-semibold mb-2 fs-18">Log in to your account</h4>
 
@@ -114,10 +108,15 @@
                         </div>
                     </form>
 
-                    <p class="text-muted fs-14 mb-4">
-                        Don't have an account? 
+                    <p class="text-muted fs-14 mb-2 text-center">
+                        Don't have an account?
                         <a href="{{ route('register.registerIndex') }}" class="fw-semibold text-danger ms-1">Sign Up !</a>
                     </p>
+                    <div class="text-center">
+                        <a href="{{ route('store.landing') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="mdi mdi-home me-1"></i> Beranda
+                        </a>
+                    </div>
 
                 </div>
             </div>

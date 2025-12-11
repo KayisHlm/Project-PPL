@@ -23,7 +23,7 @@
                             <a href="{{ route('dashboard-seller.pdf-rating-produk') }}" class="btn btn-soft-primary btn-sm">Download PDF</a>
                         </div>
                         <div class="tab-pane fade" id="laporan-stok-tipis">
-                            <p class="mb-2">Unduh daftar produk yang harus segera dipesan (stok kurang dari 2).</p>
+                            <p class="mb-2">Unduh daftar produk yang harus segera dipesan (stok kurang dari sama dengan 2).</p>
                             <a href="{{ route('dashboard-seller.pdf-stok-tipis') }}" class="btn btn-soft-primary btn-sm">Download PDF</a>
                         </div>
                     </div>
