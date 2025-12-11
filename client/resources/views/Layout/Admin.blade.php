@@ -30,6 +30,14 @@
         .app-topbar { top: 0; }
         .sidenav-menu { top: 0; }
         .page-content { min-height: calc(100vh - var(--highdmin-topbar-height)); }
+        .sidenav-brand { padding: 16px 16px; border-bottom: 1px solid #e9ecef; }
+        .sidenav-brand .brand-icon { font-size: 26px; line-height: 1; }
+        .sidenav-brand .store-brand { font-size: 18px; line-height: 1; }
+        @media (min-width: 1200px) {
+            .sidenav-brand { padding: 20px 20px; }
+            .sidenav-brand .brand-icon { font-size: 30px; }
+            .sidenav-brand .store-brand { font-size: 20px; }
+        }
     </style>
 </head>
 
@@ -41,18 +49,12 @@
         <!-- Sidenav Menu Start -->
         <div class="sidenav-menu">
 
-            <!-- Brand Logo -->
-            <a href="#" class="logo">
-                <span class="logo-light">
-                    <span class="logo-lg"><img src="{{ asset('assets/images/logo.png') }}" alt="logo"></span>
-                    <span class="logo-sm"><img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo"></span>
-                </span>
-
-                <span class="logo-dark">
-                    <span class="logo-lg"><img src="{{ asset('assets/images/logo-dark.png') }}" alt="dark logo"></span>
-                    <span class="logo-sm"><img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo"></span>
-                </span>
-            </a>
+            <div class="sidenav-brand">
+                <div class="d-flex align-items-center justify-content-center gap-3 text-reset text-decoration-none w-100 text-center">
+                    <i class="ri-store-2-line brand-icon text-primary shrink-0"></i>
+                    <span class="fw-semibold store-brand text-truncate">MartPlace</span>
+                </div>
+            </div>
 
             <div data-simplebar>
 
