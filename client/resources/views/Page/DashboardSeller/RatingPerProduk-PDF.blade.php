@@ -20,7 +20,7 @@
     <div class="title">Laporan Rating per Produk</div>
     <div class="subtitle">Dicetak: {{ now()->format('d/m/Y H:i') }}</div>
 
-    @php($rows = collect($products ?? [])->sortByDesc(function($p){ return $p['rating'] ?? 0; })->values())
+    @php($rows = collect($products ?? [])->sortByDesc(function($p){ return $p['averageRating'] ?? ($p['average_rating'] ?? ($p['rating'] ?? 0)); })->values())
 
     <table>
         <thead>
@@ -38,7 +38,7 @@
                     <td class="text-center">{{ $i++ }}</td>
                     <td>{{ $p['name'] ?? '' }}</td>
                     <td>{{ $p['category'] ?? '' }}</td>
-                    <td class="text-center">{{ $p['rating'] ?? '-' }}</td>                  
+                    <td class="text-center">{{ $p['averageRating'] ?? ($p['average_rating'] ?? ($p['rating'] ?? '-')) }}</td>                  
                 </tr>
             @endforeach
         </tbody>
