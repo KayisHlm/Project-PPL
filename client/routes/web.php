@@ -57,7 +57,7 @@ Route::middleware('seller')->prefix('seller')->name('dashboard-seller.')->group(
     Route::view('/profile', 'Page.Profile.Index')->name('profile');
     Route::get('/pdf-stok-produk',[SellerProductController::class,'pdfStokProduk'])->name('pdf-stok-produk');
     Route::get('/pdf-rating-produk',[SellerProductController::class,'pdfRatingProduk'])->name('pdf-rating-produk');
-
+    Route::get('/pdf-stok-tipis',[SellerProductController::class,'pdfStokTipis'])->name('pdf-stok-tipis');
 });
 
 // API endpoints for wilayah (used by registration dropdowns)

@@ -277,6 +277,17 @@ class ProductRepository {
     const result = await pool.query(query, [productId, parseInt(newStock, 10)]);
     return result.rows[0];
   }
+
+  async findLowStockProducts() {
+    const query = `
+      SELECT id, name, stock, price, weight, category, description, created_at, updated_at
+      FROM products
+      WHERE stock < 2
+      ORDER BY stock ASC
+    `;
+    const result = await pool.query(query);
+    return result.rows;
+  }
 }
 
 module.exports = ProductRepository;

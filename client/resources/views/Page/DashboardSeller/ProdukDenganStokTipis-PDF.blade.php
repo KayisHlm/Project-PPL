@@ -20,7 +20,7 @@
     <div class="title">Laporan Produk dengan Stok Tipis</div>
     <div class="subtitle">Dicetak: {{ now()->format('d/m/Y H:i') }}</div>
 
-    @php($rows = collect($products ?? [])->filter(function($p){ return ($p['stock'] ?? 0) < 2; })->sortBy(function($p){ return $p['stock'] ?? 0; })->values())
+    @php($rows = collect($products ?? [])->filter(function($p){ return ($p['stock'] ?? 0) <= 2; })->sortBy(function($p){ return $p['stock'] ?? 0; })->values())
 
     <table>
         <thead>

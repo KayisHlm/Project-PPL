@@ -596,4 +596,5 @@ class AdminController extends Controller
                 ->with('products', []);
         }
     }
+
 }

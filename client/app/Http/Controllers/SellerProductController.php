@@ -431,4 +431,49 @@ class SellerProductController extends Controller
                 ->with('products', []);
         }
     }
+
+    public function pdfStokTipis() {
+        try {
+            $token = session('auth_token');
+            
+            if (!$token) {
+                Log::warning('No auth token found for stok tipis');
+                return redirect()->route('login.loginIndex');
+            }
+
+            Log::info('Fetching seller products for stok tipis');
+            $productApi = new ProductApi();
+            $response = $productApi->getMyProducts();
+            
+            $products = [];
+            if ($response && $response->successful()) {
+                $data = $response->json();
+                $products = $data['data']['products'] ?? [];
+                
+                Log::info('Seller products loaded for stok tipis', [
+                    'count' => count($products)
+                ]);
+            } else {
+                Log::error('Failed to fetch seller products for stok tipis', [
+                    'status' => $response ? $response->status() : 'null',
+                    'error' => $response ? $response->body() : 'No response'
+                ]);
+            }
+            
+            $pdf = Pdf::loadView('Page.DashboardSeller.ProdukDenganStokTipis-PDF', compact('products'));
+            return $pdf->download('produk-stok-tipis.pdf');
+            
+        } catch (\Exception $e) {
+            Log::error('Stok Tipis Exception', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            return view('Page.DashboardSeller.ProdukDenganStokTipis-PDF')
+                ->withErrors(['fetch' => 'Failed to load stok tipis: ' . $e->getMessage()])
+                ->with('products', []);
+        }
+    }
+    
 }
