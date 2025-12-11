@@ -517,4 +517,83 @@ class AdminController extends Controller
                 ->with('sellersByProvince', []);
         }
     }
+
+    public function pdfSellerByProvince() {
+        try {
+            $token = session('auth_token');
+            if (!$token) {
+                return redirect()->route('login.loginIndex');
+            }
+
+            $response = $this->adminApi->getSellersByProvince($token);
+            $groups = [];
+            if ($response && $response->successful()) {
+                $data = $response->json();
+                $groups = $data['data']['sellers'] ?? [];
+            }
+
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('Page.DashboardAdmin.PenjualPerProvinsi-PDF', [
+                'sellersByProvince' => $groups
+            ]);
+            return $pdf->download('penjual-per-provinsi.pdf');
+        } catch (\Exception $e) {
+            return view('Page.DashboardAdmin.PenjualPerProvinsi-PDF')
+                ->with('sellersByProvince', []);
+        }
+    }
+
+    public function pdfProductRating()
+    {
+        try {
+            $token = session('auth_token');
+            
+            if (!$token) {
+                Log::warning('No auth token found for pdfProductRating');   
+                return redirect()->route('login.loginIndex');
+            }
+
+            Log::info('Fetching products list');
+            
+            $response = $this->adminApi->getProducts();
+            
+            $products = [];
+            if ($response && $response->successful()) {
+                $data = $response->json();
+                $products = $data['data'] ?? [];
+                $products = collect($products)->map(function($p){
+                    return [
+                        'name' => $p['name'] ?? '',
+                        'store_name' => $p['shopName'] ?? ($p['shop_name'] ?? ''),
+                        'category' => $p['category'] ?? '',
+                        'price' => $p['price'] ?? null,
+                        'province' => $p['shopProvince'] ?? ($p['shop_province'] ?? ''),
+                        'rating' => $p['averageRating'] ?? ($p['average_rating'] ?? 0),
+                    ];
+                })->toArray();
+                
+                Log::info('PDF Product Rating loaded successfully', [
+                    'count' => count($products)
+                ]);
+            } else {
+                Log::error('Failed to fetch PDF Product Rating', [
+                    'status' => $response ? $response->status() : 'null',
+                    'error' => $response ? $response->body() : 'No response'
+                ]);
+            }
+            
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('Page.DashboardAdmin.ProdukRating-PDF', compact('products'));
+            return $pdf->download('produk-rating.pdf');
+            
+        } catch (\Exception $e) {
+            Log::error('PDF Product Rating Exception', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            return view('Page.DashboardAdmin.ProdukRating-PDF')
+                ->withErrors(['fetch' => 'Failed to load PDF Product Rating: ' . $e->getMessage()])
+                ->with('products', []);
+        }
+    }
 }
