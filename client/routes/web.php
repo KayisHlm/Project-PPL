@@ -8,6 +8,7 @@ use App\Http\Controllers\SellerProductController;
 use App\Http\Controllers\SellerCategoryController;
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', [StoreController::class, 'landing'])->name('store.landing');
 
@@ -37,7 +38,7 @@ Route::middleware('admin')->prefix('admin')->name('dashboard-admin.')->group(fun
     Route::get('/tambah-kategori', [AdminCategoryController::class, 'createView'])->name('tambah-kategori');
     Route::get('/produk', [AdminController::class, 'products'])->name('produk');
     Route::view('/laporan', 'Page.DashboardAdmin.Laporan')->name('laporan');
-    Route::view('/profile', 'Page.Profile.Index')->name('profile');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/sellers', [AdminController::class, 'approvedSellers'])->name('sellers');
     Route::get('/pending-sellers', [AdminController::class, 'pendingSellers'])->name('pending-sellers');
     Route::post('/sellers/{sellerId}/approve', [AdminController::class, 'approveSeller'])->name('sellers.approve');
@@ -54,7 +55,7 @@ Route::middleware('seller')->prefix('seller')->name('dashboard-seller.')->group(
     Route::view('/laporan', 'Page.DashboardSeller.Laporan')->name('laporan');
     Route::get('/tambah-produk', [SellerProductController::class, 'createView'])->name('tambah-produk');
     Route::post('/produk/create', [SellerProductController::class, 'store'])->name('produk.create');
-    Route::view('/profile', 'Page.Profile.Index')->name('profile');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/pdf-stok-produk',[SellerProductController::class,'pdfStokProduk'])->name('pdf-stok-produk');
     Route::get('/pdf-rating-produk',[SellerProductController::class,'pdfRatingProduk'])->name('pdf-rating-produk');
     Route::get('/pdf-stok-tipis',[SellerProductController::class,'pdfStokTipis'])->name('pdf-stok-tipis');

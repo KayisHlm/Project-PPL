@@ -19,25 +19,25 @@
                             <div class="mb-2">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="ri-shield-user-line"></i>
-                                    <span class="fw-semibold">{{ $user['name'] ?? 'Nama Lengkap' }}</span>
+                                    <span class="fw-semibold">{{ $user['name'] ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="mb-2">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="ri-mail-line"></i>
-                                    <span>{{ $user['email'] ?? 'email@example.com' }}</span>
+                                    <span>{{ $user['email'] ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="mb-2">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="ri-phone-line"></i>
-                                    <span>{{ $user['phone'] ?? '08xxxxxxxxxx' }}</span>
+                                    <span>{{ $user['phone'] ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="mb-2">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="ri-award-line"></i>
-                                    <span>{{ ucfirst(str_replace('_', ' ', $user['role'] ?? 'User')) }}</span>
+                                    <span>{{ isset($user['role']) ? ucfirst(str_replace('_', ' ', $user['role'])) : '-' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -54,13 +54,13 @@
                                 <div class="col-12">
                                     <div class="d-flex align-items-center gap-2">
                                         <i class="ri-store-2-line"></i>
-                                        <span class="fw-semibold">{{ $seller['shop_name'] ?? 'Nama Toko' }}</span>
+                                        <span class="fw-semibold">{{ $seller['shop_name'] ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="d-flex align-items-start gap-2">
                                         <i class="ri-file-text-line mt-1"></i>
-                                        <span>{{ $seller['shop_description'] ?? 'Deskripsi toko belum tersedia' }}</span>
+                                        <span>{{ $seller['shop_description'] ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
