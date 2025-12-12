@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use App\Api\ProfileApi;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,10 +21,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Share user data to all views
         View::composer('*', function ($view) {
             $userData = session('user_data', []);
             $view->with('currentUser', $userData);
+            $profileData = [];
+            $sellerPic = null;
+            $token = session('auth_token');
+            if ($token) {
+                try {
+                    $api = new ProfileApi();
+                    $resp = $api->getProfile();
+                    $profileData = $resp['data'] ?? [];
+                    $sellerPic = $profileData['seller']['pic_photo_path'] ?? null;
+                } catch (\Exception $e) {
+                }
+            }
+            $view->with('currentProfile', $profileData);
+            $view->with('currentSellerPic', $sellerPic);
         });
     }
 }

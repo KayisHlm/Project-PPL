@@ -20,13 +20,15 @@
 <body>
     <header class="store-topbar bg-white shadow-sm">
         <div class="store-container d-flex align-items-center justify-content-between py-2 px-3">
-            <a href="{{ route('store.landing') }}" class="d-flex align-items-center gap-2 text-reset text-decoration-none">
+            <div class="d-flex align-items-center gap-2 text-reset text-decoration-none">
                 <i class="ri-store-2-line fs-24 text-primary"></i>
                 <span class="fw-bold store-brand">MartPlace</span>
-            </a>
-            <div class="d-flex align-items-center gap-2">
-                <a href="{{ route('login.loginIndex') }}" class="btn btn-sm btn-light">Login</a>
             </div>
+            @if(!session('auth_token'))
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{{ route('login.loginIndex') }}" class="btn btn-sm btn-light">Login</a>
+                </div>
+            @endif
         </div>
     </header>
 

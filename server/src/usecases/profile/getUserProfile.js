@@ -1,5 +1,3 @@
-const UserInformation = require("../../dto/user/userInformation");
-
 class GetUserProfile {
     constructor(userRepository) {
         this.userRepository = userRepository;
@@ -15,26 +13,18 @@ class GetUserProfile {
                 throw new Error("User not found");
             }
 
-            // Transform to DTO
-            const userInfo = new UserInformation(
-                user.user_id,
-                user.email,
-                user.name,
-                user.phone,
-                user.role,
-                user.created_at
-            );
+            const userInfo = {
+                userId: user.user_id,
+                email: user.email,
+                name: user.name,
+                phone: user.phone,
+                role: user.role,
+                createdAt: user.created_at
+            };
 
             // Add seller information if exists
             const response = {
-                user: {
-                    userId: userInfo.userId,
-                    email: userInfo.email,
-                    name: userInfo.name,
-                    phone: userInfo.phone,
-                    role: userInfo.role,
-                    createdAt: userInfo.createdAt
-                },
+                user: userInfo,
                 seller: null
             };
 
@@ -47,7 +37,18 @@ class GetUserProfile {
                     city: user.city,
                     province: user.province,
                     shop_phone: user.shop_phone,
-                    status: user.seller_status
+                    status: user.seller_status,
+                    pic_email: user.pic_email,
+                    pic_rt: user.pic_rt,
+                    pic_rw: user.pic_rw,
+                    district: user.district,
+                    village: user.village,
+                    pic_ktp_number: user.pic_ktp_number,
+                    pic_photo_path: user.pic_photo_path,
+                    pic_ktp_path: user.pic_ktp_path,
+                    verified_at: user.verified_at,
+                    created_at: user.seller_created_at,
+                    updated_at: user.seller_updated_at
                 };
             }
 

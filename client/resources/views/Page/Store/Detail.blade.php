@@ -1,6 +1,11 @@
 @extends('Layout.Store')
 
 @section('content')
+    <div class="mb-2">
+        <a href="{{ url()->previous() }}" class="btn btn-sm btn-outline-secondary">
+            <i class="ri-arrow-left-line me-1"></i> Kembali
+        </a>
+    </div>
     <div class="row g-3">
         <div class="col-xl-7">
             <div class="card shadow-sm border-0">

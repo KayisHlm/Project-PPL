@@ -172,6 +172,7 @@ class UserRepository extends UserRepositoryInterface {
                     u.created_at,
                     s.pic_name as name,
                     s.pic_phone_number as phone,
+                    s.pic_email as pic_email,
                     s.id as seller_id,
                     s.shop_name,
                     s.shop_description,
@@ -179,6 +180,16 @@ class UserRepository extends UserRepositoryInterface {
                     s.pic_city as city,
                     s.pic_province as province,
                     s.pic_phone_number as shop_phone,
+                    s.pic_rt as pic_rt,
+                    s.pic_rw as pic_rw,
+                    s.pic_district as district,
+                    s.pic_village as village,
+                    s.pic_ktp_number as pic_ktp_number,
+                    s.pic_photo_path as pic_photo_path,
+                    s.pic_ktp_path as pic_ktp_path,
+                    s.verified_at as verified_at,
+                    s.created_at as seller_created_at,
+                    s.updated_at as seller_updated_at,
                     s.status as seller_status
                 FROM users u
                 LEFT JOIN sellers s ON u.id = s.user_id

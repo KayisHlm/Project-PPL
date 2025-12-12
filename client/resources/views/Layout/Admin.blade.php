@@ -169,7 +169,7 @@
                     <!-- User Dropdown -->
                     <div class="topbar-item nav-user">
                         <div class="px-2 d-flex align-items-center">
-                            <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image">
+                            <img src="{{ ($currentSellerPic ?? null) ?: asset('assets/images/users/avatar-1.jpg') }}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image">
                             <span class="d-lg-flex flex-column gap-1 d-none">
                                 <h5 class="my-0">{{ session('user_data.email', 'User') }}</h5>
                             </span>
