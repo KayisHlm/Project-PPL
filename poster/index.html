@@ -11,17 +11,34 @@
 <body>
     <div class="a3-page">
         
-        <!-- SIDEBAR: Identitas & Info -->
-        <aside class="sidebar-info">
-            <div class="sidebar-header">
+        <!-- HEADER SECTION: Identitas, Tech Stack, Team -->
+        <header class="top-header">
+            <!-- Left: Brand -->
+            <div class="header-brand">
                 <div class="logo-box">
                     <i class="fas fa-shopping-bag"></i>
                 </div>
-                <h1>MartPlace</h1>
-                <p class="subtitle">Platform E-Commerce Modern Terintegrasi</p>
+                <div class="brand-text">
+                    <h1>E-Kantin</h1>
+                    <p class="subtitle">Platform E-Commerce Modern Terintegrasi</p>
+                </div>
             </div>
 
-            <div class="sidebar-section">
+            <!-- Center: Tech Stack -->
+            <div class="header-tech">
+                <h2><i class="fas fa-layer-group"></i> Tech Stack</h2>
+                <div class="tech-stack-grid">
+                    <div class="tech-item laravel"><i class="fab fa-laravel"></i><span>Laravel</span></div>
+                    <div class="tech-item node"><i class="fab fa-node"></i><span>Node.js</span></div>
+                    <div class="tech-item express"><i class="fab fa-node-js"></i><span>Express</span></div>
+                    <div class="tech-item tailwind"><i class="fab fa-css3-alt"></i><span>Tailwind</span></div>
+                    <div class="tech-item mysql"><i class="fas fa-database"></i><span>PostgreSQL</span></div>
+                    <div class="tech-item js"><i class="fab fa-js"></i><span>JavaScript</span></div>
+                </div>
+            </div>
+
+            <!-- Right: Team -->
+            <div class="header-team">
                 <h2><i class="fas fa-users"></i> Tim Pengembang</h2>
                 <div class="team-card">
                     <div class="team-meta">
@@ -29,56 +46,14 @@
                         <span class="badge-pill outline">Kelas C</span>
                     </div>
                     <ul class="member-list">
-                        <li>
-                            <span class="name">Kevin Adi Santoso</span>
-                            <span class="nim">24060123130081</span>
-                        </li>
-                        <li>
-                            <span class="name">Kayis Hilmi Farih</span>
-                            <span class="nim">24060123140152</span>
-                        </li>
-                        <li>
-                            <span class="name">Muhammad Azka Subhan</span>
-                            <span class="nim">24060123130086</span>
-                        </li>
-                        <li>
-                            <span class="name">Indra Purwanto</span>
-                            <span class="nim">24060123140150</span>
-                        </li>
+                        <li><span class="name">Kevin Adi Santoso</span><span class="nim">24060123130081</span></li>
+                        <li><span class="name">Kayis Hilmi Farih</span><span class="nim">24060123140152</span></li>
+                        <li><span class="name">Muhammad Azka Subhan</span><span class="nim">24060123130086</span></li>
+                        <li><span class="name">Indra Purwanto</span><span class="nim">24060123140150</span></li>
                     </ul>
                 </div>
             </div>
-
-            <div class="sidebar-section">
-                <h2><i class="fas fa-layer-group"></i> Tech Stack</h2>
-                <div class="tech-stack-grid">
-                    <div class="tech-item laravel">
-                        <i class="fab fa-laravel"></i>
-                        <span>Laravel</span>
-                    </div>
-                    <div class="tech-item node">
-                        <i class="fab fa-node"></i>
-                        <span>Node.js</span>
-                    </div>
-                    <div class="tech-item express">
-                        <i class="fab fa-node-js"></i>
-                        <span>Express</span>
-                    </div>
-                    <div class="tech-item tailwind">
-                        <i class="fab fa-css3-alt"></i>
-                        <span>Tailwind</span>
-                    </div>
-                    <div class="tech-item mysql">
-                        <i class="fas fa-database"></i>
-                        <span>PostgreSQL</span>
-                    </div>
-                    <div class="tech-item js">
-                        <i class="fab fa-js"></i>
-                        <span>JavaScript</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
+        </header>
 
         <!-- MAIN: Fitur & Screenshots -->
         <main class="main-content">
@@ -92,22 +67,18 @@
                         <h3>Landing Page</h3>
                     </div>
                     <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>Landing Page</span>
-                        </div>
+                        <img src="../PBP/landing-page.png" alt="Landing Page">
                     </div>
                 </article>
 
-                <!-- 2. Detail Produk -->
+                <!-- 2. Filtering Produk -->
                 <article class="feature-block">
                     <div class="block-header">
-                        <div class="icon"><i class="fas fa-info-circle"></i></div>
-                        <h3>Detail Produk</h3>
+                        <div class="icon"><i class="fas fa-filter"></i></div>
+                        <h3>Filtering Produk</h3>
                     </div>
                     <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>Info Produk</span>
-                        </div>
+                        <img src="../PBP/filtering-produk.png" alt="Filtering Produk">
                     </div>
                 </article>
 
@@ -118,105 +89,68 @@
                         <h3>Sistem Review</h3>
                     </div>
                     <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>Rating & Ulasan</span>
-                        </div>
+                        <img src="../PBP/sistem-review.png" alt="Sistem Review">
                     </div>
                 </article>
 
-                <!-- 4. Registrasi Penjual -->
-                <article class="feature-block">
-                    <div class="block-header">
-                        <div class="icon"><i class="fas fa-user-plus"></i></div>
-                        <h3>Registrasi Penjual</h3>
-                    </div>
-                    <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>Form Register</span>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- 5. Dashboard Penjual -->
+                <!-- 4. Dashboard Penjual -->
                 <article class="feature-block">
                     <div class="block-header">
                         <div class="icon"><i class="fas fa-store"></i></div>
                         <h3>Dashboard Penjual</h3>
                     </div>
                     <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>Seller Dashboard</span>
-                        </div>
+                        <img src="../PBP/dashboard-penjual.png" alt="Dashboard Penjual">
                     </div>
                 </article>
 
-                <!-- 6. Tambah Produk -->
+                <!-- 5. Tambah Produk -->
                 <article class="feature-block">
                     <div class="block-header">
                         <div class="icon"><i class="fas fa-box-open"></i></div>
                         <h3>Tambah Produk</h3>
                     </div>
                     <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>Form Produk</span>
-                        </div>
+                        <img src="../PBP/tambah-produk.png" alt="Tambah Produk">
                     </div>
                 </article>
 
-                <!-- 7. Dashboard Admin -->
+                <!-- 6. Dashboard Admin -->
                 <article class="feature-block">
                     <div class="block-header">
                         <div class="icon"><i class="fas fa-user-shield"></i></div>
                         <h3>Dashboard Admin</h3>
                     </div>
                     <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>Admin Dashboard</span>
-                        </div>
+                        <img src="../PBP/dashboard-admin.png" alt="Dashboard Admin">
                     </div>
                 </article>
 
-                <!-- 8. Manajemen Penjual -->
+                <!-- 7. Manajemen Penjual -->
                 <article class="feature-block">
                     <div class="block-header">
                         <div class="icon"><i class="fas fa-users-cog"></i></div>
                         <h3>Manajemen Penjual</h3>
                     </div>
                     <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>List Penjual</span>
-                        </div>
+                        <img src="../PBP/manajemen-penjual.png" alt="Manajemen Penjual">
                     </div>
                 </article>
 
-                <!-- 9. Verifikasi Penjual -->
-                <article class="feature-block">
-                    <div class="block-header">
-                        <div class="icon"><i class="fas fa-check-circle"></i></div>
-                        <h3>Verifikasi Penjual</h3>
-                    </div>
-                    <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>Approval Akun</span>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- 10. Laporan PDF -->
+                <!-- 8. Laporan PDF -->
                 <article class="feature-block">
                     <div class="block-header">
                         <div class="icon"><i class="fas fa-file-pdf"></i></div>
                         <h3>Laporan PDF</h3>
                     </div>
                     <div class="screenshot-area">
-                        <div class="placeholder">
-                            <span>Export PDF</span>
-                        </div>
+                        <img src="../PBP/laporan-pdf.png" alt="Laporan PDF">
                     </div>
                 </article>
                 
             </div>
         </main>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
