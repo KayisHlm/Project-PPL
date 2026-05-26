@@ -11,7 +11,7 @@ class ProfileApi
 
     public function __construct()
     {
-        $this->baseUrl = env('BACKEND_URL', 'http://localhost:3001') . '/api/profile';
+        $this->baseUrl = env('API_BASE_URL', 'http://localhost:3001/api') . '/profile';
     }
 
     /**

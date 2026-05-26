@@ -7,7 +7,12 @@ use Illuminate\Support\Facades\Log;
 
 class ProductApi
 {
-    protected $apiUrl = 'http://localhost:3001/api/products';
+    protected $apiUrl = '';
+
+    public function __construct()
+    {
+        $this->apiUrl = env('API_BASE_URL', 'http://localhost:3001/api') . '/product';
+    }
 
     public function create(array $body, string $token)
     {

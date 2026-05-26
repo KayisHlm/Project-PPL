@@ -7,11 +7,16 @@ use Illuminate\Support\Facades\Log;
 
 class AuthApi
 {
-    protected $apiUrl = 'http://localhost:3001/api/auth/';
+    protected $apiUrl = '';
 
     public function save($body)
     {
         return $this->connectApi('create', 'post', $body);
+    }
+
+    public function __construct()
+    {
+        $this->apiUrl = env('API_BASE_URL', 'http://localhost:3001/api') . '/auth/';
     }
 
     public function login($body)

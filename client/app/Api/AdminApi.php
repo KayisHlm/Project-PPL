@@ -87,7 +87,7 @@ class AdminApi
         
         return Http::withHeaders($this->getAuthHeaders())
             ->timeout(10)
-            ->get($this->baseUrl . '/products');
+            ->get($this->baseUrl . '/product');
     }
 
     /**

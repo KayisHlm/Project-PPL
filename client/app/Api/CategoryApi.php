@@ -6,7 +6,12 @@ use Illuminate\Support\Facades\Http;
 
 class CategoryApi
 {
-    protected $apiUrl = 'http://localhost:3001/api/categories';
+    protected $apiUrl = '';
+
+    public function __construct()
+    {
+        $this->apiUrl = env('API_BASE_URL', 'http://localhost:3001/api') . '/category';
+    }
 
     public function list(string $token)
     {

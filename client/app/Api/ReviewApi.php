@@ -7,7 +7,12 @@ use Illuminate\Support\Facades\Log;
 
 class ReviewApi
 {
-    protected $apiUrl = 'http://localhost:3001/api/reviews';
+    protected $apiUrl = '';
+
+    public function __construct()
+    {
+        $this->apiUrl = env('API_BASE_URL', 'http://localhost:3001/api') . '/review';
+    }
 
     public function create(string $productId, array $body)
     {
