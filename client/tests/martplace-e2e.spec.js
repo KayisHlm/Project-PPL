@@ -91,6 +91,37 @@ test.describe('Automated Testing MartPlace - 5 Butir Uji', () => {
     expect(bodyText.toLowerCase()).toMatch(/harga|stok|berat|kategori|deskripsi|rating|ulasan|toko/);
   });
 
+  test('DUPL-05-03 - Menampilkan nama produk', async ({ page }) => {
+    await page.goto('/');
+
+    const productCards = page.locator(PRODUCT_CARD_SELECTOR);
+    await expect(productCards.first()).toBeVisible();
+
+    const firstProduct = productCards.first();
+    
+    // Ambil nama produk dari halaman katalog
+    const productTitleLocator = firstProduct.locator('h6.mb-1.text-truncate').first();
+    await expect(productTitleLocator).toBeVisible();
+    const expectedName = (await productTitleLocator.innerText()).trim();
+
+    const detailButton = firstProduct.locator(DETAIL_BUTTON_SELECTOR).first();
+    await expect(detailButton).toBeVisible();
+
+    await detailButton.click();
+
+    await page.waitForTimeout(1000);
+
+    // Pastikan berada di halaman detail produk
+    await expect(page).toHaveURL(/detail|produk|product/i);
+
+    // Pastikan nama produk di halaman detail tampil dengan jelas dan sama persis
+    const detailTitleLocator = page.locator('h4.fw-bold.mb-1').first();
+    await expect(detailTitleLocator).toBeVisible();
+    
+    const actualName = (await detailTitleLocator.innerText()).trim();
+    expect(actualName).toBe(expectedName);
+  });
+
   test('DUPL-15-02 - Mengosongkan field email dan password lalu menekan tombol Login', async ({ page }) => {
     await page.goto('/');
 
