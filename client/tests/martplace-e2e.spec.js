@@ -41,6 +41,29 @@ test.describe('Automated Testing MartPlace - 5 Butir Uji', () => {
     expect((firstName || '').toLowerCase()).toContain('macbook');
   });
 
+  test('DUPL-04-11 - Mencari produk berdasarkan kategori', async ({ page }) => {
+    await page.goto('/');
+
+    const categoryDropdown = page.locator('#store-filter-category');
+    await expect(categoryDropdown).toBeVisible();
+
+    // Pilih kategori 'Electronics'
+    await categoryDropdown.selectOption('Electronics');
+
+    await page.waitForTimeout(1000);
+
+    // Ambil semua produk yang tampil setelah di-filter
+    const visibleCards = page.locator(`${PRODUCT_CARD_SELECTOR}:visible`);
+    await expect(visibleCards.first()).toBeVisible();
+
+    // Pastikan semua produk yang tampil memiliki data-category="Electronics"
+    const count = await visibleCards.count();
+    for (let i = 0; i < count; i++) {
+      const categoryAttr = await visibleCards.nth(i).getAttribute('data-category');
+      expect(categoryAttr).toBe('Electronics');
+    }
+  });
+
   test('DUPL-04-78 - Melakukan reset filter atau pencarian melalui reset button', async ({ page }) => {
     await page.goto('/');
 
