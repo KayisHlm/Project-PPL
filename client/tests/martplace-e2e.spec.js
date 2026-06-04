@@ -166,4 +166,37 @@ test.describe('Automated Testing MartPlace - 5 Butir Uji', () => {
 
     expect(bodyText.toLowerCase()).toMatch(/email|password|wajib|required|harus diisi|tidak boleh kosong/);
   });
+
+  test('DUPL-05-05 - Menampilkan harga produk', async ({ page }) => {
+    await page.goto('/');
+    const productCards = page.locator(PRODUCT_CARD_SELECTOR);
+    await expect(productCards.first()).toBeVisible();
+    const firstProduct = productCards.first();
+    const detailButton = firstProduct.locator(DETAIL_BUTTON_SELECTOR).first();
+    await expect(detailButton).toBeVisible();
+    await detailButton.click();
+    await page.waitForTimeout(1000);
+    await expect(page).toHaveURL(/detail|produk|product/i);
+    const bodyText = await page.textContent('body');
+    expect(bodyText).toMatch(/Rp\s?[\d.,]+/);
+    const priceLocator = page.locator('text=/Rp\\s?[\\d.,]+/').first();
+    await expect(priceLocator).toBeVisible();
+    const priceText = (await priceLocator.innerText()).trim();
+    expect(priceText.toLowerCase()).toContain('rp');
+  });
+
+  test('DUPL-04-07 - Menampilkan modal review dari review button', async ({ page }) => {
+    await page.goto('/');
+    const productCards = page.locator(PRODUCT_CARD_SELECTOR);
+    await expect(productCards.first()).toBeVisible();
+    const firstProduct = productCards.first();
+    const reviewButton = firstProduct.locator('button:has-text("Review"), a:has-text("Review")').first();
+    await expect(reviewButton).toBeVisible();
+    await reviewButton.click();
+    await page.waitForTimeout(1000);
+    const modal = page.locator('.modal.show, [role="dialog"], .modal:visible').first();
+    await expect(modal).toBeVisible();
+    const modalText = (await modal.textContent()) || '';
+    expect(modalText.toLowerCase()).toMatch(/ulasan|review|rating|komentar/);
+  });  
 });
