@@ -15,8 +15,8 @@ class StoreControllerTest extends TestCase
                 'data' => [
                     [
                         'id' => 1,
-                        'name' => 'MacBook', // Sesuaikan jika backend memakai field nama berbeda.
-                        'price' => 30000000, // Sesuaikan jika backend memakai field harga berbeda.
+                        'name' => 'MacBook',
+                        'price' => 30000000, 
                     ],
                 ],
             ], 200),
@@ -62,8 +62,8 @@ class StoreControllerTest extends TestCase
             '*/product/1' => Http::response([
                 'data' => [
                     'id' => 1,
-                    'name' => 'MacBook', // Sesuaikan jika backend memakai field nama berbeda.
-                    'price' => 30000000, // Sesuaikan jika backend memakai field harga berbeda.
+                    'name' => 'MacBook',
+                    'price' => 30000000, 
                     'category' => 'Laptop',
                     'averageRating' => 4.8,
                     'reviewCount' => 10,
