@@ -6,7 +6,7 @@ use App\Api\ProductApi;
 use App\Api\WilayahApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 class StoreController extends Controller
 {
     protected $productApi;
@@ -73,6 +73,8 @@ class StoreController extends Controller
             ]);
 
             abort(500, 'Failed to fetch product details');
+        } catch (HttpExceptionInterface $e) {
+            throw $e;
         } catch (\Exception $e) {
             Log::error('Exception fetching product detail: ' . $e->getMessage());
             abort(500, 'An error occurred while fetching product details');
