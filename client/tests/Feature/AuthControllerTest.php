@@ -34,5 +34,4 @@ class AuthControllerTest extends TestCase
         $response->assertSessionHasErrors([
             'email' => 'Format email tidak valid.',
         ]);
-    }
-}
+    }    }
